@@ -1,7 +1,7 @@
 {
   "name": "ESP8266_AT_WebServer",
   "keywords": "wifi, wi-fi, WebServer, AT, ESP8266, Teensy, shield",
-  "description": "Simple WebServer library for AVR, Teensy boards running ESP8266 AT-command shields"
+  "description": "Simple WebServer library for AVR, Teensy boards running ESP8266 AT-command shields",
   "repository":
   {
     "type": "git",
