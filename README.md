@@ -313,6 +313,55 @@ void loop(void)
 }
 ```
 
+The following are debug terminal output and screen shot when running example [AdvancedWebServer](examples/AdvancedWebServer) on Teensy 4.0
+
+<p align="center">
+    <img src="https://github.com/khoih-prog/ESP8266_AT_WebServer/blob/master/pics/AdvancedWebServer.png">
+</p>
+
+```
+Starting AdvancedServer on TEENSY 4.0
+Connecting to WPA SSID: ****
+HTTP server started @ 192.168.2.107
+[ESP_AT] send1: len =  289
+[ESP_AT] content =  <html><head><meta http-equiv='refresh' content='5'/><title>ESP8266 Demo</title><style>body { background-color: #cccccc; font-family: Arial, Helvetica, Sans-Serif; Color: #000088; }</style></head><body><h1>Hello from ESP8266!</h1><p>Uptime: 00:00:27</p><img src="/test.svg" /></body></html>
+[ESP_AT] send1: len =  1946
+[ESP_AT] content =  <svg xmlns="http://www.w3.org/2000/svg" version="1.1" width="310" height="150">
+<rect width="310" height="150" fill="rgb(250, 230, 210)" stroke-width="1" stroke="rgb(0, 0, 0)" />
+<g stroke="black">
+<line x1="10" y1="77" x2="20" y2="67" stroke-width="1" />
+<line x1="20" y1="67" x2="30" y2="98" stroke-width="1" />
+<line x1="30" y1="98" x2="40" y2="111" stroke-width="1" />
+<line x1="40" y1="111" x2="50" y2="90" stroke-width="1" />
+<line x1="50" y1="90" x2="60" y2="22" stroke-width="1" />
+<line x1="60" y1="22" x2="70" y2="98" stroke-width="1" />
+<line x1="70" y1="98" x2="80" y2="64" stroke-width="1" />
+<line x1="80" y1="64" x2="90" y2="104" stroke-width="1" />
+<line x1="90" y1="104" x2="100" y2="31" stroke-width="1" />
+<line x1="100" y1="31" x2="110" y2="59" stroke-width="1" />
+<line x1="110" y1="59" x2="120" y2="139" stroke-width="1" />
+<line x1="120" y1="139" x2="130" y2="117" stroke-width="1" />
+<line x1="130" y1="117" x2="140" y2="75" stroke-width="1" />
+<line x1="140" y1="75" x2="150" y2="72" stroke-width="1" />
+<line x1="150" y1="72" x2="160" y2="137" stroke-width="1" />
+<line x1="160" y1="137" x2="170" y2="20" stroke-width="1" />
+<line x1="170" y1="20" x2="180" y2="94" stroke-width="1" />
+<line x1="180" y1="94" x2="190" y2="81" stroke-width="1" />
+<line x1="190" y1="81" x2="200" y2="38" stroke-width="1" />
+<line x1="200" y1="38" x2="210" y2="33" stroke-width="1" />
+<line x1="210" y1="33" x2="220" y2="53" stroke-width="1" />
+<line x1="220" y1="53" x2="230" y2="88" stroke-width="1" />
+<line x1="230" y1="88" x2="240" y2="32" stroke-width="1" />
+<line x1="240" y1="32" x2="250" y2="110" stroke-width="1" />
+<line x1="250" y1="110" x2="260" y2="87" stroke-width="1" />
+<line x1="260" y1="87" x2="270" y2="11" stroke-width="1" />
+<line x1="270" y1="11" x2="280" y2="98" stroke-width="1" />
+<line x1="280" y1="98" x2="290" y2="76" stroke-width="1" />
+<line x1="290" y1="76" x2="300" y2="121" stroke-width="1" />
+</g>
+</svg>
+```
+
 ## TO DO
 1. Bug Searching and Killing
 2. Add SSL/TLS Client and Server support
