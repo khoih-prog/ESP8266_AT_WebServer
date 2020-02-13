@@ -1,0 +1,225 @@
+#######################################
+# Datatypes (KEYWORD1)
+#######################################
+
+ESP8266_AT_WebServer	KEYWORD1
+HTTPMethod	KEYWORD1
+HTTPUploadStatus  KEYWORD1
+HTTPClientStatus  KEYWORD1
+HTTPUpload  KEYWORD1
+ESP8266_AT_Class  KEYWORD1
+WiFi  KEYWORD1
+ESP8266_AT_Client KEYWORD1
+ESP8266_AT_Server KEYWORD1
+ESP8266_AT_UDP  KEYWORD1
+ESP8266_AT_Drv  KEYWORD1
+eProtMode KEYWORD1
+wl_error_code_t KEYWORD1
+wl_auth_mode  KEYWORD1
+wl_status_t KEYWORD1
+wl_enc_type KEYWORD1
+wl_tcp_state  KEYWORD1
+RequestHandler  KEYWORD1
+FunctionRequestHandler  KEYWORD1
+StaticRequestHandler  KEYWORD1
+RingBuffer  KEYWORD1
+
+#######################################
+# Methods and Functions (KEYWORD2)
+#######################################
+
+#######################
+# ESP8266_AT_WebServer
+#######################
+
+begin	KEYWORD2
+handleClient	KEYWORD2
+close KEYWORD2
+stop  KEYWORD2
+authenticate  KEYWORD2
+requestAuthentication KEYWORD2
+on	KEYWORD2
+addHandler	KEYWORD2
+onNotFound  KEYWORD2
+onFileUpload  KEYWORD2
+uri	KEYWORD2
+method	KEYWORD2
+client	KEYWORD2
+upload  KEYWORD2
+arg	KEYWORD2
+argName	KEYWORD2
+args	KEYWORD2
+hasArg	KEYWORD2
+collectHeaders  KEYWORD2
+header  KEYWORD2
+headerName  KEYWORD2
+headers KEYWORD2
+hasHeader KEYWORD2
+hostHeader  KEYWORD2
+send	KEYWORD2
+send_P  KEYWORD2
+setContentLength  KEYWORD2
+sendHeader  KEYWORD2
+sendContent KEYWORD2
+urlDecode KEYWORD2
+streamFile  KEYWORD2
+
+#######################
+# ESP8266_AT_Class
+#######################
+init  KEYWORD2
+firmwareVersion KEYWORD2
+begin KEYWORD2
+config  KEYWORD2
+disconnect  KEYWORD2
+disconnect  KEYWORD2
+localIP KEYWORD2
+subnetMask  KEYWORD2
+gatewayIP KEYWORD2
+SSID  KEYWORD2
+BSSID KEYWORD2
+RSSI  KEYWORD2
+status  KEYWORD2
+scanNetworks  KEYWORD2
+encryptionType  KEYWORD2
+beginAP KEYWORD2
+configAP  KEYWORD2
+reset KEYWORD2
+ping  KEYWORD2
+
+#######################
+# ESP8266_AT_Client
+#######################
+print KEYWORD2
+println KEYWORD2
+connect KEYWORD2
+connectSSL  KEYWORD2
+write KEYWORD2
+available KEYWORD2
+read  KEYWORD2
+peek  KEYWORD2
+flush KEYWORD2
+stop  KEYWORD2
+connected KEYWORD2
+status  KEYWORD2
+remoteIP  KEYWORD2
+
+#######################
+# ESP8266_AT_Server
+#######################
+available KEYWORD2
+begin KEYWORD2
+write KEYWORD2
+status  KEYWORD2
+
+#######################
+# ESP8266_AT_UDP
+#######################
+begin KEYWORD2
+stop  KEYWORD2
+beginPacket KEYWORD2
+beginPacket KEYWORD2
+write KEYWORD2
+parsePacket KEYWORD2
+available KEYWORD2
+read  KEYWORD2
+peek  KEYWORD2
+flush KEYWORD2
+remoteIP  KEYWORD2
+remotePort  KEYWORD2
+
+#######################
+# Parsing-impl
+#######################
+readBytesWithTimeout  KEYWORD2
+_parseRequest KEYWORD2
+_collectHeader  KEYWORD2
+_parseArguments KEYWORD2
+_uploadWriteByte  KEYWORD2
+_uploadReadByte KEYWORD2
+_parseForm  KEYWORD2
+urlDecode KEYWORD2
+_parseFormUploadAborted KEYWORD2
+
+#######################
+# ESP8266_AT_Drv-impl
+#######################
+wifiDriverInit  KEYWORD2
+wifiConnect KEYWORD2
+wifiStartAP KEYWORD2
+config  KEYWORD2
+configAP  KEYWORD2
+disconnect  KEYWORD2
+getConnectionStatus KEYWORD2
+getMacAddress KEYWORD2
+getIpAddress  KEYWORD2
+getIpAddressAP  KEYWORD2
+getNetmask  KEYWORD2
+getGateway  KEYWORD2
+getCurrentSSID  KEYWORD2
+getCurrentBSSID KEYWORD2
+getCurrentRSSI  KEYWORD2
+getScanNetworks KEYWORD2
+getSSIDNetoworks  KEYWORD2
+getRSSINetoworks  KEYWORD2
+getEncTypeNetowrks  KEYWORD2
+getFwVersion  KEYWORD2
+startServer KEYWORD2
+startClient KEYWORD2
+stopClient  KEYWORD2
+getServerState  KEYWORD2
+getClientState  KEYWORD2
+getData KEYWORD2
+getDataBuf  KEYWORD2
+sendData  KEYWORD2
+sendDataUdp KEYWORD2
+availData KEYWORD2
+ping  KEYWORD2
+reset KEYWORD2
+getRemoteIpAddress  KEYWORD2
+getRemotePort KEYWORD2
+
+#######################
+# RequestHandler
+#######################
+canHandle KEYWORD2
+canUpload KEYWORD2
+handle  KEYWORD2
+upload  KEYWORD2
+next  KEYWORD2
+getContentType  KEYWORD2
+
+#######################
+# RingBuffer
+#######################
+reset KEYWORD2
+init  KEYWORD2
+push  KEYWORD2
+getPos  KEYWORD2
+endsWith  KEYWORD2
+getStr  KEYWORD2
+getStrN KEYWORD2
+
+
+#######################################
+# Constants (LITERAL1)
+#######################################
+
+HTTP_GET	LITERAL1
+HTTP_POST	LITERAL1
+HTTP_ANY	LITERAL1
+AUTHORIZATION_HEADER  LITERAL1
+WL_SSID_MAX_LENGTH  LITERAL1
+WL_MAC_ADDR_LENGTH  LITERAL1
+WL_IPV4_LENGTH  LITERAL1
+WL_NETWORKS_LIST_MAXNUM LITERAL1
+MAX_SOCK_NUM  LITERAL1
+SOCK_NOT_AVAIL  LITERAL1
+NA_STATE  LITERAL1
+WL_FW_VER_LENGTH  LITERAL1
+NO_SOCKET_AVAIL LITERAL1
+CMD_BUFFER_SIZE LITERAL1
+
+
+
+
