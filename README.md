@@ -28,7 +28,7 @@ Another way is to use `Arduino Library Manager`. Search for `ESP8266_AT_Web_Serv
 
 ### Manual Install
 
-1. Navigate to [ESP8266_AT_Web_Server](https://github.com/khoih-prog/ESP8266_AT_WebServer) page.
+1. Navigate to [ESP8266_AT_WebServer](https://github.com/khoih-prog/ESP8266_AT_WebServer) page.
 2. Download the latest release `ESP8266_AT_WebServer-master.zip`.
 3. Extract the zip file to `ESP8266_AT_WebServer-master` directory 
 4. Copy whole 
