@@ -1,6 +1,6 @@
-## ESP8266_AT_Web_Server
+## ESP8266_AT_WebServer
 
-[![arduino-library-badge](https://www.ardu-badge.com/badge/ESP8266_AT_Web_Server.svg?)](https://www.ardu-badge.com/ESP8266_AT_Web_Server)
+[![arduino-library-badge](https://www.ardu-badge.com/badge/ESP8266_AT_WebServer.svg?)](https://www.ardu-badge.com/ESP8266_AT_WebServer)
 
 This is simple yet complete WebServer library for `AVR, Teensy, etc.` boards running `ESP8266 AT-command` shields. The functions are similar and compatible to ESP8266/ESP32 WebServer libraries to make life much easier to port sketches from ESP8266/ESP32.
 
@@ -28,11 +28,11 @@ Another way is to use `Arduino Library Manager`. Search for `ESP8266_AT_Web_Serv
 
 ### Manual Install
 
-1. Navigate to [ESP8266_AT_Web_Server](https://github.com/khoih-prog/ESP8266_AT_Web_Server) page.
-2. Download the latest release `ESP8266_AT_Web_Server-master.zip`.
-3. Extract the zip file to `ESP8266_AT_Web_Server-master` directory 
+1. Navigate to [ESP8266_AT_Web_Server](https://github.com/khoih-prog/ESP8266_AT_WebServer) page.
+2. Download the latest release `ESP8266_AT_WebServer-master.zip`.
+3. Extract the zip file to `ESP8266_AT_WebServer-master` directory 
 4. Copy whole 
-  - `ESP8266_AT_Web_Server-master` folder to Arduino libraries' directory such as `~/Arduino/libraries/`.
+  - `ESP8266_AT_WebServer-master` folder to Arduino libraries' directory such as `~/Arduino/libraries/`.
 
 
 #### Usage
@@ -40,10 +40,10 @@ Another way is to use `Arduino Library Manager`. Search for `ESP8266_AT_Web_Serv
 #### Class Constructor
 
 ```cpp
-  ESP8266_AT_Web_Server server(80);
+  ESP8266_AT_WebServer server(80);
 ```
 
-Creates the ESP8266_AT_Web_Server class object.
+Creates the ESP8266_AT_WebServer class object.
 
 *Parameters:* 
  
