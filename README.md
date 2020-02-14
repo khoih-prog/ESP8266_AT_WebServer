@@ -206,6 +206,8 @@ Also see examples:
 Please take a look at examples, as well.
 
 ```cpp
+#define DEBUG_ESP8266_AT_WEBSERVER_PORT Serial
+
 #include <ESP8266_AT_WebServer.h>
 
 #ifdef CORE_TEENSY

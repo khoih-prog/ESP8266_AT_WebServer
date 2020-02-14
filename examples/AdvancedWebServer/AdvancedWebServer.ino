@@ -40,6 +40,7 @@
  *  ------- -----------  ---------- -----------
  *   1.0.0   K Hoang      12/02/2020 Initial coding for Arduino Mega, Teensy, etc
  *****************************************************************************************************************************/
+#define DEBUG_ESP8266_AT_WEBSERVER_PORT Serial
 
 #include <ESP8266_AT_WebServer.h>
 
@@ -60,8 +61,8 @@
 #define BOARD_TYPE      "AVR Mega"
 #endif
 
-char ssid[] = "****";        // your network SSID (name)
-char pass[] = "****";        // your network password
+char ssid[] = "HueNet1";        // your network SSID (name)
+char pass[] = "jenniqqs";        // your network password
 
 int status = WL_IDLE_STATUS;     // the Wifi radio's status
 int reqCount = 0;                // number of requests received

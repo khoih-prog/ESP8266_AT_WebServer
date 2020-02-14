@@ -122,4 +122,4 @@ protected:
 };
 
 
-#endif //REQUESTHANDLERSIMPL_H
+#endif //RequestHandlerImpl_h

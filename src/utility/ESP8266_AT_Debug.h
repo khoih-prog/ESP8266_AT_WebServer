@@ -20,6 +20,12 @@
 
 #include <stdio.h>
 
+#ifdef DEBUG_ESP8266_AT_WEBSERVER_PORT
+#define DEBUG_OUTPUT DEBUG_ESP8266_AT_WEBSERVER_PORT
+#else
+#define DEBUG_OUTPUT Serial
+#endif
+
 // Change _ESP_AT_LOGLEVEL_ to set tracing and logging verbosity
 // 0: DISABLED: no logging
 // 1: ERROR: errors
@@ -32,17 +38,17 @@
 #endif
 
 
-#define LOGERROR(x)    if(_ESP_AT_LOGLEVEL_>0) { Serial.print("[ESP_AT] "); Serial.println(x); }
-#define LOGERROR1(x,y) if(_ESP_AT_LOGLEVEL_>0) { Serial.print("[ESP_AT] "); Serial.print(x); Serial.print(" "); Serial.println(y); }
-#define LOGWARN(x)     if(_ESP_AT_LOGLEVEL_>1) { Serial.print("[ESP_AT] "); Serial.println(x); }
-#define LOGWARN1(x,y)  if(_ESP_AT_LOGLEVEL_>1) { Serial.print("[ESP_AT] "); Serial.print(x); Serial.print(" "); Serial.println(y); }
-#define LOGINFO(x)     if(_ESP_AT_LOGLEVEL_>2) { Serial.print("[ESP_AT] "); Serial.println(x); }
-#define LOGINFO1(x,y)  if(_ESP_AT_LOGLEVEL_>2) { Serial.print("[ESP_AT] "); Serial.print(x); Serial.print(" "); Serial.println(y); }
+#define LOGERROR(x)    if(_ESP_AT_LOGLEVEL_>0) { DEBUG_OUTPUT.print("[ESP_AT] "); DEBUG_OUTPUT.println(x); }
+#define LOGERROR1(x,y) if(_ESP_AT_LOGLEVEL_>0) { DEBUG_OUTPUT.print("[ESP_AT] "); DEBUG_OUTPUT.print(x); DEBUG_OUTPUT.print(" "); DEBUG_OUTPUT.println(y); }
+#define LOGWARN(x)     if(_ESP_AT_LOGLEVEL_>1) { DEBUG_OUTPUT.print("[ESP_AT] "); DEBUG_OUTPUT.println(x); }
+#define LOGWARN1(x,y)  if(_ESP_AT_LOGLEVEL_>1) { DEBUG_OUTPUT.print("[ESP_AT] "); DEBUG_OUTPUT.print(x); DEBUG_OUTPUT.print(" "); DEBUG_OUTPUT.println(y); }
+#define LOGINFO(x)     if(_ESP_AT_LOGLEVEL_>2) { DEBUG_OUTPUT.print("[ESP_AT] "); DEBUG_OUTPUT.println(x); }
+#define LOGINFO1(x,y)  if(_ESP_AT_LOGLEVEL_>2) { DEBUG_OUTPUT.print("[ESP_AT] "); DEBUG_OUTPUT.print(x); DEBUG_OUTPUT.print(" "); DEBUG_OUTPUT.println(y); }
 
-#define LOGDEBUG(x)      if(_ESP_AT_LOGLEVEL_>3) { Serial.println(x); }
-#define LOGDEBUG0(x)     if(_ESP_AT_LOGLEVEL_>3) { Serial.print(x); }
-#define LOGDEBUG1(x,y)   if(_ESP_AT_LOGLEVEL_>3) { Serial.print(x); Serial.print(" "); Serial.println(y); }
-#define LOGDEBUG2(x,y,z) if(_ESP_AT_LOGLEVEL_>3) { Serial.print(x); Serial.print(" "); Serial.print(y); Serial.print(" "); Serial.println(z); }
+#define LOGDEBUG(x)      if(_ESP_AT_LOGLEVEL_>3) { DEBUG_OUTPUT.println(x); }
+#define LOGDEBUG0(x)     if(_ESP_AT_LOGLEVEL_>3) { DEBUG_OUTPUT.print(x); }
+#define LOGDEBUG1(x,y)   if(_ESP_AT_LOGLEVEL_>3) { DEBUG_OUTPUT.print(x); DEBUG_OUTPUT.print(" "); DEBUG_OUTPUT.println(y); }
+#define LOGDEBUG2(x,y,z) if(_ESP_AT_LOGLEVEL_>3) { DEBUG_OUTPUT.print(x); DEBUG_OUTPUT.print(" "); DEBUG_OUTPUT.print(y); DEBUG_OUTPUT.print(" "); DEBUG_OUTPUT.println(z); }
 
 
 #endif

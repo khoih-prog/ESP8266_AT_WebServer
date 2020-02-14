@@ -17,17 +17,15 @@
  *  1.0.0   K Hoang      12/02/2020 Initial coding for Arduino Mega, Teensy, etc
  *****************************************************************************************************************************/
 
+#ifndef ESP8266_AT_WebServer_impl_h 
+#define ESP8266_AT_WebServer_impl_h 
+
 #include <Arduino.h>
 #include <libb64/cencode.h>
 #include <ESP8266_AT.h>
 #include "ESP8266_AT_WebServer.h"
 #include "utility/RequestHandlersImpl.h"
 #include "utility/ESP8266_AT_Debug.h"
-
-// KH
-//#define DEBUG_ESP_HTTP_SERVER
-
-#define DEBUG_OUTPUT Serial
 
 const char * AUTHORIZATION_HEADER = "Authorization";
 
@@ -266,8 +264,8 @@ void ESP8266_AT_WebServer::send(int code, const char* content_type, const String
     //if(code == 200 && content.length() == 0 && _contentLength == CONTENT_LENGTH_NOT_SET)
     //  _contentLength = CONTENT_LENGTH_UNKNOWN;
     
-    LOGERROR1(F("send1: len = "), content.length());
-    LOGERROR1(F("content = "), content);  
+    LOGDEBUG1(F("send1: len = "), content.length());
+    LOGDEBUG1(F("content = "), content);  
     
     _prepareHeader(header, code, content_type, content.length());
 
@@ -284,27 +282,21 @@ void ESP8266_AT_WebServer::send(int code, char* content_type, const String& cont
 {
     String header;
     
-    LOGERROR1(F("send2: len = "), contentLength);
-    LOGERROR1(F("content = "), content);  
+    LOGDEBUG1(F("send2: len = "), contentLength);
+    LOGDEBUG1(F("content = "), content);  
   
     char type[64];
     memccpy((void*)type, content_type, 0, sizeof(type));
     _prepareHeader(header, code, (const char* )type, contentLength);    
   
-    LOGERROR1(F("send2: hdrlen = "), header.length());
-    LOGERROR1(F("header = "), header);  
+    LOGDEBUG1(F("send2: hdrlen = "), header.length());
+    LOGDEBUG1(F("header = "), header);  
     
-    // KH
-    #if 1
     _currentClient.write((const uint8_t *) header.c_str(), header.length());
     if (contentLength) 
     {
       sendContent(content, contentLength);
     }
-    #else
-    sendContent(header);
-    sendContent_P(content, contentLength);
-    #endif
 }
 
 void ESP8266_AT_WebServer::send(int code, char* content_type, const String& content) {
@@ -328,10 +320,10 @@ void ESP8266_AT_WebServer::send_P(int code, PGM_P content_type, PGM_P content) {
     memccpy_P((void*)type, (PGM_VOID_P)content_type, 0, sizeof(type));
     _prepareHeader(header, code, (const char* )type, contentLength);
     
-    LOGERROR1(F("send_P: len = "), contentLength);
-    LOGERROR1(F("content = "), content);  
-    LOGERROR1(F("send_P: hdrlen = "), header.length());
-    LOGERROR1(F("header = "), header);  
+    LOGDEBUG1(F("send_P: len = "), contentLength);
+    LOGDEBUG1(F("content = "), content);  
+    LOGDEBUG1(F("send_P: hdrlen = "), header.length());
+    LOGDEBUG1(F("header = "), header);  
     
     _currentClient.write((const uint8_t *) header.c_str(), header.length());
     if (contentLength) 
@@ -346,10 +338,10 @@ void ESP8266_AT_WebServer::send_P(int code, PGM_P content_type, PGM_P content, s
     memccpy_P((void*)type, (PGM_VOID_P)content_type, 0, sizeof(type));
     _prepareHeader(header, code, (const char* )type, contentLength);
 
-    LOGERROR1(F("send_P: len = "), contentLength);
-    LOGERROR1(F("content = "), content);  
-    LOGERROR1(F("send_P: hdrlen = "), header.length());
-    LOGERROR1(F("header = "), header);  
+    LOGDEBUG1(F("send_P: len = "), contentLength);
+    LOGDEBUG1(F("content = "), content);  
+    LOGDEBUG1(F("send_P: hdrlen = "), header.length());
+    LOGDEBUG1(F("header = "), header);  
 
     _currentClient.write((const uint8_t *) header.c_str(), header.length());
     if (contentLength) 
@@ -577,3 +569,5 @@ String ESP8266_AT_WebServer::_responseCodeToString(int code) {
     default:  return "";
   }
 }
+
+#endif //ESP8266_AT_WebServer_impl_h

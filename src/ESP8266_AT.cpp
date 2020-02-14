@@ -32,7 +32,7 @@ ESP8266_AT_Class::ESP8266_AT_Class()
 
 void ESP8266_AT_Class::init(Stream* espSerial)
 {
-    LOGINFO(F("Initializing ESP module"));
+  LOGINFO(F("Initializing ESP module"));
 	ESP8266_AT_Drv::wifiDriverInit(espSerial);
 }
 
@@ -46,7 +46,7 @@ char* ESP8266_AT_Class::firmwareVersion()
 
 int ESP8266_AT_Class::begin(const char* ssid, const char* passphrase)
 {
-    espMode = 1;
+  espMode = 1;
 	if (ESP8266_AT_Drv::wifiConnect(ssid, passphrase))
 		return WL_CONNECTED;
 
@@ -57,11 +57,11 @@ int ESP8266_AT_Class::begin(const char* ssid, const char* passphrase)
 int ESP8266_AT_Class::beginAP(const char* ssid, uint8_t channel, const char* pwd, uint8_t enc, bool apOnly)
 {
 	if(apOnly)
-        espMode = 2;
-    else
-        espMode = 3;
+    espMode = 2;
+  else
+    espMode = 3;
     
-    if (ESP8266_AT_Drv::wifiStartAP(ssid, pwd, channel, enc, espMode))
+  if (ESP8266_AT_Drv::wifiStartAP(ssid, pwd, channel, enc, espMode))
 		return WL_CONNECTED;
 
 	return WL_CONNECT_FAILED;
@@ -87,8 +87,6 @@ void ESP8266_AT_Class::configAP(IPAddress ip)
 {
 	ESP8266_AT_Drv::configAP(ip);
 }
-
-
 
 int ESP8266_AT_Class::disconnect()
 {
@@ -208,13 +206,13 @@ bool ESP8266_AT_Class::ping(const char *host)
 uint8_t ESP8266_AT_Class::getFreeSocket()
 {
   // ESP Module assigns socket numbers in ascending order, so we will assign them in descending order
-    for (int i = MAX_SOCK_NUM - 1; i >= 0; i--)
+  for (int i = MAX_SOCK_NUM - 1; i >= 0; i--)
 	{
-      if (_state[i] == NA_STATE)
-      {
-          return i;
-      }
+    if (_state[i] == NA_STATE)
+    {
+        return i;
     }
+  }
     return SOCK_NOT_AVAIL;
 }
 

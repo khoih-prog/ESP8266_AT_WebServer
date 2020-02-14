@@ -34,4 +34,4 @@ private:
     RequestHandler* _next = nullptr;
 };
 
-#endif //REQUESTHANDLER_H
+#endif //RequestHandler_h
