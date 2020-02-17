@@ -20,6 +20,8 @@
 #ifndef ESP8266_AT_WebServer_h 
 #define ESP8266_AT_WebServer_h 
 
+// To support lambda function in class
+#include <functional-vlpp.h>
 #include <ESP8266_AT.h>
 
 enum HTTPMethod { HTTP_ANY, HTTP_GET, HTTP_POST, HTTP_PUT, HTTP_PATCH, HTTP_DELETE, HTTP_OPTIONS };
@@ -68,7 +70,9 @@ public:
   bool authenticate(const char * username, const char * password);
   void requestAuthentication();
 
-  typedef void (*THandlerFunction)(void);
+  typedef vl::Func<void(void)> THandlerFunction;
+  //typedef std::function<void(void)> THandlerFunction;
+  //typedef void (*THandlerFunction)(void);
   
   void on(const String &uri, THandlerFunction handler);
   void on(const String &uri, HTTPMethod method, THandlerFunction fn);
