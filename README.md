@@ -20,6 +20,7 @@ The ESP8266_AT_Web_Server class found in `ESP8266_AT_Web_Server.h` header, is a 
 ## Prerequisite
 1. [`Arduino IDE 1.8.11 or later` for Arduino](https://www.arduino.cc/en/Main/Software)
 2. `Arduino AVR core 1.8.2 or later` for Arduino (Use Arduino Board Manager)
+3. [`Functional-VLPP library`](https://github.com/khoih-prog/functional-vlpp) to use server's lambda function
 
 ## Installation
 
