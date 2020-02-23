@@ -4,7 +4,7 @@
 
 ### New Version v1.0.2
 
-1. Add support to SAMD (DUE, ZERO, MKR, NANO_33_IOT, M0, Mo Pro, AdaFruit CIRCUITPLAYGROUND_EXPRESS, etc.) boards
+1. Add support to SAMD (DUE, ZERO, MKR, NANO_33_IOT, M0, M0 Pro, AdaFruit CIRCUITPLAYGROUND_EXPRESS, etc.) boards
 
 This is simple yet complete WebServer library for `AVR, Teensy, SAMD, etc.` boards running `ESP8266 AT-command` shields. The functions are similar and compatible to ESP8266/ESP32 WebServer libraries to make life much easier to port sketches from ESP8266/ESP32.
 
