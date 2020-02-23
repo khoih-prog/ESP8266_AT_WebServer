@@ -8,6 +8,6 @@
     "url": "https://github.com/khoih-prog/ESP8266_AT_WebServer"
   },
   "frameworks": "arduino",
-  "platforms": "*",
-  "version": "1.0.1"
+  "platforms": "avr, teensy",
+  "version": "1.0.2"
 }

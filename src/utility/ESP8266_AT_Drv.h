@@ -7,12 +7,13 @@
  * Forked and modified from Arduino ESP8266_AT library
  * Built by Khoi Hoang https://github.com/khoih-prog/ESP8266_AT_WebServer
  * Licensed under MIT license
- * Version: 1.0.0
- *
+ * Version: 1.0.2
  *
  * Version Modified By   Date      Comments
  * ------- -----------  ---------- -----------
  *  1.0.0   K Hoang      12/02/2020 Initial coding for Arduino Mega, Teensy, etc
+ *  1.0.1   K Hoang      17/02/2020 Add support to server's lambda function calls
+ *  1.0.2   K Hoang      22/02/2020 Add support to SAMD (DUE, ZERO, MKR, NANO_33_IOT, M0, Mo Pro, AdaFruit, etc) boards
  *****************************************************************************************************************************/
 
 #ifndef ESP8266_AT_Drv_h
@@ -306,7 +307,7 @@ private:
 
 
 	// the ring buffer is used to search the tags in the stream
-	static RingBuffer ringBuf;
+	static AT_RingBuffer ringBuf;
 
 
 	//static int sendCmd(const char* cmd, int timeout=1000);

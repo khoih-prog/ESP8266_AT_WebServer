@@ -6,7 +6,7 @@
  * Forked and modified from ESP8266 https://github.com/esp8266/Arduino/releases
  * Built by Khoi Hoang https://github.com/khoih-prog/ESP8266_AT_WebServer
  * Licensed under MIT license
- * Version: 1.0.0
+ * Version: 1.0.2
  *
  * Original author:
  * @file       Esp8266WebServer.h
@@ -15,10 +15,23 @@
  * Version Modified By   Date      Comments
  * ------- -----------  ---------- -----------
  *  1.0.0   K Hoang      12/02/2020 Initial coding for Arduino Mega, Teensy, etc
+ *  1.0.1   K Hoang      17/02/2020 Add support to server's lambda function calls
+ *  1.0.2   K Hoang      22/02/2020 Add support to SAMD (DUE, ZERO, MKR, NANO_33_IOT, M0, Mo Pro, AdaFruit, etc) boards
  *****************************************************************************************************************************/
 
 #ifndef ESP8266_AT_WebServer_h 
 #define ESP8266_AT_WebServer_h 
+
+#if    ( defined(ARDUINO_SAM_DUE) || defined(ARDUINO_SAMD_ZERO) || defined(ARDUINO_SAMD_MKR1000) || defined(ARDUINO_SAMD_MKRWIFI1010) \
+      || defined(ARDUINO_SAMD_NANO_33_IOT) || defined(ARDUINO_SAMD_MKRFox1200) || defined(ARDUINO_SAMD_MKRWAN1300) || defined(ARDUINO_SAMD_MKRWAN1310) \
+      || defined(ARDUINO_SAMD_MKRGSM1400) || defined(ARDUINO_SAMD_MKRNB1500) || defined(ARDUINO_SAMD_MKRVIDOR4000) || defined(ARDUINO_SAMD_MKRGSM1400) \
+      || defined(ARDUINO_SAMD_CIRCUITPLAYGROUND_EXPRESS) || defined(__SAMD21G18A__) || defined(__SAM3X8E__) || defined(__CPU_ARC__) )      
+  #if defined(ESP8266_AT_USE_SAMD)
+    #undef ESP8266_AT_USE_SAMD
+  #endif
+  #define ESP8266_AT_USE_SAMD      true
+  #warning Use SAMD architecture from ESP8266_AT_WebServer
+#endif
 
 // To support lambda function in class
 #include <functional-vlpp.h>
@@ -110,7 +123,7 @@ public:
   //KH
   void send(int code, char*  content_type, const String& content, size_t contentLength);
  
-  #ifndef CORE_TEENSY
+  #if !( defined(CORE_TEENSY) || (ESP8266_AT_USE_SAMD) )
   void send_P(int code, PGM_P content_type, PGM_P content);
   void send_P(int code, PGM_P content_type, PGM_P content, size_t contentLength);
   #endif

@@ -2,7 +2,11 @@
 
 [![arduino-library-badge](https://www.ardu-badge.com/badge/ESP8266_AT_WebServer.svg?)](https://www.ardu-badge.com/ESP8266_AT_WebServer)
 
-This is simple yet complete WebServer library for `AVR, Teensy, etc.` boards running `ESP8266 AT-command` shields. The functions are similar and compatible to ESP8266/ESP32 WebServer libraries to make life much easier to port sketches from ESP8266/ESP32.
+### New Version v1.0.2
+
+1. Add support to SAMD (DUE, ZERO, MKR, NANO_33_IOT, M0, Mo Pro, AdaFruit CIRCUITPLAYGROUND_EXPRESS, etc.) boards
+
+This is simple yet complete WebServer library for `AVR, Teensy, SAMD, etc.` boards running `ESP8266 AT-command` shields. The functions are similar and compatible to ESP8266/ESP32 WebServer libraries to make life much easier to port sketches from ESP8266/ESP32.
 
 The library supports 
 1. WiFi Client, STA and AP mode
@@ -211,6 +215,16 @@ Please take a look at examples, as well.
 
 #include <ESP8266_AT_WebServer.h>
 
+#if    ( defined(ARDUINO_SAM_DUE) || defined(ARDUINO_SAMD_ZERO) || defined(ARDUINO_SAMD_MKR1000) || defined(ARDUINO_SAMD_MKRWIFI1010) \
+      || defined(ARDUINO_SAMD_NANO_33_IOT) || defined(ARDUINO_SAMD_MKRFox1200) || defined(ARDUINO_SAMD_MKRWAN1300) || defined(ARDUINO_SAMD_MKRWAN1310) \
+      || defined(ARDUINO_SAMD_MKRGSM1400) || defined(ARDUINO_SAMD_MKRNB1500) || defined(ARDUINO_SAMD_MKRVIDOR4000) || defined(__SAMD21G18A__) \
+      || defined(ARDUINO_SAMD_CIRCUITPLAYGROUND_EXPRESS) || defined(__SAM3X8E__) || defined(__CPU_ARC__) )      
+  #if defined(ESP8266_AT_USE_SAMD)
+    #undef ESP8266_AT_USE_SAMD
+  #endif
+  #define ESP8266_AT_USE_SAMD      true
+#endif
+
 #ifdef CORE_TEENSY
   // For Teensy 4.0
   #define EspSerial Serial2   //Serial2, Pin RX2 : 7, TX2 : 8
@@ -220,6 +234,36 @@ Please take a look at examples, as well.
   #define BOARD_TYPE      "TEENSY LC or 2.0"
   #else
   #define BOARD_TYPE      "TEENSY 3.X"
+  #endif
+
+#elif defined(ESP8266_AT_USE_SAMD) 
+// For SAMD
+  #define EspSerial Serial1
+  
+  #if defined(ARDUINO_SAMD_ZERO)
+    #define BOARD_TYPE      "SAMD Zero"
+  #elif defined(ARDUINO_SAMD_MKR1000)
+    #define BOARD_TYPE      "SAMD MKR1000"
+  #elif defined(ARDUINO_SAMD_MKRWIFI1010)
+    #define BOARD_TYPE      "SAMD MKRWIFI1010"
+  #elif defined(ARDUINO_SAMD_NANO_33_IOT)
+    #define BOARD_TYPE      "SAMD NANO_33_IOT"
+  #elif defined(ARDUINO_SAMD_MKRFox1200)
+    #define BOARD_TYPE      "SAMD MKRFox1200"
+  #elif ( defined(ARDUINO_SAMD_MKRWAN1300) || defined(ARDUINO_SAMD_MKRWAN1310) )
+    #define BOARD_TYPE      "SAMD MKRWAN13X0"
+  #elif defined(ARDUINO_SAMD_MKRGSM1400)
+    #define BOARD_TYPE      "SAMD MKRGSM1400"
+  #elif defined(ARDUINO_SAMD_MKRNB1500)
+    #define BOARD_TYPE      "SAMD MKRNB1500"
+  #elif defined(ARDUINO_SAMD_MKRVIDOR4000)
+    #define BOARD_TYPE      "SAMD MKRVIDOR4000"
+  #elif defined(ARDUINO_SAMD_CIRCUITPLAYGROUND_EXPRESS)
+    #define BOARD_TYPE      "SAMD ARDUINO_SAMD_CIRCUITPLAYGROUND_EXPRESS"
+  #elif ( defined(__SAM3X8E__) || (__SAM3X8E__) || (__CPU_ARC__) )
+    #define BOARD_TYPE      "SAMD Board"
+  #else
+    #define BOARD_TYPE      "SAMD Unknown"
   #endif
 
 #else
@@ -363,7 +407,27 @@ HTTP server started @ 192.168.2.107
 <line x1="290" y1="76" x2="300" y2="121" stroke-width="1" />
 </g>
 </svg>
+
 ```
+
+### Version v1.0.2
+
+1. Add support to SAMD (DUE, ZERO, MKR, NANO_33_IOT, M0, Mo Pro, AdaFruit CIRCUITPLAYGROUND_EXPRESS, etc.) boards
+
+### Version v1.0.1
+
+1. Add support to server's lambda function calls with dependency on [`Functional-VLPP library`](https://github.com/khoih-prog/functional-vlpp)
+
+### Initial Version v1.0.0
+
+This is simple yet complete WebServer library for `AVR, Teensy, etc.` boards running `ESP8266 AT-command` shields. ***The functions are similar and compatible to ESP8266/ESP32 WebServer libraries*** to make life much easier to port sketches from ESP8266/ESP32.
+
+The library supports 
+1. WiFi Client, STA and AP mode
+2. TCP Server and Client
+3. UDP Server and Client
+4. HTTP Server and Client
+5. HTTP GET and POST requests, provides argument parsing, handles one client at a time.
 
 ## TO DO
 1. Bug Searching and Killing

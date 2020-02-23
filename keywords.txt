@@ -22,7 +22,7 @@ wl_tcp_state  KEYWORD1
 RequestHandler  KEYWORD1
 FunctionRequestHandler  KEYWORD1
 StaticRequestHandler  KEYWORD1
-RingBuffer  KEYWORD1
+AT_RingBuffer  KEYWORD1
 
 #######################################
 # Methods and Functions (KEYWORD2)

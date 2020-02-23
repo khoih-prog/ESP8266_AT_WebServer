@@ -7,19 +7,20 @@
  * Forked and modified from Arduino ESP_AT library
  * Built by Khoi Hoang https://github.com/khoih-prog/ESP_AT_WebServer
  * Licensed under MIT license
- * Version: 1.0.0
- *
+ * Version: 1.0.2
  *
  * Version Modified By   Date      Comments
  * ------- -----------  ---------- -----------
  *  1.0.0   K Hoang      12/02/2020 Initial coding for Arduino Mega, Teensy, etc
+ *  1.0.1   K Hoang      17/02/2020 Add support to server's lambda function calls
+ *  1.0.2   K Hoang      22/02/2020 Add support to SAMD (DUE, ZERO, MKR, NANO_33_IOT, M0, Mo Pro, AdaFruit, etc) boards
  *****************************************************************************************************************************/
 
 #include "RingBuffer.h"
 
 #include <Arduino.h>
 
-RingBuffer::RingBuffer(unsigned int size)
+AT_RingBuffer::AT_RingBuffer(unsigned int size)
 {
 	_size = size;
 	// add one char to terminate the string
@@ -28,20 +29,20 @@ RingBuffer::RingBuffer(unsigned int size)
 	init();
 }
 
-RingBuffer::~RingBuffer() {}
+AT_RingBuffer::~AT_RingBuffer() {}
 
-void RingBuffer::reset()
+void AT_RingBuffer::reset()
 {
 	ringBufP = ringBuf;
 }
 
-void RingBuffer::init()
+void AT_RingBuffer::init()
 {
 	ringBufP = ringBuf;
 	memset(ringBuf, 0, _size+1);
 }
 
-void RingBuffer::push(char c)
+void AT_RingBuffer::push(char c)
 {
 	*ringBufP = c;
 	ringBufP++;
@@ -49,7 +50,7 @@ void RingBuffer::push(char c)
 		ringBufP = ringBuf;
 }
 
-bool RingBuffer::endsWith(const char* str)
+bool AT_RingBuffer::endsWith(const char* str)
 {
 	int findStrLen = strlen(str);
 
@@ -74,7 +75,7 @@ bool RingBuffer::endsWith(const char* str)
 	return true;
 }
 
-void RingBuffer::getStr(char * destination, unsigned int skipChars)
+void AT_RingBuffer::getStr(char * destination, unsigned int skipChars)
 {
 	//int len = ringBufP-ringBuf-skipChars;
 	unsigned int len = ringBufP-ringBuf-skipChars;
@@ -86,7 +87,7 @@ void RingBuffer::getStr(char * destination, unsigned int skipChars)
 	//destination[len]=0;
 }
 
-void RingBuffer::getStrN(char * destination, unsigned int skipChars, unsigned int num)
+void AT_RingBuffer::getStrN(char * destination, unsigned int skipChars, unsigned int num)
 {
 	//int len = ringBufP-ringBuf-skipChars;
 	unsigned int len = ringBufP-ringBuf-skipChars;

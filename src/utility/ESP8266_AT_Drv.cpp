@@ -7,17 +7,33 @@
  * Forked and modified from Arduino ESP8266_AT library
  * Built by Khoi Hoang https://github.com/khoih-prog/ESP8266_AT_WebServer
  * Licensed under MIT license
- * Version: 1.0.0
- *
+ * Version: 1.0.2
  *
  * Version Modified By   Date      Comments
  * ------- -----------  ---------- -----------
  *  1.0.0   K Hoang      12/02/2020 Initial coding for Arduino Mega, Teensy, etc
+ *  1.0.1   K Hoang      17/02/2020 Add support to server's lambda function calls
+ *  1.0.2   K Hoang      22/02/2020 Add support to SAMD (DUE, ZERO, MKR, NANO_33_IOT, M0, Mo Pro, AdaFruit, etc) boards
  *****************************************************************************************************************************/
-
 
 #include <Arduino.h>
 #include <avr/pgmspace.h>
+
+#if    ( defined(ARDUINO_SAM_DUE) || defined(ARDUINO_SAMD_ZERO) || defined(ARDUINO_SAMD_MKR1000) || defined(ARDUINO_SAMD_MKRWIFI1010) \
+      || defined(ARDUINO_SAMD_NANO_33_IOT) || defined(ARDUINO_SAMD_MKRFox1200) || defined(ARDUINO_SAMD_MKRWAN1300) || defined(ARDUINO_SAMD_MKRWAN1310) \
+      || defined(ARDUINO_SAMD_MKRGSM1400) || defined(ARDUINO_SAMD_MKRNB1500) || defined(ARDUINO_SAMD_MKRVIDOR4000) || defined(ARDUINO_SAMD_MKRGSM1400) \
+      || defined(ARDUINO_SAMD_CIRCUITPLAYGROUND_EXPRESS) || defined(__SAMD21G18A__) || defined(__SAM3X8E__) || defined(__CPU_ARC__) )      
+  #if defined(ESP8266_AT_USE_SAMD)
+    #undef ESP8266_AT_USE_SAMD
+  #endif
+  #define ESP8266_AT_USE_SAMD      true
+  #warning Use SAMD architecture from ESP8266_AT_Drv_h
+#endif
+
+#if (ESP8266_AT_USE_SAMD)
+  #include <cstdarg>
+  #define vsnprintf_P vsnprintf
+#endif
 
 #include "utility/ESP8266_AT_Drv.h"
 #include "utility/ESP8266_AT_Debug.h"
@@ -47,10 +63,10 @@ typedef enum
 Stream *ESP8266_AT_Drv::espSerial;
 
 #ifdef CORE_TEENSY
-RingBuffer ESP8266_AT_Drv::ringBuf(256);
+AT_RingBuffer ESP8266_AT_Drv::ringBuf(256);
 #else
-//RingBuffer ESP8266_AT_Drv::ringBuf(32);
-RingBuffer ESP8266_AT_Drv::ringBuf(256);
+//AT_RingBuffer ESP8266_AT_Drv::ringBuf(32);
+AT_RingBuffer ESP8266_AT_Drv::ringBuf(256);
 #endif
 
 // Array of data to cache the information related to the networks discovered
@@ -1001,7 +1017,9 @@ int ESP8266_AT_Drv::sendCmd(const __FlashStringHelper* cmd, int timeout, ...)
 
 	va_list args;
 	va_start (args, timeout);
+	
 	vsnprintf_P (cmdBuf, CMD_BUFFER_SIZE, (char*)cmd, args);
+	
 	va_end (args);
 
 	espEmptyBuf();
@@ -1105,5 +1123,5 @@ int ESP8266_AT_Drv::timedRead()
 }
 
 
-
 ESP8266_AT_Drv esp8266_AT_Drv;
+
