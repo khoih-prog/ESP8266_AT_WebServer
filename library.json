@@ -1,7 +1,7 @@
 {
   "name": "ESP8266_AT_WebServer",
-  "keywords": "wifi, wi-fi, WebServer, AT, ESP8266, Teensy, shield",
-  "description": "Simple WebServer library for AVR, Teensy boards running ESP8266 AT-command shields",
+  "keywords": "wifi, wi-fi, WebServer, AT, ESP8266, Teensy, AVR, SAM DUE, SAMD, STM32, ESP8266 shield",
+  "description": "Simple WebServer library for AVR, Teensy, SAM DUE, SAMD, STM32 boards running ESP8266 AT-command shields",
   "repository":
   {
     "type": "git",
@@ -9,5 +9,5 @@
   },
   "frameworks": "arduino",
   "platforms": "avr, teensy",
-  "version": "1.0.2"
+  "version": "1.0.3"
 }

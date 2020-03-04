@@ -2,11 +2,15 @@
 
 [![arduino-library-badge](https://www.ardu-badge.com/badge/ESP8266_AT_WebServer.svg?)](https://www.ardu-badge.com/ESP8266_AT_WebServer)
 
+### New Version v1.0.3
+
+1. Add support to STM32 (STM32,F0,F1, F2, F3, F4, F7, etc) boards
+
 ### New Version v1.0.2
 
 1. Add support to SAMD (DUE, ZERO, MKR, NANO_33_IOT, M0, M0 Pro, AdaFruit CIRCUITPLAYGROUND_EXPRESS, etc.) boards
 
-This is simple yet complete WebServer library for `AVR, Teensy, SAMD, etc.` boards running `ESP8266 AT-command` shields. The functions are similar and compatible to ESP8266/ESP32 WebServer libraries to make life much easier to port sketches from ESP8266/ESP32.
+This is simple yet complete WebServer library for `AVR, Teensy, SAM DUE, SAMD, STM32, etc.` boards running `ESP8266 AT-command` shields. The functions are similar and compatible to ESP8266/ESP32 WebServer libraries to make life much easier to port sketches from ESP8266/ESP32.
 
 The library supports 
 1. WiFi Client, STA and AP mode
@@ -23,13 +27,15 @@ The ESP8266_AT_Web_Server class found in `ESP8266_AT_Web_Server.h` header, is a 
 
 ## Prerequisite
 1. [`Arduino IDE 1.8.11 or later` for Arduino](https://www.arduino.cc/en/Main/Software)
-2. `Arduino AVR core 1.8.2 or later` for Arduino (Use Arduino Board Manager)
-3. [`Functional-VLPP library`](https://github.com/khoih-prog/functional-vlpp) to use server's lambda function
+2. `Arduino AVR core 1.8.2 or later` for Arduino (Use Arduino Board Manager) for AVR boards
+3. [`Arduino Core for STM32 v1.8.0 or later`](https://github.com/khoih-prog/Arduino_Core_STM32) for STM32 boards
+4. [`Functional-VLPP library`](https://github.com/khoih-prog/functional-vlpp) to use server's lambda function
 
 ## Installation
 
 ### Use Arduino Library Manager
-Another way is to use `Arduino Library Manager`. Search for `ESP8266_AT_Web_Server`, then select / install the latest version.
+The best and easiest way is to use `Arduino Library Manager`. Search for `ESP8266_AT_Web_Server`, then select / install the latest version.
+You can also use this link [![arduino-library-badge](https://www.ardu-badge.com/badge/ESP8266_AT_WebServer.svg?)](https://www.ardu-badge.com/ESP8266_AT_WebServer) for more detailed instructions.
 
 ### Manual Install
 
@@ -213,16 +219,21 @@ Please take a look at examples, as well.
 ```cpp
 #define DEBUG_ESP8266_AT_WEBSERVER_PORT Serial
 
-#include <ESP8266_AT_WebServer.h>
-
 #if    ( defined(ARDUINO_SAM_DUE) || defined(ARDUINO_SAMD_ZERO) || defined(ARDUINO_SAMD_MKR1000) || defined(ARDUINO_SAMD_MKRWIFI1010) \
       || defined(ARDUINO_SAMD_NANO_33_IOT) || defined(ARDUINO_SAMD_MKRFox1200) || defined(ARDUINO_SAMD_MKRWAN1300) || defined(ARDUINO_SAMD_MKRWAN1310) \
       || defined(ARDUINO_SAMD_MKRGSM1400) || defined(ARDUINO_SAMD_MKRNB1500) || defined(ARDUINO_SAMD_MKRVIDOR4000) || defined(__SAMD21G18A__) \
-      || defined(ARDUINO_SAMD_CIRCUITPLAYGROUND_EXPRESS) || defined(__SAM3X8E__) || defined(__CPU_ARC__) )      
+      || defined(ARDUINO_SAMD_CIRCUITPLAYGROUND_EXPRESS) || defined(__SAM3X8E__) || defined(__CPU_ARC__) )
   #if defined(ESP8266_AT_USE_SAMD)
     #undef ESP8266_AT_USE_SAMD
   #endif
   #define ESP8266_AT_USE_SAMD      true
+#endif
+
+#if ( defined(STM32F0) || defined(STM32F1) || defined(STM32F2) || defined(STM32F3)  ||defined(STM32F4) || defined(STM32F7) )
+  #if defined(ESP8266_AT_USE_STM32)
+    #undef ESP8266_AT_USE_STM32
+  #endif
+  #define ESP8266_AT_USE_STM32      true
 #endif
 
 #ifdef CORE_TEENSY
@@ -266,11 +277,33 @@ Please take a look at examples, as well.
     #define BOARD_TYPE      "SAMD Unknown"
   #endif
 
+#elif defined(ESP8266_AT_USE_STM32) 
+// For STM32
+  #define EspSerial Serial1
+ 
+  #if defined(STM32F0)
+    #define BOARD_TYPE  "STM32F0"
+  #elif defined(STM32F1)
+    #define BOARD_TYPE  "STM32F1"
+  #elif defined(STM32F2)
+    #define BOARD_TYPE  "STM32F2"
+  #elif defined(STM32F3)
+    #define BOARD_TYPE  "STM32F3"
+  #elif defined(STM32F4)
+    #define BOARD_TYPE  "STM32F4"
+  #elif defined(STM32F7)
+    #define BOARD_TYPE  "STM32F7"
+  #else
+    #warning STM32 unknown board selected
+    #define BOARD_TYPE  "STM32 Unknown"
+  #endif
 #else
 // For Mega
 #define EspSerial Serial3
 #define BOARD_TYPE      "AVR Mega"
 #endif
+
+#include <ESP8266_AT_WebServer.h>
 
 char ssid[] = "****";        // your network SSID (name)
 char pass[] = "****";        // your network password
@@ -409,6 +442,10 @@ HTTP server started @ 192.168.2.107
 </svg>
 
 ```
+
+### New Version v1.0.3
+
+1. Add support to STM32 (STM32,F0,F1, F2, F3, F4, F7, etc) boards
 
 ### Version v1.0.2
 

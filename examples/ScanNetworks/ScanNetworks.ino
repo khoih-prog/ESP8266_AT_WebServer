@@ -6,7 +6,7 @@
  *  Forked and modified from ESP8266 https://github.com/esp8266/Arduino/releases
  *  Built by Khoi Hoang https://github.com/khoih-prog/ESP8266_AT_WebServer
  *  Licensed under MIT license
- *  Version: 1.0.2
+ *  Version: 1.0.3
  *
  *  This example  prints the Wifi shield's MAC address, and
  *  scans for available Wifi networks using the Wifi shield.
@@ -19,6 +19,7 @@
  *  1.0.0   K Hoang      12/02/2020 Initial coding for Arduino Mega, Teensy, etc
  *  1.0.1   K Hoang      17/02/2020 Add support to server's lambda function calls
  *  1.0.2   K Hoang      22/02/2020 Add support to SAMD (DUE, ZERO, MKR, NANO_33_IOT, M0, Mo Pro, AdaFruit, etc) boards
+ *  1.0.3   K Hoang      03/03/2020 Add support to STM32 (STM32,F0,F1, F2, F3, F4, F7, etc) boards
  *****************************************************************************************************************************/
 
 #define DEBUG_ESP8266_AT_WEBSERVER_PORT Serial
@@ -35,6 +36,13 @@
   #define ESP8266_AT_USE_SAMD      true
 #endif
 
+#if ( defined(STM32F0) || defined(STM32F1) || defined(STM32F2) || defined(STM32F3)  ||defined(STM32F4) || defined(STM32F7) )
+  #if defined(ESP8266_AT_USE_STM32)
+    #undef ESP8266_AT_USE_STM32
+  #endif
+  #define ESP8266_AT_USE_STM32      true
+#endif
+
 #ifdef CORE_TEENSY
   // For Teensy 4.0
   #define EspSerial Serial2   //Serial2, Pin RX2 : 7, TX2 : 8
@@ -45,7 +53,7 @@
   #else
   #define BOARD_TYPE      "TEENSY 3.X"
   #endif
-  
+
 #elif defined(ESP8266_AT_USE_SAMD) 
 // For SAMD
   #define EspSerial Serial1
@@ -76,10 +84,30 @@
     #define BOARD_TYPE      "SAMD Unknown"
   #endif
 
+#elif defined(ESP8266_AT_USE_STM32) 
+// For STM32
+  #define EspSerial Serial1
+ 
+  #if defined(STM32F0)
+    #define BOARD_TYPE  "STM32F0"
+  #elif defined(STM32F1)
+    #define BOARD_TYPE  "STM32F1"
+  #elif defined(STM32F2)
+    #define BOARD_TYPE  "STM32F2"
+  #elif defined(STM32F3)
+    #define BOARD_TYPE  "STM32F3"
+  #elif defined(STM32F4)
+    #define BOARD_TYPE  "STM32F4"
+  #elif defined(STM32F7)
+    #define BOARD_TYPE  "STM32F7"  
+  #else
+    #warning STM32 unknown board selected
+    #define BOARD_TYPE  "STM32 Unknown"  
+  #endif
 #else
-  // For Mega
-  #define EspSerial Serial3
-  #define BOARD_TYPE      "AVR Mega"
+// For Mega
+#define EspSerial Serial3
+#define BOARD_TYPE      "AVR Mega"
 #endif
 
 char ssid[] = "****";        // your network SSID (name)

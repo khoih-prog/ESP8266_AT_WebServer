@@ -6,17 +6,16 @@
  * Forked and modified from ESP8266 https://github.com/esp8266/Arduino/releases
  * Built by Khoi Hoang https://github.com/khoih-prog/ESP8266_AT_WebServer
  * Licensed under MIT license
- * Version: 1.0.2
+ * Version: 1.0.3
  *
  * Version Modified By   Date      Comments
  * ------- -----------  ---------- -----------
  *  1.0.0   K Hoang      12/02/2020 Initial coding for Arduino Mega, Teensy, etc
  *  1.0.1   K Hoang      17/02/2020 Add support to server's lambda function calls
  *  1.0.2   K Hoang      22/02/2020 Add support to SAMD (DUE, ZERO, MKR, NANO_33_IOT, M0, Mo Pro, AdaFruit, etc) boards
+ *  1.0.3   K Hoang      03/03/2020 Add support to STM32 (STM32,F0,F1, F2, F3, F4, F7, etc) boards
  *****************************************************************************************************************************/
 #define DEBUG_ESP8266_AT_WEBSERVER_PORT Serial
-
-#include <ESP8266_AT_WebServer.h>
 
 #if    ( defined(ARDUINO_SAM_DUE) || defined(ARDUINO_SAMD_ZERO) || defined(ARDUINO_SAMD_MKR1000) || defined(ARDUINO_SAMD_MKRWIFI1010) \
       || defined(ARDUINO_SAMD_NANO_33_IOT) || defined(ARDUINO_SAMD_MKRFox1200) || defined(ARDUINO_SAMD_MKRWAN1300) || defined(ARDUINO_SAMD_MKRWAN1310) \
@@ -26,6 +25,13 @@
     #undef ESP8266_AT_USE_SAMD
   #endif
   #define ESP8266_AT_USE_SAMD      true
+#endif
+
+#if ( defined(STM32F0) || defined(STM32F1) || defined(STM32F2) || defined(STM32F3)  ||defined(STM32F4) || defined(STM32F7) )
+  #if defined(ESP8266_AT_USE_STM32)
+    #undef ESP8266_AT_USE_STM32
+  #endif
+  #define ESP8266_AT_USE_STM32      true
 #endif
 
 #ifdef CORE_TEENSY
@@ -38,7 +44,7 @@
   #else
   #define BOARD_TYPE      "TEENSY 3.X"
   #endif
-  
+
 #elif defined(ESP8266_AT_USE_SAMD) 
 // For SAMD
   #define EspSerial Serial1
@@ -69,11 +75,33 @@
     #define BOARD_TYPE      "SAMD Unknown"
   #endif
 
+#elif defined(ESP8266_AT_USE_STM32) 
+// For STM32
+  #define EspSerial Serial1
+ 
+  #if defined(STM32F0)
+    #define BOARD_TYPE  "STM32F0"
+  #elif defined(STM32F1)
+    #define BOARD_TYPE  "STM32F1"
+  #elif defined(STM32F2)
+    #define BOARD_TYPE  "STM32F2"
+  #elif defined(STM32F3)
+    #define BOARD_TYPE  "STM32F3"
+  #elif defined(STM32F4)
+    #define BOARD_TYPE  "STM32F4"
+  #elif defined(STM32F7)
+    #define BOARD_TYPE  "STM32F7"  
+  #else
+    #warning STM32 unknown board selected
+    #define BOARD_TYPE  "STM32 Unknown"  
+  #endif
 #else
-  // For Mega
-  #define EspSerial Serial3
-  #define BOARD_TYPE      "AVR Mega"
+// For Mega
+#define EspSerial Serial3
+#define BOARD_TYPE      "AVR Mega"
 #endif
+
+#include <ESP8266_AT_WebServer.h>
 
 char ssid[] = "****";        // your network SSID (name)
 char pass[] = "****";        // your network password
@@ -151,7 +179,7 @@ void setup(void)
   });
 
   server.on("/gif", []() {
-    #if ( defined(CORE_TEENSY) || (ESP8266_AT_USE_SAMD)  )
+    #if ( defined(CORE_TEENSY) || (ESP8266_AT_USE_SAMD) || ESP8266_AT_USE_STM32 )
     static const uint8_t gif[] = {
     #else
     static const uint8_t gif[] PROGMEM = {
@@ -164,7 +192,7 @@ void setup(void)
     };
     char gif_colored[sizeof(gif)];
 
-    #if ( defined(CORE_TEENSY) || (ESP8266_AT_USE_SAMD)  )
+    #if ( defined(CORE_TEENSY) || (ESP8266_AT_USE_SAMD) || ESP8266_AT_USE_STM32 )
     memcpy(gif_colored, gif, sizeof(gif));
     #else
     memcpy_P(gif_colored, gif, sizeof(gif));
@@ -175,7 +203,7 @@ void setup(void)
     gif_colored[17] = millis() % 256;
     gif_colored[18] = millis() % 256;
 
-    #if ( defined(CORE_TEENSY) || (ESP8266_AT_USE_SAMD)  )
+    #if ( defined(CORE_TEENSY) || (ESP8266_AT_USE_SAMD) || ESP8266_AT_USE_STM32 )
     server.send(200, (char *) "image/gif", gif_colored, sizeof(gif_colored));
     #else
     server.send_P(200, "image/gif", gif_colored, sizeof(gif_colored));

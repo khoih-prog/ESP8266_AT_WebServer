@@ -6,7 +6,7 @@
  * Forked and modified from ESP8266 https://github.com/esp8266/Arduino/releases
  * Built by Khoi Hoang https://github.com/khoih-prog/ESP8266_AT_WebServer
  * Licensed under MIT license
- * Version: 1.0.2
+ * Version: 1.0.3
  *
  * Original author:
  * @file       Esp8266WebServer.h
@@ -16,7 +16,8 @@
  * ------- -----------  ---------- -----------
  *  1.0.0   K Hoang      12/02/2020 Initial coding for Arduino Mega, Teensy, etc
  *  1.0.1   K Hoang      17/02/2020 Add support to server's lambda function calls
- *  1.0.2   K Hoang      22/02/2020 Add support to SAMD (DUE, ZERO, MKR, NANO_33_IOT, M0, Mo Pro, AdaFruit, etc) boards
+ *  1.0.2   K Hoang      22/02/2020 Add support to SAMD (DUE, ZERO, MKR, NANO_33_IOT, M0, M0 Pro, AdaFruit, etc) boards
+ *  1.0.3   K Hoang      03/03/2020 Add support to STM32 (STM32,F0,F1, F2, F3, F4, F7, etc) boards
  *****************************************************************************************************************************/
 
 #ifndef ESP8266_AT_WebServer_impl_h 
@@ -152,6 +153,8 @@ void ESP8266_AT_WebServer::handleClient() {
     return;
   }
 
+  LOGINFO(F("Client connected"));
+  
   // Wait for data from client to become available
   if (_currentStatus == HC_WAIT_READ) {
     if (!_currentClient.available()) {
@@ -166,6 +169,8 @@ void ESP8266_AT_WebServer::handleClient() {
       return;
     }
 
+    LOGINFO(F("Parsing Request"));
+    
     if (!_parseRequest(_currentClient)) {
       LOGINFO(F("Unable to parse request"));
 
@@ -173,8 +178,11 @@ void ESP8266_AT_WebServer::handleClient() {
       _currentStatus = HC_NONE;
       return;
     }
+    
     _currentClient.setTimeout(HTTP_MAX_SEND_WAIT);
     _contentLength = CONTENT_LENGTH_NOT_SET;
+    
+    LOGINFO(F("AT_WebServer::handleClient _handleRequest"));
     _handleRequest();
 
     if (!_currentClient.connected()) {
@@ -253,6 +261,9 @@ void ESP8266_AT_WebServer::_prepareHeader(String& response, int code, const char
       sendHeader("Accept-Ranges","none");
       sendHeader("Transfer-Encoding","chunked");
     }
+    
+    LOGDEBUG(F("AT_WebServer::_prepareHeader sendHeader Conn close")); 
+     
     sendHeader("Connection", "close");
 
     response += _responseHeaders;
@@ -266,7 +277,7 @@ void ESP8266_AT_WebServer::send(int code, const char* content_type, const String
     //if(code == 200 && content.length() == 0 && _contentLength == CONTENT_LENGTH_NOT_SET)
     //  _contentLength = CONTENT_LENGTH_UNKNOWN;
     
-    LOGDEBUG1(F("send1: len = "), content.length());
+    LOGDEBUG1(F("AT_WebServer::send1: len = "), content.length());
     LOGDEBUG1(F("content = "), content);  
     
     _prepareHeader(header, code, content_type, content.length());
@@ -275,6 +286,7 @@ void ESP8266_AT_WebServer::send(int code, const char* content_type, const String
     
     if (content.length())
     {
+      LOGDEBUG1(F("AT_WebServer::send1: write header = "), header);  
       //sendContent(content);
       sendContent(content, content.length());
     }
@@ -309,7 +321,7 @@ void ESP8266_AT_WebServer::send(int code, const String& content_type, const Stri
   send(code, (const char*)content_type.c_str(), content);
 }
 
-#if !( defined(CORE_TEENSY) || (ESP8266_AT_USE_SAMD) )
+#if !( defined(CORE_TEENSY) || (ESP8266_AT_USE_SAMD) || (ESP8266_AT_USE_STM32) )
 void ESP8266_AT_WebServer::send_P(int code, PGM_P content_type, PGM_P content) {
     size_t contentLength = 0;
 
@@ -373,14 +385,18 @@ void ESP8266_AT_WebServer::sendContent(const String& content) {
 void ESP8266_AT_WebServer::sendContent(const String& content, size_t size) 
 {
   const char * footer = "\r\n";
-  if(_chunked) {
+  if(_chunked) {    
     char * chunkSize = (char *)malloc(11);
     if(chunkSize){
+      LOGDEBUG(F("AT_WebServer::sendContent: _chunked"));  
+      
       sprintf(chunkSize, "%x%s", size, footer);
       _currentClient.write(chunkSize, strlen(chunkSize));
       free(chunkSize);
     }
   }
+  
+  LOGDEBUG1(F("AT_WebServer::sendContent: Client.write content: "), content);
   _currentClient.write(content.c_str(), size);
   if(_chunked){
     _currentClient.write(footer, 2);
@@ -504,10 +520,15 @@ void ESP8266_AT_WebServer::_handleRequest()
   }
   else 
   {
+    LOGWARN(F("AT_WebServer::_handleRequest handle"));
     handled = _currentHandler->handle(*this, _currentMethod, _currentUri);
     if (!handled) 
     {
       LOGWARN(F("_handleRequest failed"));
+    }
+    else
+    {
+      LOGWARN(F("AT_WebServer::_handleRequest OK"));
     }
   }
 
@@ -519,6 +540,7 @@ void ESP8266_AT_WebServer::_handleRequest()
     }
     else 
     {
+      LOGWARN(F("_handleRequest send 404"));
       send(404, "text/plain", String("Not found: ") + _currentUri);
     }
   }
