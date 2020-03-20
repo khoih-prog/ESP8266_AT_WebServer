@@ -2,6 +2,11 @@
 
 [![arduino-library-badge](https://www.ardu-badge.com/badge/ESP8266_AT_WebServer.svg?)](https://www.ardu-badge.com/ESP8266_AT_WebServer)
 
+### New Version v1.0.4
+
+1. Sync with ESP8266WebServer library of ESP8266 core v2.6.3
+2. Fix bug.
+
 ### New Version v1.0.3
 
 1. Add support to STM32 (STM32,F0,F1, F2, F3, F4, F7, etc) boards
@@ -28,8 +33,9 @@ The ESP8266_AT_Web_Server class found in `ESP8266_AT_Web_Server.h` header, is a 
 ## Prerequisite
 1. [`Arduino IDE 1.8.11 or later` for Arduino](https://www.arduino.cc/en/Main/Software)
 2. `Arduino AVR core 1.8.2 or later` for Arduino (Use Arduino Board Manager) for AVR boards
-3. [`Arduino Core for STM32 v1.8.0 or later`](https://github.com/khoih-prog/Arduino_Core_STM32) for STM32 boards
-4. [`Functional-VLPP library`](https://github.com/khoih-prog/functional-vlpp) to use server's lambda function
+3. [`Teensy core 1.51 or later`](https://www.pjrc.com/teensy/td_download.html) for Teensy (4.0, 3.6, 3.5, 3,2, 3.1, 3.0, LC) boards
+4. [`Arduino Core for STM32 v1.8.0 or later`](https://github.com/khoih-prog/Arduino_Core_STM32) for STM32 boards
+5. [`Functional-VLPP library`](https://github.com/khoih-prog/functional-vlpp) to use server's lambda function
 
 ## Installation
 
@@ -442,6 +448,10 @@ HTTP server started @ 192.168.2.107
 </svg>
 
 ```
+### New Version v1.0.4
+
+1. Sync with ESP8266WebServer library of ESP8266 core v2.6.3
+2. Fix bug.
 
 ### New Version v1.0.3
 

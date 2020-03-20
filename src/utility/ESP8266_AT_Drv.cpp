@@ -7,7 +7,7 @@
    Forked and modified from Arduino ESP8266_AT library
    Built by Khoi Hoang https://github.com/khoih-prog/ESP8266_AT_WebServer
    Licensed under MIT license
-   Version: 1.0.3
+   Version: 1.0.4
 
    Version Modified By   Date      Comments
    ------- -----------  ---------- -----------
@@ -15,6 +15,7 @@
     1.0.1   K Hoang      17/02/2020 Add support to server's lambda function calls
     1.0.2   K Hoang      22/02/2020 Add support to SAMD (DUE, ZERO, MKR, NANO_33_IOT, M0, M0 Pro, AdaFruit, etc) boards
     1.0.3   K Hoang      03/03/2020 Add support to STM32 (STM32,F0,F1, F2, F3, F4, F7, etc) boards
+    1.0.4   K Hoang      19/03/2020 Fix bug. Sync with ESP8266WebServer library of core v2.6.3
  *****************************************************************************************************************************/
 
 #include <Arduino.h>
@@ -64,7 +65,8 @@ typedef enum
 Stream *ESP8266_AT_Drv::espSerial;
 
 #ifdef CORE_TEENSY
-AT_RingBuffer ESP8266_AT_Drv::ringBuf(4096);
+//AT_RingBuffer ESP8266_AT_Drv::ringBuf(4096);
+AT_RingBuffer ESP8266_AT_Drv::ringBuf(512);
 //AT_RingBuffer ESP8266_AT_Drv::ringBuf(256);
 #else
 //AT_RingBuffer ESP8266_AT_Drv::ringBuf(32);
@@ -487,10 +489,14 @@ uint8_t ESP8266_AT_Drv::getScanNetworks()
   espSerial->println("AT+CWLAP");
 
   idx = readUntil(10000, "+CWLAP:(");
+  
+  //Serial.printf("idx = %d, NUMESPTAGS = %d\n", idx, NUMESPTAGS);
 
   while (idx == NUMESPTAGS)
   {
     _networkEncr[ssidListNum] = espSerial->parseInt();
+    
+    //Serial.printf("_networkEncr[%d] = %d\n", ssidListNum, _networkEncr[ssidListNum]);
 
     // discard , and " characters
     readUntil(1000, "\"");
@@ -506,6 +512,7 @@ uint8_t ESP8266_AT_Drv::getScanNetworks()
     readUntil(1000, ",");
 
     _networkRssi[ssidListNum] = espSerial->parseInt();
+    //Serial.printf("_networkEncr[%d] = %d\n", ssidListNum, _networkRssi[ssidListNum]);
 
     idx = readUntil(1000, "+CWLAP:(");
 
@@ -807,9 +814,9 @@ int ESP8266_AT_Drv::getDataBuf(uint8_t connId, uint8_t *buf, uint16_t bufSize)
 
 bool ESP8266_AT_Drv::sendData(uint8_t sock, const uint8_t *data, uint16_t len)
 {
-  LOGERROR1(F("AT_Drv::sendData1: socket"), sock);
-  LOGERROR1(F("AT_Drv::sendData1: len"), len);
-  LOGERROR1(F("AT_Drv::sendData1: data"), (char*) data);
+  //LOGERROR1(F("AT_Drv::sendData1: socket"), sock);
+  //LOGERROR1(F("AT_Drv::sendData1: len"), len);
+  //LOGERROR1(F("AT_Drv::sendData1: data"), (char*) data);
 
   char cmdBuf[20];
   //sprintf_P(cmdBuf, PSTR("AT+CIPSEND=%d,%u"), sock, len);
@@ -819,7 +826,7 @@ bool ESP8266_AT_Drv::sendData(uint8_t sock, const uint8_t *data, uint16_t len)
   int idx = readUntil(1000, (char *)">", false);
   if (idx != NUMESPTAGS)
   {
-    LOGERROR(F("Data packet send error (1)"));
+    //LOGERROR(F("Data packet send error (1)"));
     return false;
   }
 
@@ -828,7 +835,7 @@ bool ESP8266_AT_Drv::sendData(uint8_t sock, const uint8_t *data, uint16_t len)
   idx = readUntil(2000);
   if (idx != TAG_SENDOK)
   {
-    LOGERROR(F("Data packet send error (2)"));
+    //LOGERROR(F("Data packet send error (2)"));
     return false;
   }
 
@@ -849,7 +856,7 @@ bool ESP8266_AT_Drv::sendData(uint8_t sock, const __FlashStringHelper *data, uin
   int idx = readUntil(1000, (char *)">", false);
   if (idx != NUMESPTAGS)
   {
-    LOGERROR(F("Data packet send error (1)"));
+    //LOGERROR(F("Data packet send error (1)"));
     return false;
   }
 
@@ -869,7 +876,7 @@ bool ESP8266_AT_Drv::sendData(uint8_t sock, const __FlashStringHelper *data, uin
   idx = readUntil(2000);
   if (idx != TAG_SENDOK)
   {
-    LOGERROR(F("Data packet send error (2)"));
+    //LOGERROR(F("Data packet send error (2)"));
     return false;
   }
 
@@ -890,7 +897,7 @@ bool ESP8266_AT_Drv::sendDataUdp(uint8_t sock, const char* host, uint16_t port, 
   int idx = readUntil(1000, (char *)">", false);
   if (idx != NUMESPTAGS)
   {
-    LOGERROR(F("Data packet send error (1)"));
+    //LOGERROR(F("Data packet send error (1)"));
     return false;
   }
 
@@ -899,7 +906,7 @@ bool ESP8266_AT_Drv::sendDataUdp(uint8_t sock, const char* host, uint16_t port, 
   idx = readUntil(2000);
   if (idx != TAG_SENDOK)
   {
-    LOGERROR(F("Data packet send error (2)"));
+    //LOGERROR(F("Data packet send error (2)"));
     return false;
   }
 
@@ -1193,9 +1200,8 @@ int ESP8266_AT_Drv::readUntil(unsigned int timeout, const char* tag, bool findTa
   unsigned long start = millis();
   int ret = -1;
 
-  LOGERROR1(F("AT_Drv::readUntil, millis ="), start);
+  //LOGERROR1(F("AT_Drv::readUntil, millis ="), start);
 
-  //while ((millis() - start < timeout) and ret<0)
   while ((millis() - start < timeout) && (ret < 0) )
   {
     if (espSerial->available())
@@ -1209,7 +1215,6 @@ int ESP8266_AT_Drv::readUntil(unsigned int timeout, const char* tag, bool findTa
         if (ringBuf.endsWith(tag))
         {
           ret = NUMESPTAGS;
-          //LOGDEBUG1("xxx");
         }
       }
 

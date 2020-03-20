@@ -6,7 +6,7 @@
    Forked and modified from ESP8266 https://github.com/esp8266/Arduino/releases
    Built by Khoi Hoang https://github.com/khoih-prog/ESP8266_AT_WebServer
    Licensed under MIT license
-   Version: 1.0.3
+   Version: 1.0.4
 
    Original author:
    @file       Esp8266WebServer.h
@@ -18,10 +18,13 @@
     1.0.1   K Hoang      17/02/2020 Add support to server's lambda function calls
     1.0.2   K Hoang      22/02/2020 Add support to SAMD (DUE, ZERO, MKR, NANO_33_IOT, M0, M0 Pro, AdaFruit, etc) boards
     1.0.3   K Hoang      03/03/2020 Add support to STM32 (STM32,F0,F1, F2, F3, F4, F7, etc) boards
+    1.0.4   K Hoang      19/03/2020 Fix bug. Sync with ESP8266WebServer library of core v2.6.3
  *****************************************************************************************************************************/
 
 #ifndef ESP8266_AT_WebServer_h
 #define ESP8266_AT_WebServer_h
+
+#define USE_NEW_WEBSERVER_VERSION     true
 
 #if    ( defined(ARDUINO_SAM_DUE) || defined(ARDUINO_SAMD_ZERO) || defined(ARDUINO_SAMD_MKR1000) || defined(ARDUINO_SAMD_MKRWIFI1010) \
       || defined(ARDUINO_SAMD_NANO_33_IOT) || defined(ARDUINO_SAMD_MKRFox1200) || defined(ARDUINO_SAMD_MKRWAN1300) || defined(ARDUINO_SAMD_MKRWAN1310) \
@@ -46,19 +49,21 @@
 // To support lambda function in class
 #include <functional-vlpp.h>
 #include <ESP8266_AT.h>
+#include "utility/mimetable.h"
 
-enum HTTPMethod { HTTP_ANY, HTTP_GET, HTTP_POST, HTTP_PUT, HTTP_PATCH, HTTP_DELETE, HTTP_OPTIONS };
+enum HTTPMethod { HTTP_ANY, HTTP_GET, HTTP_HEAD, HTTP_POST, HTTP_PUT, HTTP_PATCH, HTTP_DELETE, HTTP_OPTIONS };
 enum HTTPUploadStatus { UPLOAD_FILE_START, UPLOAD_FILE_WRITE, UPLOAD_FILE_END,
                         UPLOAD_FILE_ABORTED
                       };
 enum HTTPClientStatus { HC_NONE, HC_WAIT_READ, HC_WAIT_CLOSE };
+enum HTTPAuthMethod { BASIC_AUTH, DIGEST_AUTH };
 
 #define HTTP_DOWNLOAD_UNIT_SIZE 1460
 
 #define HTTP_UPLOAD_BUFLEN 2048
 
-#define HTTP_MAX_DATA_WAIT 1000 //ms to wait for the client to send the request
-#define HTTP_MAX_POST_WAIT 1000 //ms to wait for POST data to arrive
+#define HTTP_MAX_DATA_WAIT 5000 //ms to wait for the client to send the request
+#define HTTP_MAX_POST_WAIT 5000 //ms to wait for POST data to arrive
 #define HTTP_MAX_SEND_WAIT 5000 //ms to wait for data chunk to be ACKed
 #define HTTP_MAX_CLOSE_WAIT 2000 //ms to wait for the client to close the connection
 
@@ -72,8 +77,9 @@ typedef struct {
   String  filename;
   String  name;
   String  type;
-  size_t  totalSize;    // file size
+  size_t  totalSize;    // total size of uploaded file so far
   size_t  currentSize;  // size of data currently in buf
+  size_t  contentLength; // size of entire post request, file size + headers and other request data.
   uint8_t buf[HTTP_UPLOAD_BUFLEN];
 } HTTPUpload;
 
@@ -114,10 +120,19 @@ class ESP8266_AT_WebServer
     ESP8266_AT_Client client() {
       return _currentClient;
     }
-    HTTPUpload& upload() {
+    //KH
+    #if USE_NEW_WEBSERVER_VERSION
+    HTTPUpload& upload() 
+    {
+      return *_currentUpload;
+    }
+    #else
+    HTTPUpload& upload() 
+    {
       return _currentUpload;
     }
-
+    #endif
+    
     String arg(String name);        // get request argument value by name
     String arg(int i);              // get request argument value by number
     String argName(int i);          // get request argument name by number
@@ -156,11 +171,14 @@ class ESP8266_AT_WebServer
 
     static String urlDecode(const String& text);
 
-    template<typename T> size_t streamFile(T &file, const String& contentType) {
+    template<typename T> size_t streamFile(T &file, const String& contentType) 
+    {
+      using namespace mime;
       setContentLength(file.size());
-      if (String(file.name()).endsWith(".gz") &&
-          contentType != "application/x-gzip" &&
-          contentType != "application/octet-stream") {
+      
+      //if (String(file.name()).endsWith(".gz") && contentType != "application/x-gzip" && contentType != "application/octet-stream") 
+      if (String(file.name()).endsWith(mimeTable[gz].endsWith) && contentType != mimeTable[gz].mimeType && contentType != mimeTable[none].mimeType) 
+      {
         sendHeader("Content-Encoding", "gzip");
       }
       send(200, contentType, "");
@@ -170,16 +188,26 @@ class ESP8266_AT_WebServer
   protected:
     void _addRequestHandler(RequestHandler* handler);
     void _handleRequest();
+    void _finalizeResponse();
     bool _parseRequest(ESP8266_AT_Client& client);
+    
+    //KH
+    #if USE_NEW_WEBSERVER_VERSION
+    void _parseArguments(const String& data);
+    int  _parseArgumentsPrivate(const String& data, vl::Func<void(String&,String&,const String&,int,int,int,int)> handler);
+    bool _parseForm(ESP8266_AT_Client& client, const String& boundary, uint32_t len);
+    #else
     void _parseArguments(String data);
-    static String _responseCodeToString(int code);
     bool _parseForm(ESP8266_AT_Client& client, String boundary, uint32_t len);
+    #endif
+    
+    static String _responseCodeToString(int code);    
     bool _parseFormUploadAborted();
     void _uploadWriteByte(uint8_t b);
     uint8_t _uploadReadByte(ESP8266_AT_Client& client);
     void _prepareHeader(String& response, int code, const char* content_type, size_t contentLength);
     bool _collectHeader(const char* headerName, const char* headerValue);
-
+    
     struct RequestArgument {
       String key;
       String value;
@@ -202,8 +230,18 @@ class ESP8266_AT_WebServer
 
     int              _currentArgCount;
     RequestArgument* _currentArgs;
-    HTTPUpload       _currentUpload;
+    
 
+    //KH
+    #if USE_NEW_WEBSERVER_VERSION
+    HTTPUpload* _currentUpload;
+    int              _postArgsLen;
+    RequestArgument* _postArgs;
+    
+    #else
+    HTTPUpload       _currentUpload;
+    #endif
+  
     int              _headerKeysCount;
     RequestArgument* _currentHeaders;
     size_t           _contentLength;

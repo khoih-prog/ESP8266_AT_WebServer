@@ -6,7 +6,7 @@
    Forked and modified from ESP8266 https://github.com/esp8266/Arduino/releases
    Built by Khoi Hoang https://github.com/khoih-prog/ESP8266_AT_WebServer
    Licensed under MIT license
-   Version: 1.0.3
+   Version: 1.0.4
 
    Original author:
    @file       Esp8266WebServer.h
@@ -18,6 +18,7 @@
     1.0.1   K Hoang      17/02/2020 Add support to server's lambda function calls
     1.0.2   K Hoang      22/02/2020 Add support to SAMD (DUE, ZERO, MKR, NANO_33_IOT, M0, M0 Pro, AdaFruit, etc) boards
     1.0.3   K Hoang      03/03/2020 Add support to STM32 (STM32,F0,F1, F2, F3, F4, F7, etc) boards
+    1.0.4   K Hoang      19/03/2020 Fix bug. Sync with ESP8266WebServer library of core v2.6.3
  *****************************************************************************************************************************/
 
 #ifndef ESP8266_AT_WebServer_impl_h
@@ -29,6 +30,7 @@
 #include "ESP8266_AT_WebServer.h"
 #include "utility/RequestHandlersImpl.h"
 #include "utility/ESP8266_AT_Debug.h"
+#include "utility/mimetable.h"
 
 const char * AUTHORIZATION_HEADER = "Authorization";
 
@@ -48,12 +50,16 @@ ESP8266_AT_WebServer::ESP8266_AT_WebServer(int port)
 {
 }
 
-ESP8266_AT_WebServer::~ESP8266_AT_WebServer() {
+ESP8266_AT_WebServer::~ESP8266_AT_WebServer() 
+{
   if (_currentHeaders)
     delete[]_currentHeaders;
+    
   _headerKeysCount = 0;
   RequestHandler* handler = _firstHandler;
-  while (handler) {
+  
+  while (handler) 
+  {
     RequestHandler* next = handler->next();
     delete handler;
     handler = next;
@@ -61,33 +67,42 @@ ESP8266_AT_WebServer::~ESP8266_AT_WebServer() {
   close();
 }
 
-void ESP8266_AT_WebServer::begin() {
+void ESP8266_AT_WebServer::begin() 
+{
   _currentStatus = HC_NONE;
   _server.begin();
+  
   if (!_headerKeysCount)
     collectHeaders(0, 0);
 }
 
-bool ESP8266_AT_WebServer::authenticate(const char * username, const char * password) {
-  if (hasHeader(AUTHORIZATION_HEADER)) {
+bool ESP8266_AT_WebServer::authenticate(const char * username, const char * password) 
+{
+  if (hasHeader(AUTHORIZATION_HEADER)) 
+  {
     String authReq = header(AUTHORIZATION_HEADER);
-    if (authReq.startsWith("Basic")) {
+    
+    if (authReq.startsWith("Basic")) 
+    {
       authReq = authReq.substring(6);
       authReq.trim();
       char toencodeLen = strlen(username) + strlen(password) + 1;
       char *toencode = new char[toencodeLen + 1];
-      if (toencode == NULL) {
+      if (toencode == NULL) 
+      {
         authReq = String();
         return false;
       }
       char *encoded = new char[base64_encode_expected_len(toencodeLen) + 1];
-      if (encoded == NULL) {
+      if (encoded == NULL) 
+      {
         authReq = String();
         delete[] toencode;
         return false;
       }
       sprintf(toencode, "%s:%s", username, password);
-      if (base64_encode_chars(toencode, toencodeLen, encoded) > 0 && authReq.equals(encoded)) {
+      if (base64_encode_chars(toencode, toencodeLen, encoded) > 0 && authReq.equals(encoded)) 
+      {
         authReq = String();
         delete[] toencode;
         delete[] encoded;
@@ -101,7 +116,8 @@ bool ESP8266_AT_WebServer::authenticate(const char * username, const char * pass
   return false;
 }
 
-void ESP8266_AT_WebServer::requestAuthentication() {
+void ESP8266_AT_WebServer::requestAuthentication() 
+{
   sendHeader("WWW-Authenticate", "Basic realm=\"Login Required\"");
   send(401);
 }
@@ -133,33 +149,118 @@ void ESP8266_AT_WebServer::_addRequestHandler(RequestHandler* handler) {
   }
 }
 
-void ESP8266_AT_WebServer::handleClient() {
-  if (_currentStatus == HC_NONE) {
+//KH
+#if USE_NEW_WEBSERVER_VERSION
+
+void ESP8266_AT_WebServer::handleClient() 
+{
+  if (_currentStatus == HC_NONE) 
+  {
     ESP8266_AT_Client client = _server.available();
-    if (!client) {
+    if (!client) 
+    {
       return;
     }
 
-    LOGINFO(F("New client"));
+    LOGINFO(F("New Client"));
 
     _currentClient = client;
     _currentStatus = HC_WAIT_READ;
     _statusChange = millis();
   }
 
-  if (!_currentClient.connected()) {
+  bool keepCurrentClient = false;
+  bool callYield = false;
+
+  if (_currentClient.connected() || _currentClient.available()) 
+  {
+    switch (_currentStatus) 
+    {
+    case HC_NONE:
+      // No-op to avoid C++ compiler warning
+      break;
+    case HC_WAIT_READ:
+      // Wait for data from client to become available
+      if (_currentClient.available()) 
+      {
+        if (_parseRequest(_currentClient)) 
+        {
+          _currentClient.setTimeout(HTTP_MAX_SEND_WAIT);
+          _contentLength = CONTENT_LENGTH_NOT_SET;
+          _handleRequest();
+
+          if (_currentClient.connected()) 
+          {
+            _currentStatus = HC_WAIT_CLOSE;
+            _statusChange = millis();
+            keepCurrentClient = true;
+          }
+        }
+      } 
+      else 
+      { // !_currentClient.available()
+        if (millis() - _statusChange <= HTTP_MAX_DATA_WAIT) 
+        {
+          keepCurrentClient = true;
+        }
+        callYield = true;
+      }
+      break;
+    case HC_WAIT_CLOSE:
+      // Wait for client to close the connection
+      if (millis() - _statusChange <= HTTP_MAX_CLOSE_WAIT) 
+      {
+        keepCurrentClient = true;
+        callYield = true;
+      }
+    }
+  }
+
+  if (!keepCurrentClient) 
+  {
+    _currentClient = ESP8266_AT_Client();
+    _currentStatus = HC_NONE;
+    //KH
+    //_currentUpload.reset();
+  }
+
+  if (callYield) 
+  {
+    yield();
+  }
+  
+#else
+
+void ESP8266_AT_WebServer::handleClient() 
+{
+  if (_currentStatus == HC_NONE) 
+  {
+    ESP8266_AT_Client client = _server.available();
+    if (!client) 
+    {
+      return;
+    }
+
+    LOGINFO(F("New Client"));
+
+    _currentClient = client;
+    _currentStatus = HC_WAIT_READ;
+    _statusChange = millis();
+  }
+  if (!_currentClient.connected()) 
+  {
     _currentClient = ESP8266_AT_Client();
     _currentStatus = HC_NONE;
     return;
   }
 
-  LOGINFO(F("Client connected"));
-
   // Wait for data from client to become available
-  if (_currentStatus == HC_WAIT_READ) {
-    if (!_currentClient.available()) {
-      if (millis() - _statusChange > HTTP_MAX_DATA_WAIT) {
-
+  if (_currentStatus == HC_WAIT_READ) 
+  {
+    if (!_currentClient.available()) 
+    {
+      if (millis() - _statusChange > HTTP_MAX_DATA_WAIT) 
+      {
         LOGINFO(F("HTTP_MAX_DATA_WAIT Timeout"));
 
         _currentClient = ESP8266_AT_Client();
@@ -171,8 +272,9 @@ void ESP8266_AT_WebServer::handleClient() {
 
     LOGINFO(F("Parsing Request"));
 
-    if (!_parseRequest(_currentClient)) {
-      LOGINFO(F("Unable to parse request"));
+    if (!_parseRequest(_currentClient)) 
+    {
+      LOGINFO(F("Can't parse request"));
 
       _currentClient = ESP8266_AT_Client();
       _currentStatus = HC_NONE;
@@ -182,80 +284,103 @@ void ESP8266_AT_WebServer::handleClient() {
     _currentClient.setTimeout(HTTP_MAX_SEND_WAIT);
     _contentLength = CONTENT_LENGTH_NOT_SET;
 
-    LOGINFO(F("AT_WebServer::handleClient _handleRequest"));
+    //LOGINFO(F("AT_WebServer::handleClient _handleRequest"));
     _handleRequest();
 
-    if (!_currentClient.connected()) {
+    if (!_currentClient.connected()) 
+    {
       LOGINFO(F("Connection closed"));
 
       _currentClient = ESP8266_AT_Client();
       _currentStatus = HC_NONE;
       return;
-    } else {
+    } 
+    else 
+    {
       _currentStatus = HC_WAIT_CLOSE;
       _statusChange = millis();
       return;
     }
   }
 
-  if (_currentStatus == HC_WAIT_CLOSE) {
-    if (millis() - _statusChange > HTTP_MAX_CLOSE_WAIT) {
+  if (_currentStatus == HC_WAIT_CLOSE) 
+  {
+    if (millis() - _statusChange > HTTP_MAX_CLOSE_WAIT) 
+    {
       _currentClient = ESP8266_AT_Client();
       _currentStatus = HC_NONE;
 
       LOGINFO(F("HTTP_MAX_CLOSE_WAIT Timeout"));
 
       yield();
-    } else {
+    } 
+    else 
+    {
       yield();
       return;
     }
   }
+#endif
 }
 
-void ESP8266_AT_WebServer::close() {
+void ESP8266_AT_WebServer::close() 
+{
   // TODO: Write close method for ESP8266_AT library and uncomment this
   //_server.close();
 }
 
-void ESP8266_AT_WebServer::stop() {
+void ESP8266_AT_WebServer::stop() 
+{
   close();
 }
 
-void ESP8266_AT_WebServer::sendHeader(const String& name, const String& value, bool first) {
+void ESP8266_AT_WebServer::sendHeader(const String& name, const String& value, bool first) 
+{
   String headerLine = name;
   headerLine += ": ";
   headerLine += value;
   headerLine += "\r\n";
 
-  if (first) {
+  if (first) 
+  {
     _responseHeaders = headerLine + _responseHeaders;
   }
-  else {
+  else 
+  {
     _responseHeaders += headerLine;
   }
 }
 
-void ESP8266_AT_WebServer::setContentLength(size_t contentLength) {
+void ESP8266_AT_WebServer::setContentLength(size_t contentLength) 
+{
   _contentLength = contentLength;
 }
 
-void ESP8266_AT_WebServer::_prepareHeader(String& response, int code, const char* content_type, size_t contentLength) {
+void ESP8266_AT_WebServer::_prepareHeader(String& response, int code, const char* content_type, size_t contentLength) 
+{
   response = "HTTP/1." + String(_currentVersion) + " ";
   response += String(code);
   response += " ";
   response += _responseCodeToString(code);
   response += "\r\n";
 
+  using namespace mime;
   if (!content_type)
-    content_type = "text/html";
+      content_type = mimeTable[html].mimeType;
+  //if (!content_type)
+  //  content_type = "text/html";
 
   sendHeader("Content-Type", content_type, true);
-  if (_contentLength == CONTENT_LENGTH_NOT_SET) {
+  if (_contentLength == CONTENT_LENGTH_NOT_SET) 
+  {
     sendHeader("Content-Length", String(contentLength));
-  } else if (_contentLength != CONTENT_LENGTH_UNKNOWN) {
+  } 
+  else if (_contentLength != CONTENT_LENGTH_UNKNOWN) 
+  {
     sendHeader("Content-Length", String(_contentLength));
-  } else if (_contentLength == CONTENT_LENGTH_UNKNOWN && _currentVersion) { //HTTP/1.1 or above client
+  } 
+  else if (_contentLength == CONTENT_LENGTH_UNKNOWN && _currentVersion) 
+  { //HTTP/1.1 or above client
     //let's do chunked
     _chunked = true;
     sendHeader("Accept-Ranges", "none");
@@ -271,7 +396,8 @@ void ESP8266_AT_WebServer::_prepareHeader(String& response, int code, const char
   _responseHeaders = String();
 }
 
-void ESP8266_AT_WebServer::send(int code, const char* content_type, const String& content) {
+void ESP8266_AT_WebServer::send(int code, const char* content_type, const String& content) 
+{
   String header;
   // Can we asume the following?
   //if(code == 200 && content.length() == 0 && _contentLength == CONTENT_LENGTH_NOT_SET)
@@ -307,25 +433,30 @@ void ESP8266_AT_WebServer::send(int code, char* content_type, const String& cont
   LOGDEBUG1(F("header = "), header);
 
   _currentClient.write((const uint8_t *) header.c_str(), header.length());
+  
   if (contentLength)
   {
     sendContent(content, contentLength);
   }
 }
 
-void ESP8266_AT_WebServer::send(int code, char* content_type, const String& content) {
+void ESP8266_AT_WebServer::send(int code, char* content_type, const String& content) 
+{
   send(code, (const char*)content_type, content);
 }
 
-void ESP8266_AT_WebServer::send(int code, const String& content_type, const String& content) {
+void ESP8266_AT_WebServer::send(int code, const String& content_type, const String& content) 
+{
   send(code, (const char*)content_type.c_str(), content);
 }
 
 #if !( defined(CORE_TEENSY) || (ESP8266_AT_USE_SAMD) || (ESP8266_AT_USE_STM32) )
-void ESP8266_AT_WebServer::send_P(int code, PGM_P content_type, PGM_P content) {
+void ESP8266_AT_WebServer::send_P(int code, PGM_P content_type, PGM_P content) 
+{
   size_t contentLength = 0;
 
-  if (content != NULL) {
+  if (content != NULL) 
+  {
     contentLength = strlen_P(content);
   }
 
@@ -520,7 +651,7 @@ void ESP8266_AT_WebServer::_handleRequest()
   }
   else
   {
-    LOGWARN(F("AT_WebServer::_handleRequest handle"));
+    //LOGWARN(F("AT_WebServer::_handleRequest handle"));
     handled = _currentHandler->handle(*this, _currentMethod, _currentUri);
     if (!handled)
     {
@@ -532,20 +663,29 @@ void ESP8266_AT_WebServer::_handleRequest()
     }
   }
 
-  if (!handled)
+  if (!handled && _notFoundHandler) 
   {
-    if (_notFoundHandler)
-    {
-      _notFoundHandler();
-    }
-    else
-    {
-      LOGWARN(F("_handleRequest send 404"));
-      send(404, "text/plain", String("Not found: ") + _currentUri);
-    }
+    _notFoundHandler();
+    handled = true;
   }
-
+  if (!handled) {
+    using namespace mime;
+    send(404, mimeTable[html].mimeType, String("Not found: ") + _currentUri);
+    handled = true;
+  }
+  if (handled) {
+    _finalizeResponse();
+  }
+  
   _currentUri = String();
+}
+
+void ESP8266_AT_WebServer::_finalizeResponse() 
+{
+  if (_chunked) 
+  {
+    sendContent(String());
+  }
 }
 
 String ESP8266_AT_WebServer::_responseCodeToString(int code) {

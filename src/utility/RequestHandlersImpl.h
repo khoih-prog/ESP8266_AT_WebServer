@@ -7,7 +7,7 @@
    Forked and modified from Arduino ESP8266_AT library
    Built by Khoi Hoang https://github.com/khoih-prog/ESP8266_AT_WebServer
    Licensed under MIT license
-   Version: 1.0.3
+   Version: 1.0.4
 
    Version Modified By   Date      Comments
    ------- -----------  ---------- -----------
@@ -15,12 +15,14 @@
     1.0.1   K Hoang      17/02/2020 Add support to server's lambda function calls
     1.0.2   K Hoang      22/02/2020 Add support to SAMD (DUE, ZERO, MKR, NANO_33_IOT, M0, M0 Pro, AdaFruit, etc) boards
     1.0.3   K Hoang      03/03/2020 Add support to STM32 (STM32,F0,F1, F2, F3, F4, F7, etc) boards
+    1.0.4   K Hoang      19/03/2020 Fix bug. Sync with ESP8266WebServer library of core v2.6.3
  *****************************************************************************************************************************/
 
 #ifndef RequestHandlerImpl_h
 #define RequestHandlerImpl_h
 
 #include "RequestHandler.h"
+#include "mimetable.h"
 
 class FunctionRequestHandler : public RequestHandler {
   public:
@@ -32,7 +34,8 @@ class FunctionRequestHandler : public RequestHandler {
     {
     }
 
-    bool canHandle(HTTPMethod requestMethod, String requestUri) override  {
+    bool canHandle(HTTPMethod requestMethod, String requestUri) override  
+    {
       if (_method != HTTP_ANY && _method != requestMethod)
         return false;
 
@@ -50,14 +53,18 @@ class FunctionRequestHandler : public RequestHandler {
       return false;
     }
 
-    bool canUpload(String requestUri) override  {
+    bool canUpload(String requestUri) override  
+    {
       if (!_ufn || !canHandle(HTTP_POST, requestUri))
         return false;
 
       return true;
     }
 
-    bool handle(ESP8266_AT_WebServer& server, HTTPMethod requestMethod, String requestUri) override {
+    bool handle(ESP8266_AT_WebServer& server, HTTPMethod requestMethod, String requestUri) override 
+    {
+      (void) server;
+      
       if (!canHandle(requestMethod, requestUri))
         return false;
 
@@ -69,7 +76,11 @@ class FunctionRequestHandler : public RequestHandler {
       return true;
     }
 
-    void upload(ESP8266_AT_WebServer& server, String requestUri, HTTPUpload& upload) override {
+    void upload(ESP8266_AT_WebServer& server, String requestUri, HTTPUpload& upload) override 
+    {
+      (void) server;
+      (void) upload;
+        
       if (canUpload(requestUri))
         _ufn();
     }
@@ -81,11 +92,14 @@ class FunctionRequestHandler : public RequestHandler {
     HTTPMethod _method;
 };
 
-class StaticRequestHandler : public RequestHandler {
+class StaticRequestHandler : public RequestHandler 
+{
   public:
 
-    bool canHandle(HTTPMethod requestMethod, String requestUri) override  {
-      if (requestMethod != HTTP_GET)
+    bool canHandle(HTTPMethod requestMethod, String requestUri) override  
+    {
+      //if (requestMethod != HTTP_GET)
+      if ((requestMethod != HTTP_GET) && (requestMethod != HTTP_HEAD))
         return false;
 
       if ((_isFile && requestUri != _uri) || !requestUri.startsWith(_uri))
@@ -94,6 +108,27 @@ class StaticRequestHandler : public RequestHandler {
       return true;
     }
 
+    #if USE_NEW_WEBSERVER_VERSION
+    
+    static String getContentType(const String& path) 
+    {
+        using namespace mime;
+        char buff[sizeof(mimeTable[0].mimeType)];
+        // Check all entries but last one for match, return if found
+        for (size_t i=0; i < sizeof(mimeTable)/sizeof(mimeTable[0])-1; i++) 
+        {
+            strcpy(buff, mimeTable[i].endsWith);
+            if (path.endsWith(buff)) {
+                strcpy(buff, mimeTable[i].mimeType);
+                return String(buff);
+            }
+        }
+        // Fall-through and just return default type
+        strcpy(buff, mimeTable[sizeof(mimeTable)/sizeof(mimeTable[0])-1].mimeType);
+        return String(buff);
+    }
+    
+    #else
     static String getContentType(const String& path) {
       if (path.endsWith(".html")) return "text/html";
       else if (path.endsWith(".htm")) return "text/html";
@@ -118,7 +153,9 @@ class StaticRequestHandler : public RequestHandler {
       else if (path.endsWith(".appcache")) return "text/cache-manifest";
       return "application/octet-stream";
     }
-
+  #endif
+  
+  
   protected:
     String _uri;
     String _path;
