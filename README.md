@@ -5,7 +5,8 @@
 [![GitHub](https://img.shields.io/github/license/mashape/apistatus.svg)](https://github.com/khoih-prog/ESP8266_AT_WebServer/blob/master/LICENSE)
 [![contributions welcome](https://img.shields.io/badge/contributions-welcome-brightgreen.svg?style=flat)](#github)
 [![GitHub issues](https://img.shields.io/github/issues/khoih-prog/ESP8266_AT_WebServer.svg)](http://github.com/JoaoLopesF/RemoteDebug/issues)
-[![star this repo](http://githubbadges.com/star.svg?user=khoih-prog&repo=ESP8266_AT_WebServer)](http://github.com/khoih-prog/ESP8266_AT_WebServer)
+[![star this repo](https://githubbadges.com/star.svg?user=khoih-prog&repo=ESP8266_AT_WebServer&style=default)](https://github.com/khoih-prog/ESP8266_AT_WebServer)
+[![fork this repo](https://githubbadges.com/fork.svg?user=khoih-prog&repo=ESP8266_AT_WebServer&style=default)](https://github.com/khoih-prog/ESP8266_AT_WebServer/fork)
 
 ### New Version v1.0.5
 
