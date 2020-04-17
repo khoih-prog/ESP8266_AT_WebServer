@@ -4,11 +4,11 @@
 [![GitHub release](https://img.shields.io/github/release/khoih-prog/ESP8266_AT_WebServer.svg)](#releases)
 [![GitHub](https://img.shields.io/github/license/mashape/apistatus.svg)](https://github.com/khoih-prog/ESP8266_AT_WebServer/blob/master/LICENSE)
 [![contributions welcome](https://img.shields.io/badge/contributions-welcome-brightgreen.svg?style=flat)](#github)
-[![GitHub issues](https://img.shields.io/github/issues/khoih-prog/ESP8266_AT_WebServer.svg)](http://github.com/JoaoLopesF/RemoteDebug/issues)
+[![GitHub issues](https://img.shields.io/github/issues/khoih-prog/ESP8266_AT_WebServer.svg)](http://github.com/khoih-prog/ESP8266_AT_WebServer/issues)
 
 ### New Version v1.0.5
 
-1. Add support to ***SAM51 (Itsy-Bitsy M4, Metro M4, Grand Central M4, Feather M4 Express, etc.)***.
+1. Add support to ***SAM51 (Itsy-Bitsy M4, Metro M4, Grand Central M4, Feather M4 Express, etc.) and SAM DUE***.
 
 ### New Version v1.0.4
 
@@ -17,11 +17,11 @@
 
 ### New Version v1.0.3
 
-1. Add support to STM32 (STM32,F0,F1, F2, F3, F4, F7, etc) boards
+1. Add support to STM32 (STM32F0, F1, F2, F3, F4, F7, etc) boards
 
 ### New Version v1.0.2
 
-1. Add support to SAMD (DUE, ZERO, MKR, NANO_33_IOT, M0, M0 Pro, AdaFruit CIRCUITPLAYGROUND_EXPRESS, etc.) boards
+1. Add support to SAMD (ZERO, MKR, ***NANO_33_IOT***, M0, M0 Pro, AdaFruit CIRCUITPLAYGROUND_EXPRESS, etc.) boards
 
 This is simple yet complete WebServer library for `AVR, Teensy, SAM DUE, SAMD, STM32, etc.` boards running `ESP8266 AT-command` shields. The functions are similar and compatible to ESP8266/ESP32 WebServer libraries to make life much easier to port sketches from ESP8266/ESP32.
 
@@ -246,6 +246,13 @@ Please take a look at other examples, as well.
 #define ESP8266_AT_USE_SAMD      true
 #endif
 
+#if ( defined(ARDUINO_SAM_DUE) || defined(__SAM3X8E__) )
+#if defined(ESP8266_AT_USE_SAM_DUE)
+#undef ESP8266_AT_USE_SAM_DUE
+#endif
+#define ESP8266_AT_USE_SAM_DUE      true
+#endif
+
 #if ( defined(STM32F0) || defined(STM32F1) || defined(STM32F2) || defined(STM32F3)  ||defined(STM32F4) || defined(STM32F7) )
 #if defined(ESP8266_AT_USE_STM32)
 #undef ESP8266_AT_USE_STM32
@@ -310,6 +317,11 @@ Please take a look at other examples, as well.
 #define BOARD_TYPE      "SAMD Unknown"
 #endif
 
+#elif defined(ESP8266_AT_USE_SAM_DUE)
+// For SAM DUE
+#define EspSerial Serial1
+#define BOARD_TYPE      "SAM DUE"
+
 #elif defined(ESP8266_AT_USE_STM32)
 // For STM32
 #define EspSerial Serial1
@@ -330,6 +342,7 @@ Please take a look at other examples, as well.
 #warning STM32 unknown board selected
 #define BOARD_TYPE  "STM32 Unknown"
 #endif
+
 #else
 // For Mega
 #define EspSerial Serial3
@@ -477,7 +490,7 @@ HTTP server started @ 192.168.2.107
 ```
 ### New Version v1.0.5
 
-1. Add support to ***SAM51 (Itsy-Bitsy M4, Metro M4, Grand Central M4, Feather M4 Express, etc.)***.
+1. Add support to ***SAM51 (Itsy-Bitsy M4, Metro M4, Grand Central M4, Feather M4 Express, etc.)and SAM DUE***.
 
 ### New Version v1.0.4
 
@@ -486,11 +499,11 @@ HTTP server started @ 192.168.2.107
 
 ### New Version v1.0.3
 
-1. Add support to STM32 (STM32,F0,F1, F2, F3, F4, F7, etc) boards
+1. Add support to STM32 (STM32F0, F1, F2, F3, F4, F7, etc) boards
 
 ### Version v1.0.2
 
-1. Add support to SAMD (DUE, ZERO, MKR, NANO_33_IOT, M0, Mo Pro, AdaFruit CIRCUITPLAYGROUND_EXPRESS, etc.) boards
+1. Add support to SAMD (ZERO, MKR, ***NANO_33_IOT***, M0, Mo Pro, AdaFruit CIRCUITPLAYGROUND_EXPRESS, etc.) boards
 
 ### Version v1.0.1
 

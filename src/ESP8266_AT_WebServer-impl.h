@@ -19,7 +19,7 @@
     1.0.2   K Hoang      22/02/2020 Add support to SAMD (DUE, ZERO, MKR, NANO_33_IOT, M0, M0 Pro, AdaFruit, etc) boards
     1.0.3   K Hoang      03/03/2020 Add support to STM32 (STM32,F0,F1, F2, F3, F4, F7, etc) boards
     1.0.4   K Hoang      19/03/2020 Fix bug. Sync with ESP8266WebServer library of core v2.6.3
-    1.0.5   K Hoang      17/04/2020 Add support to SAMD51 boards
+    1.0.5   K Hoang      17/04/2020 Add support to SAMD51 and SAM DUE boards
  *****************************************************************************************************************************/
 
 #ifndef ESP8266_AT_WebServer_impl_h
@@ -451,7 +451,7 @@ void ESP8266_AT_WebServer::send(int code, const String& content_type, const Stri
   send(code, (const char*)content_type.c_str(), content);
 }
 
-#if !( defined(CORE_TEENSY) || (ESP8266_AT_USE_SAMD) || (ESP8266_AT_USE_STM32) )
+#if !( defined(CORE_TEENSY) || (ESP8266_AT_USE_SAMD) || (ESP8266_AT_USE_STM32) || ESP8266_AT_USE_SAM_DUE )
 void ESP8266_AT_WebServer::send_P(int code, PGM_P content_type, PGM_P content) 
 {
   size_t contentLength = 0;

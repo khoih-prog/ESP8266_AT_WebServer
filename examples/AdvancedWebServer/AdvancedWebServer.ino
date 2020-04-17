@@ -45,7 +45,7 @@
     1.0.2   K Hoang      22/02/2020 Add support to SAMD (DUE, ZERO, MKR, NANO_33_IOT, M0, Mo Pro, AdaFruit, etc) boards
     1.0.3   K Hoang      03/03/2020 Add support to STM32 (STM32,F0,F1, F2, F3, F4, F7, etc) boards
     1.0.4   K Hoang      19/03/2020 Fix bug. Sync with ESP8266WebServer library of core v2.6.3
-    1.0.5   K Hoang      17/04/2020 Add support to SAMD51 boards
+    1.0.5   K Hoang      17/04/2020 Add support to SAMD51 and SAM DUE boards
  *****************************************************************************************************************************/
 #define DEBUG_ESP8266_AT_WEBSERVER_PORT Serial
 
@@ -58,6 +58,13 @@
 #undef ESP8266_AT_USE_SAMD
 #endif
 #define ESP8266_AT_USE_SAMD      true
+#endif
+
+#if ( defined(ARDUINO_SAM_DUE) || defined(__SAM3X8E__) )
+#if defined(ESP8266_AT_USE_SAM_DUE)
+#undef ESP8266_AT_USE_SAM_DUE
+#endif
+#define ESP8266_AT_USE_SAM_DUE      true
 #endif
 
 #if ( defined(STM32F0) || defined(STM32F1) || defined(STM32F2) || defined(STM32F3)  ||defined(STM32F4) || defined(STM32F7) )
@@ -124,6 +131,11 @@
 #define BOARD_TYPE      "SAMD Unknown"
 #endif
 
+#elif defined(ESP8266_AT_USE_SAM_DUE)
+// For SAM DUE
+#define EspSerial Serial1
+#define BOARD_TYPE      "SAM DUE"
+
 #elif defined(ESP8266_AT_USE_STM32)
 // For STM32
 #define EspSerial Serial1
@@ -144,6 +156,7 @@
 #warning STM32 unknown board selected
 #define BOARD_TYPE  "STM32 Unknown"
 #endif
+
 #else
 // For Mega
 #define EspSerial Serial3

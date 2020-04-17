@@ -38,6 +38,13 @@
 #define ESP8266_AT_USE_SAMD      true
 #endif
 
+#if ( defined(ARDUINO_SAM_DUE) || defined(__SAM3X8E__) )
+#if defined(ESP8266_AT_USE_SAM_DUE)
+#undef ESP8266_AT_USE_SAM_DUE
+#endif
+#define ESP8266_AT_USE_SAM_DUE      true
+#endif
+
 #if ( defined(STM32F0) || defined(STM32F1) || defined(STM32F2) || defined(STM32F3)  ||defined(STM32F4) || defined(STM32F7) )
 #if defined(ESP8266_AT_USE_STM32)
 #undef ESP8266_AT_USE_STM32
@@ -102,6 +109,11 @@
 #define BOARD_TYPE      "SAMD Unknown"
 #endif
 
+#elif defined(ESP8266_AT_USE_SAM_DUE)
+// For SAM DUE
+#define EspSerial Serial1
+#define BOARD_TYPE      "SAM DUE"
+
 #elif defined(ESP8266_AT_USE_STM32)
 // For STM32
 #define EspSerial Serial1
@@ -122,6 +134,7 @@
 #warning STM32 unknown board selected
 #define BOARD_TYPE  "STM32 Unknown"
 #endif
+
 #else
 // For Mega
 #define EspSerial Serial3
