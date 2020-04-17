@@ -1,35 +1,36 @@
 /****************************************************************************************************************************
- * UdpNTPClient.ino - Simple Arduino web server sample for ESP8266 AT-command shield
- * For ESP8266 AT-command running shields
- *
- * ESP8266_AT_WebServer is a library for the ESP8266 AT-command shields to run WebServer
- * Forked and modified from ESP8266 https://github.com/esp8266/Arduino/releases
- * Built by Khoi Hoang https://github.com/khoih-prog/ESP8266_AT_WebServer
- * Licensed under MIT license
- * Version: 1.0.4
- * 
- * Get the time from a Network Time Protocol (NTP) time server.
- * Demonstrates use of UDP to send and receive data packets
- * For more on NTP time servers and the messages needed to communicate with them,
- * see http://en.wikipedia.org/wiki/Network_Time_Protocol
- *
- * NOTE: The serial buffer size must be larger than 36 + packet size
- * In this example we use an UDP packet of 48 bytes so the buffer must be
- * at least 36+48=84 bytes that exceeds the default buffer size (64).
- *   
- * You must modify the serial buffer size to 128
- * For HardwareSerial modify _SS_MAX_RX_BUFF in
- * Arduino\hardware\arduino\avr\cores\arduino\HardwareSerial.h
- * For SoftwareSerial modify _SS_MAX_RX_BUFF in
- * Arduino\hardware\arduino\avr\libraries\SoftwareSerial\SoftwareSerial.h
- *
- * Version Modified By   Date      Comments
- * ------- -----------  ---------- -----------
- *  1.0.0   K Hoang      12/02/2020 Initial coding for Arduino Mega, Teensy, etc
- *  1.0.1   K Hoang      17/02/2020 Add support to server's lambda function calls
- *  1.0.2   K Hoang      22/02/2020 Add support to SAMD (DUE, ZERO, MKR, NANO_33_IOT, M0, Mo Pro, AdaFruit, etc) boards
- *  1.0.3   K Hoang      03/03/2020 Add support to STM32 (STM32,F0,F1, F2, F3, F4, F7, etc) boards
- *  1.0.4   K Hoang      19/03/2020 Fix bug. Sync with ESP8266WebServer library of core v2.6.3
+   UdpNTPClient.ino - Simple Arduino web server sample for ESP8266 AT-command shield
+   For ESP8266 AT-command running shields
+
+   ESP8266_AT_WebServer is a library for the ESP8266 AT-command shields to run WebServer
+   Forked and modified from ESP8266 https://github.com/esp8266/Arduino/releases
+   Built by Khoi Hoang https://github.com/khoih-prog/ESP8266_AT_WebServer
+   Licensed under MIT license
+   Version: 1.0.5
+
+   Get the time from a Network Time Protocol (NTP) time server.
+   Demonstrates use of UDP to send and receive data packets
+   For more on NTP time servers and the messages needed to communicate with them,
+   see http://en.wikipedia.org/wiki/Network_Time_Protocol
+
+   NOTE: The serial buffer size must be larger than 36 + packet size
+   In this example we use an UDP packet of 48 bytes so the buffer must be
+   at least 36+48=84 bytes that exceeds the default buffer size (64).
+
+   You must modify the serial buffer size to 128
+   For HardwareSerial modify _SS_MAX_RX_BUFF in
+   Arduino\hardware\arduino\avr\cores\arduino\HardwareSerial.h
+   For SoftwareSerial modify _SS_MAX_RX_BUFF in
+   Arduino\hardware\arduino\avr\libraries\SoftwareSerial\SoftwareSerial.h
+
+   Version Modified By   Date      Comments
+   ------- -----------  ---------- -----------
+    1.0.0   K Hoang      12/02/2020 Initial coding for Arduino Mega, Teensy, etc
+    1.0.1   K Hoang      17/02/2020 Add support to server's lambda function calls
+    1.0.2   K Hoang      22/02/2020 Add support to SAMD (DUE, ZERO, MKR, NANO_33_IOT, M0, Mo Pro, AdaFruit, etc) boards
+    1.0.3   K Hoang      03/03/2020 Add support to STM32 (STM32,F0,F1, F2, F3, F4, F7, etc) boards
+    1.0.4   K Hoang      19/03/2020 Fix bug. Sync with ESP8266WebServer library of core v2.6.3
+    1.0.5   K Hoang      17/04/2020 Add support to SAMD51 boards
  *****************************************************************************************************************************/
 
 #define DEBUG_ESP8266_AT_WEBSERVER_PORT Serial
@@ -37,84 +38,101 @@
 #include "ESP8266_AT.h"
 #include "ESP8266_AT_Udp.h"
 
-#if    ( defined(ARDUINO_SAM_DUE) || defined(ARDUINO_SAMD_ZERO) || defined(ARDUINO_SAMD_MKR1000) || defined(ARDUINO_SAMD_MKRWIFI1010) \
+#if    ( defined(ARDUINO_SAMD_ZERO) || defined(ARDUINO_SAMD_MKR1000) || defined(ARDUINO_SAMD_MKRWIFI1010) \
       || defined(ARDUINO_SAMD_NANO_33_IOT) || defined(ARDUINO_SAMD_MKRFox1200) || defined(ARDUINO_SAMD_MKRWAN1300) || defined(ARDUINO_SAMD_MKRWAN1310) \
       || defined(ARDUINO_SAMD_MKRGSM1400) || defined(ARDUINO_SAMD_MKRNB1500) || defined(ARDUINO_SAMD_MKRVIDOR4000) || defined(__SAMD21G18A__) \
-      || defined(ARDUINO_SAMD_CIRCUITPLAYGROUND_EXPRESS) || defined(__SAM3X8E__) || defined(__CPU_ARC__) )      
-  #if defined(ESP8266_AT_USE_SAMD)
-    #undef ESP8266_AT_USE_SAMD
-  #endif
-  #define ESP8266_AT_USE_SAMD      true
+      || defined(ARDUINO_SAMD_CIRCUITPLAYGROUND_EXPRESS) || defined(__SAMD21E18A__) || defined(__SAMD51__) || defined(__SAMD51J20A__) || defined(__SAMD51J19A__) \
+      || defined(__SAMD51G19A__) || defined(__SAMD21G18A__) )
+#if defined(ESP8266_AT_USE_SAMD)
+#undef ESP8266_AT_USE_SAMD
+#endif
+#define ESP8266_AT_USE_SAMD      true
 #endif
 
 #if ( defined(STM32F0) || defined(STM32F1) || defined(STM32F2) || defined(STM32F3)  ||defined(STM32F4) || defined(STM32F7) )
-  #if defined(ESP8266_AT_USE_STM32)
-    #undef ESP8266_AT_USE_STM32
-  #endif
-  #define ESP8266_AT_USE_STM32      true
+#if defined(ESP8266_AT_USE_STM32)
+#undef ESP8266_AT_USE_STM32
+#endif
+#define ESP8266_AT_USE_STM32      true
 #endif
 
 #ifdef CORE_TEENSY
-  // For Teensy 4.0
-  #define EspSerial Serial2   //Serial2, Pin RX2 : 7, TX2 : 8
-  #if defined(__IMXRT1062__)
-  #define BOARD_TYPE      "TEENSY 4.0"
-  #elif ( defined(__MKL26Z64__) || defined(ARDUINO_ARCH_AVR) )
-  #define BOARD_TYPE      "TEENSY LC or 2.0"
-  #else
-  #define BOARD_TYPE      "TEENSY 3.X"
-  #endif
+// For Teensy 4.0
+#define EspSerial Serial2   //Serial2, Pin RX2 : 7, TX2 : 8
+#if defined(__IMXRT1062__)
+#define BOARD_TYPE      "TEENSY 4.0"
+#elif ( defined(__MKL26Z64__) || defined(ARDUINO_ARCH_AVR) )
+#define BOARD_TYPE      "TEENSY LC or 2.0"
+#else
+#define BOARD_TYPE      "TEENSY 3.X"
+#endif
 
-#elif defined(ESP8266_AT_USE_SAMD) 
+#elif defined(ESP8266_AT_USE_SAMD)
 // For SAMD
-  #define EspSerial Serial1
-  
-  #if defined(ARDUINO_SAMD_ZERO)
-    #define BOARD_TYPE      "SAMD Zero"
-  #elif defined(ARDUINO_SAMD_MKR1000)
-    #define BOARD_TYPE      "SAMD MKR1000"    
-  #elif defined(ARDUINO_SAMD_MKRWIFI1010)
-    #define BOARD_TYPE      "SAMD MKRWIFI1010"
-  #elif defined(ARDUINO_SAMD_NANO_33_IOT)
-    #define BOARD_TYPE      "SAMD NANO_33_IOT"  
-  #elif defined(ARDUINO_SAMD_MKRFox1200)
-    #define BOARD_TYPE      "SAMD MKRFox1200"
-  #elif ( defined(ARDUINO_SAMD_MKRWAN1300) || defined(ARDUINO_SAMD_MKRWAN1310) )
-    #define BOARD_TYPE      "SAMD MKRWAN13X0"
-  #elif defined(ARDUINO_SAMD_MKRGSM1400)
-    #define BOARD_TYPE      "SAMD MKRGSM1400"
-  #elif defined(ARDUINO_SAMD_MKRNB1500)
-    #define BOARD_TYPE      "SAMD MKRNB1500"
-  #elif defined(ARDUINO_SAMD_MKRVIDOR4000)
-    #define BOARD_TYPE      "SAMD MKRVIDOR4000"
-  #elif defined(ARDUINO_SAMD_CIRCUITPLAYGROUND_EXPRESS)
-    #define BOARD_TYPE      "SAMD ARDUINO_SAMD_CIRCUITPLAYGROUND_EXPRESS"  
-  #elif ( defined(__SAM3X8E__) || (__SAM3X8E__) || (__CPU_ARC__) )
-    #define BOARD_TYPE      "SAMD Board"
-  #else
-    #define BOARD_TYPE      "SAMD Unknown"
-  #endif
+#define EspSerial Serial1
 
-#elif defined(ESP8266_AT_USE_STM32) 
+#if defined(ARDUINO_SAMD_ZERO)
+#define BOARD_TYPE      "SAMD Zero"
+#elif defined(ARDUINO_SAMD_MKR1000)
+#define BOARD_TYPE      "SAMD MKR1000"
+#elif defined(ARDUINO_SAMD_MKRWIFI1010)
+#define BOARD_TYPE      "SAMD MKRWIFI1010"
+#elif defined(ARDUINO_SAMD_NANO_33_IOT)
+#define BOARD_TYPE      "SAMD NANO_33_IOT"
+#elif defined(ARDUINO_SAMD_MKRFox1200)
+#define BOARD_TYPE      "SAMD MKRFox1200"
+#elif ( defined(ARDUINO_SAMD_MKRWAN1300) || defined(ARDUINO_SAMD_MKRWAN1310) )
+#define BOARD_TYPE      "SAMD MKRWAN13X0"
+#elif defined(ARDUINO_SAMD_MKRGSM1400)
+#define BOARD_TYPE      "SAMD MKRGSM1400"
+#elif defined(ARDUINO_SAMD_MKRNB1500)
+#define BOARD_TYPE      "SAMD MKRNB1500"
+#elif defined(ARDUINO_SAMD_MKRVIDOR4000)
+#define BOARD_TYPE      "SAMD MKRVIDOR4000"
+#elif defined(ARDUINO_SAMD_CIRCUITPLAYGROUND_EXPRESS)
+#define BOARD_TYPE      "SAMD ARDUINO_SAMD_CIRCUITPLAYGROUND_EXPRESS"
+#elif defined(ADAFRUIT_ITSYBITSY_M4_EXPRESS)
+#define BOARD_TYPE      "SAMD ADAFRUIT_ITSYBITSY_M4_EXPRESS"
+#elif defined(__SAMD21E18A__)
+#define BOARD_TYPE      "SAMD21E18A"
+#elif defined(__SAMD21G18A__)
+#define BOARD_TYPE      "SAMD21G18A"
+#elif defined(__SAMD51G19A__)
+#define BOARD_TYPE      "SAMD51G19A"
+#elif defined(__SAMD51J19A__)
+#define BOARD_TYPE      "SAMD51J19A"
+#elif defined(__SAMD51J20A__)
+#define BOARD_TYPE      "SAMD51J20A"
+#elif defined(__SAM3X8E__)
+#define BOARD_TYPE      "SAM3X8E"
+#elif defined(__CPU_ARC__)
+#define BOARD_TYPE      "CPU_ARC"
+#elif defined(__SAMD51__)
+#define BOARD_TYPE      "SAMD51"
+#else
+#define BOARD_TYPE      "SAMD Unknown"
+#endif
+
+#elif defined(ESP8266_AT_USE_STM32)
 // For STM32
-  #define EspSerial Serial1
- 
-  #if defined(STM32F0)
-    #define BOARD_TYPE  "STM32F0"
-  #elif defined(STM32F1)
-    #define BOARD_TYPE  "STM32F1"
-  #elif defined(STM32F2)
-    #define BOARD_TYPE  "STM32F2"
-  #elif defined(STM32F3)
-    #define BOARD_TYPE  "STM32F3"
-  #elif defined(STM32F4)
-    #define BOARD_TYPE  "STM32F4"
-  #elif defined(STM32F7)
-    #define BOARD_TYPE  "STM32F7"  
-  #else
-    #warning STM32 unknown board selected
-    #define BOARD_TYPE  "STM32 Unknown"  
-  #endif
+#define EspSerial Serial1
+
+#if defined(STM32F0)
+#define BOARD_TYPE  "STM32F0"
+#elif defined(STM32F1)
+#define BOARD_TYPE  "STM32F1"
+#elif defined(STM32F2)
+#define BOARD_TYPE  "STM32F2"
+#elif defined(STM32F3)
+#define BOARD_TYPE  "STM32F3"
+#elif defined(STM32F4)
+#define BOARD_TYPE  "STM32F4"
+#elif defined(STM32F7)
+#define BOARD_TYPE  "STM32F7"
+#else
+#warning STM32 unknown board selected
+#define BOARD_TYPE  "STM32 Unknown"
+#endif
 #else
 // For Mega
 #define EspSerial Serial3
@@ -131,7 +149,7 @@ unsigned int localPort    = 2390;             // local port to listen for UDP pa
 
 const int NTP_PACKET_SIZE = 48;       // NTP timestamp is in the first 48 bytes of the message
 const int UDP_TIMEOUT     = 2000;     // timeout in miliseconds to wait for an UDP packet to arrive
-  
+
 byte packetBuffer[NTP_PACKET_SIZE];   // buffer to hold incoming and outgoing packets
 
 // A UDP instance to let us send and receive packets over UDP
@@ -167,7 +185,7 @@ void sendNTPpacket(char *ntpSrv)
 void setup()
 {
   Serial.begin(115200);
-  
+
   // initialize serial for ESP module
   EspSerial.begin(115200);
 
@@ -196,21 +214,21 @@ void setup()
   // you're connected now, so print out the data
   Serial.print(F("You're connected to the network, IP = "));
   Serial.println(WiFi.localIP());
-  
+
   Udp.begin(localPort);
 }
 
 void loop()
 {
   sendNTPpacket(timeServer); // send an NTP packet to a time server
-  
+
   // wait for a reply for UDP_TIMEOUT miliseconds
   unsigned long startMs = millis();
   while (!Udp.available() && (millis() - startMs) < UDP_TIMEOUT) {}
 
   Serial.println(Udp.parsePacket());
-  
-  if (Udp.parsePacket()) 
+
+  if (Udp.parsePacket())
   {
     Serial.println(F("UDP Packet received"));
     // We've received a packet, read the data from it into the buffer
@@ -221,7 +239,7 @@ void loop()
 
     unsigned long highWord = word(packetBuffer[40], packetBuffer[41]);
     unsigned long lowWord = word(packetBuffer[42], packetBuffer[43]);
-    
+
     // combine the four bytes (two words) into a long integer
     // this is NTP time (seconds since Jan 1 1900):
     unsigned long secsSince1900 = highWord << 16 | lowWord;

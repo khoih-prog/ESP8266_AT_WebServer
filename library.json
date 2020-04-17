@@ -1,13 +1,28 @@
 {
   "name": "ESP8266_AT_WebServer",
-  "keywords": "wifi, wi-fi, WebServer, AT, ESP8266, Teensy, AVR, SAM DUE, SAMD, STM32, ESP8266 shield",
-  "description": "Simple WebServer library for AVR, Teensy, SAM DUE, SAMD, STM32 boards running ESP8266 AT-command shields",
+  "version": "1.0.5",
+  "keywords": "wifi, wi-fi, WebServer, AT, ESP8266, Teensy, AVR, SAM DUE, SAMD21, SAMD51, STM32, ESP8266 shield",
+  "description": "Simple WebServer library for AVR, Teensy, SAM DUE, SAMD21, SAMD51, STM32 boards running ESP8266 AT-command shields",
+  "authors":
+  {
+    "name":  "Khoi Hoang",
+    "url":   "https://github.com/khoih-prog",
+    "maintainer": true
+  },    
   "repository":
   {
     "type": "git",
     "url": "https://github.com/khoih-prog/ESP8266_AT_WebServer"
   },
-  "frameworks": "arduino",
-  "platforms": "avr, teensy",
-  "version": "1.0.4"
+  "homepage": "https://github.com/khoih-prog/ESP8266_AT_WebServer",
+  "export": {
+    "exclude": [
+      "linux",
+      "extras",
+      "tests"
+    ]
+  },    
+  "frameworks": "*",
+  "platforms": "*",
+  "examples": "examples/*/*/*.ino"
 }

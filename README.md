@@ -1,6 +1,15 @@
 ## ESP8266_AT_WebServer
 
 [![arduino-library-badge](https://www.ardu-badge.com/badge/ESP8266_AT_WebServer.svg?)](https://www.ardu-badge.com/ESP8266_AT_WebServer)
+[![GitHub release](https://img.shields.io/github/release/khoih-prog/ESP8266_AT_WebServer.svg)](#releases)
+[![GitHub](https://img.shields.io/github/license/mashape/apistatus.svg)](https://github.com/khoih-prog/ESP8266_AT_WebServer/blob/master/LICENSE)
+[![contributions welcome](https://img.shields.io/badge/contributions-welcome-brightgreen.svg?style=flat)](#github)
+[![GitHub issues](https://img.shields.io/github/issues/khoih-prog/ESP8266_AT_WebServer.svg)](http://github.com/JoaoLopesF/RemoteDebug/issues)
+[![star this repo](http://githubbadges.com/star.svg?user=khoih-prog&repo=ESP8266_AT_WebServer)](http://github.com/khoih-prog/ESP8266_AT_WebServer)
+
+### New Version v1.0.5
+
+1. Add support to ***SAM51 (Itsy-Bitsy M4, Metro M4, Grand Central M4, Feather M4 Express, etc.)***.
 
 ### New Version v1.0.4
 
@@ -31,11 +40,13 @@ Library is based on and modified from:
 The ESP8266_AT_Web_Server class found in `ESP8266_AT_Web_Server.h` header, is a simple web server that knows how to handle HTTP requests such as GET and POST and can only support one simultaneous client.
 
 ## Prerequisite
-1. [`Arduino IDE 1.8.11 or later` for Arduino](https://www.arduino.cc/en/Main/Software)
-2. `Arduino AVR core 1.8.2 or later` for Arduino (Use Arduino Board Manager) for AVR boards
-3. [`Teensy core 1.51 or later`](https://www.pjrc.com/teensy/td_download.html) for Teensy (4.0, 3.6, 3.5, 3,2, 3.1, 3.0, LC) boards
-4. [`Arduino Core for STM32 v1.8.0 or later`](https://github.com/khoih-prog/Arduino_Core_STM32) for STM32 boards
-5. [`Functional-VLPP library`](https://github.com/khoih-prog/functional-vlpp) to use server's lambda function
+ 1. [`Arduino IDE 1.8.12 or later` for Arduino](https://www.arduino.cc/en/Main/Software)
+ 2. [`Arduino Core for STM32 v1.8.0 or later`](https://github.com/khoih-prog/Arduino_Core_STM32) for STM32 boards
+ 3. [`Teensy core 1.51 or later`](https://www.pjrc.com/teensy/td_download.html) for Teensy (4.0, 3.6, 3.5, 3,2, 3.1, 3.0, LC) boards
+ 4. [`Arduino SAM DUE core 1.6.12 or later`](https://www.arduino.cc/en/Guide/ArduinoDue) for SAM DUE ARM Cortex-M3 boards
+ 5. [`Arduino SAMD core 1.8.5 or later`](https://www.arduino.cc/en/Guide/ArduinoM0) for SAMD ARM Cortex-M0+ boards
+ 6. [`Adafruit SAMD core 1.5.11 or later`](https://www.adafruit.com/) for SAMD ARM Cortex-M0+ and M4 boards (Nano 33 IoT, etc.)
+ 7. [`Functional-VLPP library`](https://github.com/khoih-prog/functional-vlpp) to use server's lambda function. To install. check [![arduino-library-badge](https://www.ardu-badge.com/badge/Functional-Vlpp.svg?)](https://www.ardu-badge.com/Functional-Vlpp)
 
 ## Installation
 
@@ -219,90 +230,107 @@ Also see examples:
 14. [WebServerAP](examples/WebServerAP)
 
 
-## Example
-Please take a look at examples, as well.
+## Example [HelloServer](examples/HelloServer)
+Please take a look at other examples, as well.
 
 ```cpp
 #define DEBUG_ESP8266_AT_WEBSERVER_PORT Serial
 
-#if    ( defined(ARDUINO_SAM_DUE) || defined(ARDUINO_SAMD_ZERO) || defined(ARDUINO_SAMD_MKR1000) || defined(ARDUINO_SAMD_MKRWIFI1010) \
+#if    ( defined(ARDUINO_SAMD_ZERO) || defined(ARDUINO_SAMD_MKR1000) || defined(ARDUINO_SAMD_MKRWIFI1010) \
       || defined(ARDUINO_SAMD_NANO_33_IOT) || defined(ARDUINO_SAMD_MKRFox1200) || defined(ARDUINO_SAMD_MKRWAN1300) || defined(ARDUINO_SAMD_MKRWAN1310) \
       || defined(ARDUINO_SAMD_MKRGSM1400) || defined(ARDUINO_SAMD_MKRNB1500) || defined(ARDUINO_SAMD_MKRVIDOR4000) || defined(__SAMD21G18A__) \
-      || defined(ARDUINO_SAMD_CIRCUITPLAYGROUND_EXPRESS) || defined(__SAM3X8E__) || defined(__CPU_ARC__) )
-  #if defined(ESP8266_AT_USE_SAMD)
-    #undef ESP8266_AT_USE_SAMD
-  #endif
-  #define ESP8266_AT_USE_SAMD      true
+      || defined(ARDUINO_SAMD_CIRCUITPLAYGROUND_EXPRESS) || defined(__SAMD21E18A__) || defined(__SAMD51__) || defined(__SAMD51J20A__) || defined(__SAMD51J19A__) \
+      || defined(__SAMD51G19A__) || defined(__SAMD21G18A__) )
+#if defined(ESP8266_AT_USE_SAMD)
+#undef ESP8266_AT_USE_SAMD
+#endif
+#define ESP8266_AT_USE_SAMD      true
 #endif
 
 #if ( defined(STM32F0) || defined(STM32F1) || defined(STM32F2) || defined(STM32F3)  ||defined(STM32F4) || defined(STM32F7) )
-  #if defined(ESP8266_AT_USE_STM32)
-    #undef ESP8266_AT_USE_STM32
-  #endif
-  #define ESP8266_AT_USE_STM32      true
+#if defined(ESP8266_AT_USE_STM32)
+#undef ESP8266_AT_USE_STM32
+#endif
+#define ESP8266_AT_USE_STM32      true
 #endif
 
 #ifdef CORE_TEENSY
-  // For Teensy 4.0
-  #define EspSerial Serial2   //Serial2, Pin RX2 : 7, TX2 : 8
-  #if defined(__IMXRT1062__)
-  #define BOARD_TYPE      "TEENSY 4.0"
-  #elif ( defined(__MKL26Z64__) || defined(ARDUINO_ARCH_AVR) )
-  #define BOARD_TYPE      "TEENSY LC or 2.0"
-  #else
-  #define BOARD_TYPE      "TEENSY 3.X"
-  #endif
+// For Teensy 4.0
+#define EspSerial Serial2   //Serial2, Pin RX2 : 7, TX2 : 8
+#if defined(__IMXRT1062__)
+#define BOARD_TYPE      "TEENSY 4.0"
+#elif ( defined(__MKL26Z64__) || defined(ARDUINO_ARCH_AVR) )
+#define BOARD_TYPE      "TEENSY LC or 2.0"
+#else
+#define BOARD_TYPE      "TEENSY 3.X"
+#endif
 
-#elif defined(ESP8266_AT_USE_SAMD) 
+#elif defined(ESP8266_AT_USE_SAMD)
 // For SAMD
-  #define EspSerial Serial1
-  
-  #if defined(ARDUINO_SAMD_ZERO)
-    #define BOARD_TYPE      "SAMD Zero"
-  #elif defined(ARDUINO_SAMD_MKR1000)
-    #define BOARD_TYPE      "SAMD MKR1000"
-  #elif defined(ARDUINO_SAMD_MKRWIFI1010)
-    #define BOARD_TYPE      "SAMD MKRWIFI1010"
-  #elif defined(ARDUINO_SAMD_NANO_33_IOT)
-    #define BOARD_TYPE      "SAMD NANO_33_IOT"
-  #elif defined(ARDUINO_SAMD_MKRFox1200)
-    #define BOARD_TYPE      "SAMD MKRFox1200"
-  #elif ( defined(ARDUINO_SAMD_MKRWAN1300) || defined(ARDUINO_SAMD_MKRWAN1310) )
-    #define BOARD_TYPE      "SAMD MKRWAN13X0"
-  #elif defined(ARDUINO_SAMD_MKRGSM1400)
-    #define BOARD_TYPE      "SAMD MKRGSM1400"
-  #elif defined(ARDUINO_SAMD_MKRNB1500)
-    #define BOARD_TYPE      "SAMD MKRNB1500"
-  #elif defined(ARDUINO_SAMD_MKRVIDOR4000)
-    #define BOARD_TYPE      "SAMD MKRVIDOR4000"
-  #elif defined(ARDUINO_SAMD_CIRCUITPLAYGROUND_EXPRESS)
-    #define BOARD_TYPE      "SAMD ARDUINO_SAMD_CIRCUITPLAYGROUND_EXPRESS"
-  #elif ( defined(__SAM3X8E__) || (__SAM3X8E__) || (__CPU_ARC__) )
-    #define BOARD_TYPE      "SAMD Board"
-  #else
-    #define BOARD_TYPE      "SAMD Unknown"
-  #endif
+#define EspSerial Serial1
 
-#elif defined(ESP8266_AT_USE_STM32) 
+#if defined(ARDUINO_SAMD_ZERO)
+#define BOARD_TYPE      "SAMD Zero"
+#elif defined(ARDUINO_SAMD_MKR1000)
+#define BOARD_TYPE      "SAMD MKR1000"
+#elif defined(ARDUINO_SAMD_MKRWIFI1010)
+#define BOARD_TYPE      "SAMD MKRWIFI1010"
+#elif defined(ARDUINO_SAMD_NANO_33_IOT)
+#define BOARD_TYPE      "SAMD NANO_33_IOT"
+#elif defined(ARDUINO_SAMD_MKRFox1200)
+#define BOARD_TYPE      "SAMD MKRFox1200"
+#elif ( defined(ARDUINO_SAMD_MKRWAN1300) || defined(ARDUINO_SAMD_MKRWAN1310) )
+#define BOARD_TYPE      "SAMD MKRWAN13X0"
+#elif defined(ARDUINO_SAMD_MKRGSM1400)
+#define BOARD_TYPE      "SAMD MKRGSM1400"
+#elif defined(ARDUINO_SAMD_MKRNB1500)
+#define BOARD_TYPE      "SAMD MKRNB1500"
+#elif defined(ARDUINO_SAMD_MKRVIDOR4000)
+#define BOARD_TYPE      "SAMD MKRVIDOR4000"
+#elif defined(ARDUINO_SAMD_CIRCUITPLAYGROUND_EXPRESS)
+#define BOARD_TYPE      "SAMD ARDUINO_SAMD_CIRCUITPLAYGROUND_EXPRESS"
+#elif defined(ADAFRUIT_ITSYBITSY_M4_EXPRESS)
+#define BOARD_TYPE      "SAMD ADAFRUIT_ITSYBITSY_M4_EXPRESS"
+#elif defined(__SAMD21E18A__)
+#define BOARD_TYPE      "SAMD21E18A"
+#elif defined(__SAMD21G18A__)
+#define BOARD_TYPE      "SAMD21G18A"
+#elif defined(__SAMD51G19A__)
+#define BOARD_TYPE      "SAMD51G19A"
+#elif defined(__SAMD51J19A__)
+#define BOARD_TYPE      "SAMD51J19A"
+#elif defined(__SAMD51J20A__)
+#define BOARD_TYPE      "SAMD51J20A"
+#elif defined(__SAM3X8E__)
+#define BOARD_TYPE      "SAM3X8E"
+#elif defined(__CPU_ARC__)
+#define BOARD_TYPE      "CPU_ARC"
+#elif defined(__SAMD51__)
+#define BOARD_TYPE      "SAMD51"
+#else
+#define BOARD_TYPE      "SAMD Unknown"
+#endif
+
+#elif defined(ESP8266_AT_USE_STM32)
 // For STM32
-  #define EspSerial Serial1
- 
-  #if defined(STM32F0)
-    #define BOARD_TYPE  "STM32F0"
-  #elif defined(STM32F1)
-    #define BOARD_TYPE  "STM32F1"
-  #elif defined(STM32F2)
-    #define BOARD_TYPE  "STM32F2"
-  #elif defined(STM32F3)
-    #define BOARD_TYPE  "STM32F3"
-  #elif defined(STM32F4)
-    #define BOARD_TYPE  "STM32F4"
-  #elif defined(STM32F7)
-    #define BOARD_TYPE  "STM32F7"
-  #else
-    #warning STM32 unknown board selected
-    #define BOARD_TYPE  "STM32 Unknown"
-  #endif
+#define EspSerial Serial1
+
+#if defined(STM32F0)
+#define BOARD_TYPE  "STM32F0"
+#elif defined(STM32F1)
+#define BOARD_TYPE  "STM32F1"
+#elif defined(STM32F2)
+#define BOARD_TYPE  "STM32F2"
+#elif defined(STM32F3)
+#define BOARD_TYPE  "STM32F3"
+#elif defined(STM32F4)
+#define BOARD_TYPE  "STM32F4"
+#elif defined(STM32F7)
+#define BOARD_TYPE  "STM32F7"
+#else
+#warning STM32 unknown board selected
+#define BOARD_TYPE  "STM32 Unknown"
+#endif
 #else
 // For Mega
 #define EspSerial Serial3
@@ -321,7 +349,7 @@ ESP8266_AT_WebServer server(80);
 
 const int led = 13;
 
-void handleRoot() 
+void handleRoot()
 {
   server.send(200, "text/plain", "Hello from ESP8266_AT_WebServer!");
 }
@@ -332,11 +360,11 @@ void handleNotFound()
   message += "URI: ";
   message += server.uri();
   message += "\nMethod: ";
-  message += (server.method() == HTTP_GET)?"GET":"POST";
+  message += (server.method() == HTTP_GET) ? "GET" : "POST";
   message += "\nArguments: ";
   message += server.args();
   message += "\n";
-  for (uint8_t i=0; i<server.args(); i++)
+  for (uint8_t i = 0; i < server.args(); i++)
   {
     message += " " + server.argName(i) + ": " + server.arg(i) + "\n";
   }
@@ -355,9 +383,9 @@ void setup(void)
   WiFi.init(&EspSerial);
 
   Serial.println("\nStarting HelloServer on " + String(BOARD_TYPE));
-  
+
   // check for the presence of the shield
-  if (WiFi.status() == WL_NO_SHIELD) 
+  if (WiFi.status() == WL_NO_SHIELD)
   {
     Serial.println(F("WiFi shield not present"));
     // don't continue
@@ -365,16 +393,16 @@ void setup(void)
   }
 
   // attempt to connect to WiFi network
-  while ( status != WL_CONNECTED) 
+  while ( status != WL_CONNECTED)
   {
     Serial.print(F("Connecting to WPA SSID: "));
     Serial.println(ssid);
     // Connect to WPA/WPA2 network
     status = WiFi.begin(ssid, pass);
   }
-  
+
   server.begin();
-  
+
   Serial.print("WebServer is @ ");
   Serial.println(WiFi.localIP());
 
@@ -448,6 +476,10 @@ HTTP server started @ 192.168.2.107
 </svg>
 
 ```
+### New Version v1.0.5
+
+1. Add support to ***SAM51 (Itsy-Bitsy M4, Metro M4, Grand Central M4, Feather M4 Express, etc.)***.
+
 ### New Version v1.0.4
 
 1. Sync with ESP8266WebServer library of ESP8266 core v2.6.3
@@ -483,8 +515,8 @@ The library supports
 
 
 ### Contributions and thanks
-1. Forked from [Ivan Grokhotkov's ESP8266WebServer](https://github.com/esp8266/Arduino/tree/master/libraries/ESP8266WebServer)
-2. Forked from [bportaluri's WiFiEsp library](https://github.com/bportaluri/WiFiEsp)
+1. Based on and modified [Ivan Grokhotkov's ESP8266WebServer](https://github.com/esp8266/Arduino/tree/master/libraries/ESP8266WebServer)
+2. Based on and modified from [bportaluri's WiFiEsp library](https://github.com/bportaluri/WiFiEsp)
 
 ## Contributing
 
