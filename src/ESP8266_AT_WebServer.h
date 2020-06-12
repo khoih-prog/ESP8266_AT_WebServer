@@ -6,7 +6,7 @@
    Based on and modified from ESP8266 https://github.com/esp8266/Arduino/releases
    Built by Khoi Hoang https://github.com/khoih-prog/ESP8266_AT_WebServer
    Licensed under MIT license
-   Version: 1.0.5
+   Version: 1.0.6
 
    Original author:
    @file       Esp8266WebServer.h
@@ -20,6 +20,8 @@
     1.0.3   K Hoang      03/03/2020 Add support to STM32 (STM32,F0,F1, F2, F3, F4, F7, etc) boards
     1.0.4   K Hoang      19/03/2020 Fix bug. Sync with ESP8266WebServer library of core v2.6.3
     1.0.5   K Hoang      17/04/2020 Add support to SAMD51 and SAM DUE boards
+    1.0.6   K Hoang      11/06/2020 Add support to nRF52 boards, such as AdaFruit Feather nRF52832, nRF52840 Express, BlueFruit Sense, 
+                                    Itsy-Bitsy nRF52840 Express, Metro nRF52840 Express, NINA_B30_ublox, etc. 
  *****************************************************************************************************************************/
 
 #ifndef ESP8266_AT_WebServer_h
@@ -37,6 +39,16 @@
 #endif
 #define ESP8266_AT_USE_SAMD      true
 #warning Use SAMD architecture from ESP8266_AT_WebServer
+#endif
+
+#if ( defined(NRF52840_FEATHER) || defined(NRF52832_FEATHER) || defined(NRF52_SERIES) || defined(ARDUINO_NRF52_ADAFRUIT) || \
+      defined(NRF52840_FEATHER_SENSE) || defined(NRF52840_ITSYBITSY) || defined(NRF52840_CIRCUITPLAY) || defined(NRF52840_CLUE) || \
+      defined(NRF52840_METRO) || defined(NRF52840_PCA10056) || defined(PARTICLE_XENON) || defined(NINA_B302_ublox) || defined(NINA_B112_ublox) )
+#if defined(ESP8266_AT_USE_NRF528XX)
+#undef ESP8266_AT_USE_NRF528XX
+#endif
+#define ESP8266_AT_USE_NRF528XX      true
+#warning Use nFR52 architecture from ESP8266_AT_WebServer
 #endif
 
 #if ( defined(ARDUINO_SAM_DUE) || defined(__SAM3X8E__) )
@@ -167,7 +179,7 @@ class ESP8266_AT_WebServer
     //KH
     void send(int code, char*  content_type, const String& content, size_t contentLength);
 
-#if !( defined(CORE_TEENSY) || (ESP8266_AT_USE_SAMD) || (ESP8266_AT_USE_STM32) || ESP8266_AT_USE_SAM_DUE )
+#if !( defined(CORE_TEENSY) || (ESP8266_AT_USE_SAMD) || (ESP8266_AT_USE_STM32) || (ESP8266_AT_USE_SAM_DUE) || (ESP8266_AT_USE_NRF528XX) )
     void send_P(int code, PGM_P content_type, PGM_P content);
     void send_P(int code, PGM_P content_type, PGM_P content, size_t contentLength);
 #endif
