@@ -28,6 +28,8 @@
 
 1. Add support to SAMD (ZERO, MKR, ***NANO_33_IOT***, M0, M0 Pro, AdaFruit CIRCUITPLAYGROUND_EXPRESS, etc.) boards
 
+---
+
 This is simple yet complete WebServer library for `AVR, Teensy, SAM DUE, SAMD, STM32, etc.` boards running `ESP8266 AT-command` shields. The functions are similar and compatible to ESP8266/ESP32 WebServer libraries to make life much easier to port sketches from ESP8266/ESP32.
 
 The library supports 
@@ -43,6 +45,8 @@ Library is based on and modified from:
 
 The ESP8266_AT_Web_Server class found in `ESP8266_AT_Web_Server.h` header, is a simple web server that knows how to handle HTTP requests such as GET and POST and can only support one simultaneous client.
 
+---
+
 ## Prerequisite
  1. [`Arduino IDE 1.8.12 or later` for Arduino](https://www.arduino.cc/en/Main/Software)
  2. [`Arduino Core for STM32 v1.8.0 or later`](https://github.com/khoih-prog/Arduino_Core_STM32) for STM32 boards
@@ -50,7 +54,8 @@ The ESP8266_AT_Web_Server class found in `ESP8266_AT_Web_Server.h` header, is a 
  4. [`Arduino SAM DUE core 1.6.12 or later`](https://www.arduino.cc/en/Guide/ArduinoDue) for SAM DUE ARM Cortex-M3 boards
  5. [`Arduino SAMD core 1.8.5 or later`](https://www.arduino.cc/en/Guide/ArduinoM0) for SAMD ARM Cortex-M0+ boards
  6. [`Adafruit SAMD core 1.5.11 or later`](https://www.adafruit.com/) for SAMD ARM Cortex-M0+ and M4 boards (Nano 33 IoT, etc.)
- 7. [`Functional-VLPP library`](https://github.com/khoih-prog/functional-vlpp) to use server's lambda function. To install. check [![arduino-library-badge](https://www.ardu-badge.com/badge/Functional-Vlpp.svg?)](https://www.ardu-badge.com/Functional-Vlpp)
+ 7. [`Adafruit nRF52 v0.20.1 or later`](www.adafruit.com) for nRF52 boards such as AdaFruit Feather nRF52840 Express, NINA_B302_ublox, etc.
+ 8. [`Functional-VLPP library`](https://github.com/khoih-prog/functional-vlpp) to use server's lambda function. To install. check [![arduino-library-badge](https://www.ardu-badge.com/badge/Functional-Vlpp.svg?)](https://www.ardu-badge.com/Functional-Vlpp)
 
 ## Installation
 
@@ -66,6 +71,7 @@ You can also use this link [![arduino-library-badge](https://www.ardu-badge.com/
 4. Copy whole 
   - `ESP8266_AT_WebServer-master` folder to Arduino libraries' directory such as `~/Arduino/libraries/`.
 
+---
 
 #### Usage
 
@@ -216,6 +222,7 @@ Example:*
   size_t streamFile();
 ```
 
+---
 
 Also see examples: 
  1. [HelloServer](examples/HelloServer)
@@ -535,6 +542,8 @@ HTTP server started @ 192.168.2.107
 
 ```
 
+---
+
 ### New Version v1.0.6
 
 1. Add support to ***nRF52*** boards, such as ***AdaFruit Feather nRF52832, nRF52840 Express, BlueFruit Sense, Itsy-Bitsy nRF52840 Express, Metro nRF52840 Express, NINA_B30_ublox, NINA_B112_ublox, etc.*** 
@@ -570,6 +579,8 @@ The library supports
 3. UDP Server and Client
 4. HTTP Server and Client
 5. HTTP GET and POST requests, provides argument parsing, handles one client at a time.
+
+---
 
 ## TO DO
 1. Bug Searching and Killing
