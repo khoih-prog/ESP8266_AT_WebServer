@@ -1,8 +1,8 @@
 {
   "name": "ESP8266_AT_WebServer",
-  "version": "1.0.6",
-  "keywords": "wifi, wi-fi, WebServer, AT, ESP8266, Teensy, AVR, SAM DUE, SAMD21, SAMD51, STM32, nRF52, ESP8266 shield",
-  "description": "Simple WebServer library for AVR, Teensy, SAM DUE, SAMD21, SAMD51, STM32, nRF52 boards running ESP8266 AT-command shields",
+  "version": "1.0.7",
+  "keywords": "wifi, WebServer, AT, ESP8266, ESP32, Teensy, AVR, SAM DUE, SAMD21, SAMD51, STM32, nRF52, ESP8266 shield",
+  "description": "Simple WebServer library for AVR, Teensy, SAM DUE, SAMD21, SAMD51, STM32, nRF52 boards running ESP8266/ESP32 AT-command shields",
   "authors":
   {
     "name":  "Khoi Hoang",

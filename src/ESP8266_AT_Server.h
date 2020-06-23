@@ -1,12 +1,12 @@
 /****************************************************************************************************************************
    ESP8266_AT_Server.h - Dead simple web-server.
-   For ESP8266 AT-command running shields
+   For ESP8266/ESP32 AT-command running shields
 
-   ESP8266_AT_WebServer is a library for the ESP8266 AT-command shields to run WebServer
-   Based on and modified from ESP8266 https://github.com/esp8266/Arduino/releases
+   ESP8266_AT_WebServer is a library for the ESP8266/ESP32 AT-command shields to run WebServer
+   Forked and modified from ESP8266 https://github.com/esp8266/Arduino/releases
    Built by Khoi Hoang https://github.com/khoih-prog/ESP8266_AT_WebServer
    Licensed under MIT license
-   Version: 1.0.6
+   Version: 1.0.7
 
    Original author:
    @file       Esp8266WebServer.h
@@ -21,7 +21,8 @@
     1.0.4   K Hoang      19/03/2020 Fix bug. Sync with ESP8266WebServer library of core v2.6.3
     1.0.5   K Hoang      17/04/2020 Add support to SAMD51 and SAM DUE boards
     1.0.6   K Hoang      11/06/2020 Add support to nRF52 boards, such as AdaFruit Feather nRF52832, nRF52840 Express, BlueFruit Sense, 
-                                    Itsy-Bitsy nRF52840 Express, Metro nRF52840 Express, NINA_B30_ublox, etc. 
+                                    Itsy-Bitsy nRF52840 Express, Metro nRF52840 Express, NINA_B302_ublox, NINA_B112_ublox, etc.
+    1.0.7   K Hoang      23/06/2020 Add support to ESP32-AT. Update deprecated ESP8266-AT commands. Restructure examples. 
  *****************************************************************************************************************************/
 
 #ifndef ESP8266_AT_Server_h

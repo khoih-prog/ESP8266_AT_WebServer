@@ -1,12 +1,12 @@
 /****************************************************************************************************************************
    ESP8266_AT_WebServer.h - Dead simple web-server.
-   For ESP8266 AT-command running shields
+   For ESP8266/ESP32 AT-command running shields
 
-   ESP8266_AT_WebServer is a library for the ESP8266 AT-command shields to run WebServer
-   Based on and modified from ESP8266 https://github.com/esp8266/Arduino/releases
+   ESP8266_AT_WebServer is a library for the ESP8266/ESP32 AT-command shields to run WebServer
+   Forked and modified from ESP8266 https://github.com/esp8266/Arduino/releases
    Built by Khoi Hoang https://github.com/khoih-prog/ESP8266_AT_WebServer
    Licensed under MIT license
-   Version: 1.0.6
+   Version: 1.0.7
 
    Original author:
    @file       Esp8266WebServer.h
@@ -21,13 +21,37 @@
     1.0.4   K Hoang      19/03/2020 Fix bug. Sync with ESP8266WebServer library of core v2.6.3
     1.0.5   K Hoang      17/04/2020 Add support to SAMD51 and SAM DUE boards
     1.0.6   K Hoang      11/06/2020 Add support to nRF52 boards, such as AdaFruit Feather nRF52832, nRF52840 Express, BlueFruit Sense, 
-                                    Itsy-Bitsy nRF52840 Express, Metro nRF52840 Express, NINA_B30_ublox, etc. 
+                                    Itsy-Bitsy nRF52840 Express, Metro nRF52840 Express, NINA_B302_ublox, NINA_B112_ublox, etc.
+    1.0.7   K Hoang      23/06/2020 Add support to ESP32-AT. Update deprecated ESP8266-AT commands. Restructure examples.                             
  *****************************************************************************************************************************/
 
 #ifndef ESP8266_AT_WebServer_h
 #define ESP8266_AT_WebServer_h
 
-#define USE_NEW_WEBSERVER_VERSION     true
+#ifndef USE_ESP32_AT
+  // Use ESP8266-AT commands only, some ESP32-AT commands not support _CUR and _DEF options
+  // _CUR (CURrent) for not saving Config Data to Flash
+  // _DEF (DEFault) for saving Config Data to Flash
+  #define USE_ESP32_AT     false
+#endif
+
+#if USE_ESP32_AT
+  bool useESP32_AT = true;
+  #warning Use USE_ESP32_AT from ESP8266_AT_WebServer.h
+#else
+  bool useESP32_AT = false;
+  #warning Use USE_ESP8266_AT from ESP8266_AT_WebServer.h
+#endif
+
+#ifndef USE_NEW_WEBSERVER_VERSION
+  #define USE_NEW_WEBSERVER_VERSION     true
+#endif
+
+#if USE_NEW_WEBSERVER_VERSION
+   #warning USE_NEW_WEBSERVER_VERSION == true
+#else
+  #warning USE_NEW_WEBSERVER_VERSION == false
+#endif   
 
 #if    ( defined(ARDUINO_SAMD_ZERO) || defined(ARDUINO_SAMD_MKR1000) || defined(ARDUINO_SAMD_MKRWIFI1010) \
       || defined(ARDUINO_SAMD_NANO_33_IOT) || defined(ARDUINO_SAMD_MKRFox1200) || defined(ARDUINO_SAMD_MKRWAN1300) || defined(ARDUINO_SAMD_MKRWAN1310) \
