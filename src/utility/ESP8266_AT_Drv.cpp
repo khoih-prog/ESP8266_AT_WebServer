@@ -210,8 +210,13 @@ bool ESP8266_AT_Drv::wifiConnect(const char* ssid, const char* passphrase)
   // any special characters (',', '"' and '/')
 
   // connect to access point, use CUR mode to avoid connection at boot
-  int ret = sendCmd("AT+CWJAP_CUR=\"%s\",\"%s\"", 20000, ssid, passphrase);
-
+  int ret;
+  
+  if (useESP32_AT)
+    ret = sendCmd("AT+CWJAP=\"%s\",\"%s\"", 20000, ssid, passphrase);
+  else
+    ret = sendCmd("AT+CWJAP_CUR=\"%s\",\"%s\"", 20000, ssid, passphrase);
+    
   if (ret == TAG_OK)
   {
     LOGINFO1(F("Connected to"), ssid);
