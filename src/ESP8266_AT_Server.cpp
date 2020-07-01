@@ -70,6 +70,10 @@ ESP8266_AT_Client ESP8266_AT_Server::available(byte* status)
   // TODO the original method seems to handle automatic server restart
 
   int bytes = ESP8266_AT_Drv::availData(0);
+  
+  // KH
+  //LOGINFO1("available: bytes=", bytes);
+  
   if (bytes > 0)
   {
     LOGINFO1(F("New client"), ESP8266_AT_Drv::_connId);

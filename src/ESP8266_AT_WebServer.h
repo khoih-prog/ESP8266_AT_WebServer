@@ -37,10 +37,10 @@
 
 #if USE_ESP32_AT
   bool useESP32_AT = true;
-  #warning Use USE_ESP32_AT from ESP8266_AT_WebServer.h
+  #warning Using USE_ESP32_AT from ESP8266_AT_WebServer.h
 #else
   bool useESP32_AT = false;
-  #warning Use USE_ESP8266_AT from ESP8266_AT_WebServer.h
+  #warning Using USE_ESP8266_AT from ESP8266_AT_WebServer.h
 #endif
 
 #ifndef USE_NEW_WEBSERVER_VERSION

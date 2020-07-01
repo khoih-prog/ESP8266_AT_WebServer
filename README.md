@@ -8,6 +8,11 @@
 
 ---
 
+### New Version v1.0.8
+
+1. Fix bug. 
+2. Add features to ESP32-AT. 
+
 ### New Version v1.0.7
 
 1. Add support to ***ESP32-AT-command shield***. 
@@ -64,7 +69,52 @@ The ESP8266_AT_Web_Server class found in `ESP8266_AT_Web_Server.h` header, is a 
  6. [`Adafruit SAMD core 1.5.11 or later`](https://www.adafruit.com/) for SAMD ARM Cortex-M0+ and M4 boards (Nano 33 IoT, etc.)
  7. [`Adafruit nRF52 v0.20.1 or later`](www.adafruit.com) for nRF52 boards such as AdaFruit Feather nRF52840 Express, NINA_B302_ublox, etc.
  8. [`Functional-VLPP library`](https://github.com/khoih-prog/functional-vlpp) to use server's lambda function. To install. check [![arduino-library-badge](https://www.ardu-badge.com/badge/Functional-Vlpp.svg?)](https://www.ardu-badge.com/Functional-Vlpp)
- 9. [`AT Firmare v1.7.4.0 or later`](https://github.com/espressif/ESP8266_NONOS_SDK/tree/master/bin/at) for ESP8266-AT shields
+10. [`Ai-Thinker AT Firmware v1.5.4`](AT_Firmwares/At_firmware_bin1.54.zip) or [`AT Firmware v1.7.4.0`](AT_Firmwares/AT_Firmware_bin_1.7.4.0.zip) for ESP8266-AT shields.
+11. [`AT version_2.1.0.0_dev`](AT_Firmwares/AT_version_2.1.0.0_dev.zip) for ESP32-AT shields.
+
+### Important Notes
+
+1. Tested OK with for ESP8266-AT shields:
+  - [`Ai-Thinker AT Firmware v1.5.4`](AT_Firmwares/At_firmware_bin1.54.zip)
+  - [`AT Firmware v1.7.4.0`](AT_Firmwares/AT_Firmware_bin_1.7.4.0.zip) 
+  
+  
+2. Tested OK with for ESP32-AT shields:
+  - [`AT version_2.1.0.0_dev`](AT_Firmwares/AT_version_2.1.0.0_dev.zip)
+    
+    ```
+    AT version:2.1.0.0-dev(4f6b92c - Jun 10 2020 10:36:54)
+    SDK version:v4.0.1-193-ge7ac221b4
+    compile time(b85a8df):Jun 18 2020 14:00:59
+    Bin version:2.0.0(WROOM-32)
+    ```
+    
+    See instructions at [AT Command Core](https://github.com/espressif/esp-at) and [ESP_AT_Get_Started](https://github.com/espressif/esp-at/blob/master/docs/en/get-started/ESP_AT_Get_Started.md)
+  
+3. Upload [`AT Firmware v1.7.4.0`](AT_Firmwares/AT_Firmware_bin_1.7.4.0.zip) bin files to correct locations as follows:
+
+```
+# BOOT MODE
+
+### Flash size 8Mbit: 512KB+512KB
+    boot_v1.2+.bin              0x00000
+    user1.1024.new.2.bin        0x01000
+    esp_init_data_default.bin   0xfc000
+    blank.bin                   0x7e000 & 0xfe000
+
+
+### Flash size 16Mbit-C1: 1024KB+1024KB
+    boot_v1.2+.bin              0x00000
+    user1.2048.new.5.bin        0x01000
+    esp_init_data_default.bin   0x1fc000
+    blank.bin                   0xfe000 & 0x1fe000
+```
+
+3. Test before using different AT-Firmware Version at your own risks. Just use any simple Blynk sketch to verify if the AT-firmware is OK.
+4. Compatible AT-Firmare version will be updated. Check for and download Firmwares from [AT_Firmwares](AT_Firmwares) all supported AT Firmwares.
+5. Support to ESP32-AT-command shields will be added by using new library [ESP_AT_Lib](https://github.com/khoih-prog/ESP_AT_Lib) to replace [Blynk's BlynkESP8266_Lib](https://github.com/blynkkk/blynk-library/releases/Blynk_Release_v0.6.1.zip).
+
+---
 
 ## Installation
 
@@ -617,6 +667,11 @@ HTTP server started @ 192.168.2.107
 ```
 
 ---
+
+### New Version v1.0.8
+
+1. Fix bug. 
+2. Add features to ESP32-AT. 
 
 ### New Version v1.0.7
 

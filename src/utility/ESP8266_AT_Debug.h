@@ -50,6 +50,7 @@
 #define LOGWARN1(x,y)  if(_ESP_AT_LOGLEVEL_>1) { DEBUG_OUTPUT.print("[ESP_AT] "); DEBUG_OUTPUT.print(x); DEBUG_OUTPUT.print(" "); DEBUG_OUTPUT.println(y); }
 #define LOGINFO(x)     if(_ESP_AT_LOGLEVEL_>2) { DEBUG_OUTPUT.print("[ESP_AT] "); DEBUG_OUTPUT.println(x); }
 #define LOGINFO1(x,y)  if(_ESP_AT_LOGLEVEL_>2) { DEBUG_OUTPUT.print("[ESP_AT] "); DEBUG_OUTPUT.print(x); DEBUG_OUTPUT.print(" "); DEBUG_OUTPUT.println(y); }
+#define LOGINFO2(x,y,z) if(_ESP_AT_LOGLEVEL_>2) { DEBUG_OUTPUT.print(x); DEBUG_OUTPUT.print(" "); DEBUG_OUTPUT.print(y); DEBUG_OUTPUT.print(" "); DEBUG_OUTPUT.println(z); }
 
 #define LOGDEBUG(x)      if(_ESP_AT_LOGLEVEL_>3) { DEBUG_OUTPUT.println(x); }
 #define LOGDEBUG0(x)     if(_ESP_AT_LOGLEVEL_>3) { DEBUG_OUTPUT.print(x); }

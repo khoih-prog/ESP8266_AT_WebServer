@@ -163,6 +163,7 @@ void ESP8266_AT_WebServer::handleClient()
     ESP8266_AT_Client client = _server.available();
     if (!client) 
     {
+      //LOGINFO(F("HC_NONE and No client"));
       return;
     }
 
@@ -242,6 +243,7 @@ void ESP8266_AT_WebServer::handleClient()
     ESP8266_AT_Client client = _server.available();
     if (!client) 
     {
+      //LOGINFO(F("HC_NONE and No client"));
       return;
     }
 
@@ -251,6 +253,7 @@ void ESP8266_AT_WebServer::handleClient()
     _currentStatus = HC_WAIT_READ;
     _statusChange = millis();
   }
+  
   if (!_currentClient.connected()) 
   {
     _currentClient = ESP8266_AT_Client();
@@ -309,7 +312,7 @@ void ESP8266_AT_WebServer::handleClient()
 
   if (_currentStatus == HC_WAIT_CLOSE) 
   {
-    if (millis() - _statusChange > HTTP_MAX_CLOSE_WAIT) 
+    if (millis() - _statusChange > (HTTP_MAX_CLOSE_WAIT) )
     {
       _currentClient = ESP8266_AT_Client();
       _currentStatus = HC_NONE;

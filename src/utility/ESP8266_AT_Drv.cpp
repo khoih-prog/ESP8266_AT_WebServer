@@ -24,6 +24,8 @@
 #include <Arduino.h>
 #include <avr/pgmspace.h>
 
+#define _ESP_AT_LOGLEVEL_       0
+
 #if    ( defined(ARDUINO_SAMD_ZERO) || defined(ARDUINO_SAMD_MKR1000) || defined(ARDUINO_SAMD_MKRWIFI1010) \
       || defined(ARDUINO_SAMD_NANO_33_IOT) || defined(ARDUINO_SAMD_MKRFox1200) || defined(ARDUINO_SAMD_MKRWAN1300) || defined(ARDUINO_SAMD_MKRWAN1310) \
       || defined(ARDUINO_SAMD_MKRGSM1400) || defined(ARDUINO_SAMD_MKRNB1500) || defined(ARDUINO_SAMD_MKRVIDOR4000) || defined(__SAMD21G18A__) \
@@ -60,7 +62,6 @@
 
 #include "utility/ESP8266_AT_Drv.h"
 #include "utility/ESP8266_AT_Debug.h"
-
 
 #define NUMESPTAGS 5
 
@@ -143,60 +144,107 @@ void ESP8266_AT_Drv::wifiDriverInit(Stream *espSerial)
 
   // check firmware version
   getFwVersion();
+  
+  bool versionSupported = true;
 
-  // prints a warning message if the firmware is not 1.X or 2.X
-  if ((fwVersion[0] != '1' and fwVersion[0] != '2') or
-      fwVersion[1] != '.')
+  if (useESP32_AT)
   {
-    LOGWARN1(F("Warning: Unsupported firmware"), fwVersion);
-    delay(4000);
+    // prints a warning message if the firmware is not v3.X or v4.X
+    if ((fwVersion[1] != '3' and fwVersion[1] != '4') or
+        fwVersion[2] != '.')
+    {
+      versionSupported = false;
+    }
+  }  
+  else
+  {
+    // prints a warning message if the firmware is not 1.X or 2.X
+    if ((fwVersion[0] != '1' and fwVersion[0] != '2') or
+        fwVersion[1] != '.')
+    {
+      versionSupported = false;
+    }
+  }
+    
+    // prints a warning message if the firmware is not 3.X or 4.X
+  if (versionSupported)
+  {
+    LOGINFO1(F("Firmware Init OK -"), fwVersion);
   }
   else
   {
-    LOGINFO1(F("Initilization successful -"), fwVersion);
+    LOGWARN1(F("Warning: Unsupported Firmware"), fwVersion);  
   }
+  
+  delay(4000);
 }
 
 void ESP8266_AT_Drv::reset()
 {
   LOGDEBUG(F("> reset"));
 
+  LOGINFO(F("AT+RST"));
   sendCmd("AT+RST");
+  
   delay(3000);
   espEmptyBuf(false);  // empty dirty characters from the buffer
 
   // disable echo of commands
+  LOGINFO(F("ATE0"));
   sendCmd("ATE0");
 
   // set station mode
   if (useESP32_AT)
   {
     LOGERROR(F("Use ESP32-AT Command"));
-    sendCmd("AT+CWMODE=1");
+    LOGINFO(F("AT+CWMODE=1"));
+    sendCmd("AT+CWMODE=1"); 
   }
   else
   {
     LOGERROR(F("Use ES8266-AT Command"));
-    sendCmd("AT+CWMODE_CUR=1");
+    LOGINFO(F("AT+CWMODE_CUR=1"));
+    sendCmd("AT+CWMODE_CUR=1"); 
   }
     
   delay(200);
 
   // set multiple connections mode
-  sendCmd("AT+CIPMUX=1");
+  LOGINFO(F("AT+CIPMUX=1"));
+  sendCmd("AT+CIPMUX=1"); 
 
   // Show remote IP and port with "+IPD"
+  LOGINFO(F("AT+CIPDINFO=1"));
   sendCmd("AT+CIPDINFO=1");
-
+  
   // Disable autoconnect
   // Automatic connection can create problems during initialization phase at next boot
+  LOGINFO(F("AT+CWAUTOCONN=0"));
   sendCmd("AT+CWAUTOCONN=0");
-
-  // enable DHCP
+  
+  // enable STA DHCP
   if (useESP32_AT)
-    sendCmd("AT+CWDHCP=1,1");
+  {
+    // ESP32
+    // AT+CWDHCP=<operate>,<mode>
+    // • <operate>:
+    //  ‣ 0: disable, ‣ 1: enable
+    // • <mode>:
+    //  ‣ Bit0: Station DHCP, ‣ Bit1: SoftAP DHCP
+    LOGINFO(F("AT+CWDHCP=1,1"));
+    sendCmd("AT+CWDHCP=1,1");   
+  }
   else
-    sendCmd("AT+CWDHCP_CUR=1,1");
+  {
+    // ESP8266
+    // AT+CWDHCP=<mode>,<en>
+    // • <mode>:
+    //  ‣ 0: Sets ESP8266 SoftAP, ‣ 1: Sets ESP8266 Station, ‣ 2: Sets both SoftAP and Station
+    // • <en>:
+    // ‣ 0: Disables DHCP, ‣ 1: Enables DHCP
+    LOGINFO(F("AT+CWDHCP=1,1"));
+    sendCmd("AT+CWDHCP_CUR=1,1");   
+  }
 
   delay(200);
 }
@@ -213,9 +261,15 @@ bool ESP8266_AT_Drv::wifiConnect(const char* ssid, const char* passphrase)
   int ret;
   
   if (useESP32_AT)
-    ret = sendCmd("AT+CWJAP=\"%s\",\"%s\"", 20000, ssid, passphrase);
+  {
+    LOGINFO2(F("AT+CWJAP="), ssid, passphrase);
+    ret = sendCmd("AT+CWJAP=\"%s\",\"%s\"", 20000, ssid, passphrase);   
+  }
   else
-    ret = sendCmd("AT+CWJAP_CUR=\"%s\",\"%s\"", 20000, ssid, passphrase);
+  {
+    LOGINFO2(F("AT+CWJAP_CUR="), ssid, passphrase);
+    ret = sendCmd("AT+CWJAP_CUR=\"%s\",\"%s\"", 20000, ssid, passphrase);  
+  }
     
   if (ret == TAG_OK)
   {
@@ -232,6 +286,11 @@ bool ESP8266_AT_Drv::wifiConnect(const char* ssid, const char* passphrase)
   return false;
 }
 
+// espMode
+// ‣ 0: Null mode, Wi-Fi RF will be disabled *
+// ‣ 1: Station mode
+// ‣ 2: SoftAP mode
+// ‣ 3: SoftAP+Station mode
 bool ESP8266_AT_Drv::wifiStartAP(const char* ssid, const char* pwd, uint8_t channel, uint8_t enc, uint8_t espMode)
 {
   LOGDEBUG(F("> wifiStartAP"));
@@ -240,9 +299,15 @@ bool ESP8266_AT_Drv::wifiStartAP(const char* ssid, const char* pwd, uint8_t chan
   int ret;
   
   if (useESP32_AT)
-    ret = sendCmd("AT+CWMODE=%d", 10000, espMode);
+  {
+    LOGINFO1(F("AT+CWMODE="), espMode);
+    ret = sendCmd("AT+CWMODE=%d", 10000, espMode);   
+  }
   else
-    ret = sendCmd("AT+CWMODE_CUR=%d", 10000, espMode);
+  {
+    LOGINFO1(F("AT+CWMODE_CUR="), espMode);
+    ret = sendCmd("AT+CWMODE_CUR=%d", 10000, espMode);   
+  }
     
   if (ret != TAG_OK)
   {
@@ -254,11 +319,19 @@ bool ESP8266_AT_Drv::wifiStartAP(const char* ssid, const char* pwd, uint8_t chan
   // Escape character syntax is needed if "SSID" or "password" contains
   // any special characters (',', '"' and '/')
 
-  // start access point
+  // Configures the ESP8266/ESP32 SoftAP
   if (useESP32_AT)
-    ret = sendCmd("AT+CWSAP=\"%s\",\"%s\",%d,%d", 10000, ssid, pwd, channel, enc);
+  {
+    LOGINFO2(F("AT+CWSAP="), ssid, pwd);
+    LOGINFO2(F("AT+CWSAP="), channel, enc);
+    ret = sendCmd("AT+CWSAP=\"%s\",\"%s\",%d,%d", 10000, ssid, pwd, channel, enc);   
+  }
   else
-    ret = sendCmd("AT+CWSAP_CUR=\"%s\",\"%s\",%d,%d", 10000, ssid, pwd, channel, enc);
+  {
+    LOGINFO2(F("AT+CWSAP_CUR="), ssid, pwd);
+    LOGINFO2(F("AT+CWSAP_CUR="), channel, enc);
+    ret = sendCmd("AT+CWSAP_CUR=\"%s\",\"%s\",%d,%d", 10000, ssid, pwd, channel, enc);    
+  }
 
   if (ret != TAG_OK)
   {
@@ -266,19 +339,53 @@ bool ESP8266_AT_Drv::wifiStartAP(const char* ssid, const char* pwd, uint8_t chan
     return false;
   }
 
+// Get info if DHCP Enabled or Disabled
+// ESP32-AT not support _CUR and _DEF here and has different command format
+// Be careful
+// ESP32-AT => AT+CWDHCP=<operate>,<mode>
+// • <operate>:
+//    ‣ 0: disable
+//    ‣ 1: enable
+// • <mode>:
+//    ‣ Bit0: Station DHCP
+//    ‣ Bit1: SoftAP DHCP
+//
+// ESP8266-AT => AT+CWDHCP=<mode>,<en>
+// • <mode>:
+//    ‣ 0: Sets ESP8266 SoftAP
+//    ‣ 1: Sets ESP8266 Station
+//    ‣ 2: Sets both SoftAP and Station
+// • <en>:
+//    ‣ 0: disable DHCP
+//    ‣ 1: enable DHCP
+
   if (espMode == 2)
   {
+    // ‣ 2: SoftAP mode
     if (useESP32_AT)
-      sendCmd("AT+CWDHCP=1,2");         // enable DHCP for AP mode
+    {
+      LOGINFO(F("AT+CWDHCP=1,2"));
+      sendCmd("AT+CWDHCP=1,2");         // enable DHCP for SoftAP mode      
+    }
     else
-      sendCmd("AT+CWDHCP_CUR=0,1");     // enable DHCP for AP mode
-  }   
+    {
+      LOGINFO(F("AT+CWDHCP_CUR=0,1"));
+      sendCmd("AT+CWDHCP_CUR=0,1");     // enable DHCP for SoftAP mode     
+    }
+  }
   else if (espMode == 3)
   {
+    // ‣ 3: SoftAP+Station mode
     if (useESP32_AT)
-      sendCmd("AT+CWDHCP=1,3");         // enable DHCP for station and AP mode
+    {
+      LOGINFO(F("AT+CWDHCP=1,3"));
+      sendCmd("AT+CWDHCP=1,3");         // enable DHCP for station and SoftAP mode      
+    }
     else
-      sendCmd("AT+CWDHCP_CUR=2,1");     // enable DHCP for station and AP mode
+    {
+      LOGINFO(F("AT+CWDHCP_CUR=2,1"));
+      sendCmd("AT+CWDHCP_CUR=2,1");     // enable DHCP for station and SoftAP mode     
+    }
   }
 
   LOGINFO1(F("Access point started"), ssid);
@@ -289,6 +396,8 @@ int8_t ESP8266_AT_Drv::disconnect()
 {
   LOGDEBUG(F("> disconnect"));
 
+  LOGINFO(F("AT+CWQAP"));
+  
   if (sendCmd("AT+CWQAP") == TAG_OK)
     return WL_DISCONNECTED;
 
@@ -299,20 +408,43 @@ int8_t ESP8266_AT_Drv::disconnect()
   return WL_DISCONNECTED;
 }
 
+// Set STA IP
 void ESP8266_AT_Drv::config(IPAddress ip)
 {
   LOGDEBUG(F("> config"));
+
+// Get info if DHCP Enabled or Disabled
+// ESP32-AT not support _CUR and _DEF here and has different command format
+// Be careful
+// ESP32-AT => AT+CWDHCP=<operate>,<mode>
+// • <operate>:
+//    ‣ 0: disable
+//    ‣ 1: enable
+// • <mode>:
+//    ‣ Bit0: Station DHCP
+//    ‣ Bit1: SoftAP DHCP
+//
+// ESP8266-AT => AT+CWDHCP=<mode>,<en>
+// • <mode>:
+//    ‣ 0: Sets ESP8266 SoftAP
+//    ‣ 1: Sets ESP8266 Station
+//    ‣ 2: Sets both SoftAP and Station
+// • <en>:
+//    ‣ 0: disable DHCP
+//    ‣ 1: enable DHCP
 
   // disable station DHCP
   if (useESP32_AT)
   {
     //KH, AT+CWDHCP=<operate>,<mode>
-    sendCmd("AT+CWDHCP=0,0");
+    LOGINFO(F("AT+CWDHCP=0,1"));
+    sendCmd("AT+CWDHCP=0,1");    
   }
   else
   {
     // KH, AT+CWDHCP=<<mode>,<en>
-    sendCmd("AT+CWDHCP_CUR=1,0");
+    LOGINFO(F("AT+CWDHCP_CUR=1,0"))
+    sendCmd("AT+CWDHCP_CUR=1,0");   
   }
 
   // it seems we need to wait here...
@@ -327,12 +459,14 @@ void ESP8266_AT_Drv::config(IPAddress ip)
   if (useESP32_AT)
   {
     // Set STA IP address
-    ret = sendCmd("AT+CIPSTA=\"%s\"", 2000, buf);
+    LOGINFO1(F("AT+CIPSTA="), buf);
+    ret = sendCmd("AT+CIPSTA=\"%s\"", 2000, buf);    
   }
   else
   {
     // Set STA IP address
-    ret = sendCmd("AT+CIPSTA_CUR=\"%s\"", 2000, buf);
+    LOGINFO1(F("AT+CIPSTA_CUR="), buf);
+    ret = sendCmd("AT+CIPSTA_CUR=\"%s\"", 2000, buf);   
   }
    
   delay(500);
@@ -343,25 +477,52 @@ void ESP8266_AT_Drv::config(IPAddress ip)
   }
 }
 
+// Set AP IP
 void ESP8266_AT_Drv::configAP(IPAddress ip)
 {
   LOGDEBUG(F("> config"));
   
+// Get info if DHCP Enabled or Disabled
+// ESP32-AT not support _CUR and _DEF here and has different command format
+// Be careful
+// ESP32-AT => AT+CWDHCP=<operate>,<mode>
+// • <operate>:
+//    ‣ 0: disable
+//    ‣ 1: enable
+// • <mode>:
+//    ‣ Bit0: Station DHCP
+//    ‣ Bit1: SoftAP DHCP
+//
+// ESP8266-AT => AT+CWDHCP=<mode>,<en>
+// • <mode>:
+//    ‣ 0: Sets ESP8266 SoftAP
+//    ‣ 1: Sets ESP8266 Station
+//    ‣ 2: Sets both SoftAP and Station
+// • <en>:
+//    ‣ 0: disable DHCP
+//    ‣ 1: enable DHCP
+  
   if (useESP32_AT)
   {
     // SoftAP Mode
+    LOGINFO(F("AT+CWMODE=2"));
     sendCmd("AT+CWMODE=2");
+    
     //KH, AT+CWDHCP=<operate>,<mode>
     // disable AP and STA DHCP
-    sendCmd("AT+CWDHCP=0,3");
+    LOGINFO(F("AT+CWDHCP=0,3"));
+    sendCmd("AT+CWDHCP=0,3");   
   }
   else
   {
     // SoftAP Mode
+    LOGINFO(F("AT+CWMODE_CUR=2"));
     sendCmd("AT+CWMODE_CUR=2");
+      
     // KH, AT+CWDHCP=<<mode>,<en>
     // disable AP and STA DHCP
-    sendCmd("AT+CWDHCP_CUR=2,0");
+    LOGINFO(F("AT+CWDHCP=2,0"));
+    sendCmd("AT+CWDHCP_CUR=2,0");   
   } 
 
   // it seems we need to wait here...
@@ -377,11 +538,13 @@ void ESP8266_AT_Drv::configAP(IPAddress ip)
   {
     // Set AP IP address
     ret = sendCmd("AT+CIPAP=\"%s\"", 2000, buf);
+    LOGINFO1(F("AT+CIPAP="), buf);
   }
   else
   {
     // Set AP IP address
-    ret = sendCmd("AT+CIPAP_CUR=\"%s\"", 2000, buf);
+    LOGINFO1(F("AT+CIPAP_CUR="), buf);
+    ret = sendCmd("AT+CIPAP_CUR=\"%s\"", 2000, buf);    
   }
   
   delay(500);
@@ -421,12 +584,15 @@ uint8_t ESP8266_AT_Drv::getConnectionStatus()
   */
 
   char buf[10];
+  
+  LOGINFO(F("AT+CIPSTATUS"));
   if (!sendCmdGet("AT+CIPSTATUS", "STATUS:", "\r\n", buf, sizeof(buf)))
     return WL_NO_SHIELD;
 
   // 4: client disconnected
   // 5: wifi disconnected
   int s = atoi(buf);
+  
   if (s == 2 or s == 3 or s == 4)
     return WL_CONNECTED;
   else if (s == 5)
@@ -444,6 +610,8 @@ uint8_t ESP8266_AT_Drv::getClientState(uint8_t sock)
   sprintf(findBuf, "+CIPSTATUS:%d,", sock);
 
   char buf[10];
+  
+  //LOGINFO1(F("getClientState: AT+CIPSTATUS"), sock);
   if (sendCmdGet("AT+CIPSTATUS", findBuf, ",", buf, sizeof(buf)))
   {
     LOGDEBUG(F("Connected"));
@@ -461,6 +629,8 @@ uint8_t* ESP8266_AT_Drv::getMacAddress()
   memset(_mac, 0, WL_MAC_ADDR_LENGTH);
 
   char buf[20];
+  
+  LOGINFO(F("AT+CIFSR"));
   if (sendCmdGet("AT+CIFSR", ":STAMAC,\"", "\"", buf, sizeof(buf)))
   {
     char* token;
@@ -487,6 +657,8 @@ void ESP8266_AT_Drv::getIpAddress(IPAddress& ip)
 
   char buf[20];
   memset(buf, '\0', sizeof(buf));
+  
+  LOGINFO(F("AT+CIFSR"));
   if (sendCmdGet("AT+CIFSR", ":STAIP,\"", "\"", buf, sizeof(buf)))
   {
     char* token;
@@ -516,14 +688,16 @@ void ESP8266_AT_Drv::getIpAddressAP(IPAddress& ip)
   if (useESP32_AT)
   {
     // Get AP IP address
-    ret = sendCmdGet("AT+CIPAP?", "+CIPAP:ip:\"", "\"", buf, sizeof(buf));
+    LOGINFO(F("AT+CIPAP?"));
+    ret = sendCmdGet("AT+CIPAP?", "+CIPAP:ip:\"", "\"", buf, sizeof(buf));   
   }
   else
   {
     // Get AP IP address
     // _CUR not working here ???
+    LOGINFO(F("AT+CIPAP?"));
     //ret = sendCmdGet("AT+CIPAP_CUR?", "+CIPAP:ip:\"", "\"", buf, sizeof(buf));
-    ret = sendCmdGet("AT+CIPAP?", "+CIPAP:ip:\"", "\"", buf, sizeof(buf));
+    ret = sendCmdGet("AT+CIPAP?", "+CIPAP:ip:\"", "\"", buf, sizeof(buf));   
   }
   
   if (ret)
@@ -552,12 +726,14 @@ char* ESP8266_AT_Drv::getCurrentSSID()
   if (useESP32_AT)
   {
     // Get AP Info
-    sendCmdGet("AT+CWJAP?", "+CWJAP:\"", "\"", _ssid, sizeof(_ssid));
+    LOGINFO(F("AT+CWJAP?"));
+    sendCmdGet("AT+CWJAP?", "+CWJAP:\"", "\"", _ssid, sizeof(_ssid));   
   }
   else
   {
     // Get AP Info
-    sendCmdGet("AT+CWJAP_CUR?", "+CWJAP:\"", "\"", _ssid, sizeof(_ssid));
+    LOGINFO(F("AT+CWJAP_CUR?"));
+    sendCmdGet("AT+CWJAP_CUR?", "+CWJAP:\"", "\"", _ssid, sizeof(_ssid));    
   }
   
   return _ssid;
@@ -576,12 +752,14 @@ uint8_t* ESP8266_AT_Drv::getCurrentBSSID()
   if (useESP32_AT)
   {
     // Get AP Info
-    ret = sendCmdGet("AT+CWJAP?", ",\"", "\",", buf, sizeof(buf));
+    LOGINFO(F("AT+CWJAP?"));
+    ret = sendCmdGet("AT+CWJAP?", ",\"", "\",", buf, sizeof(buf));  
   }
   else
   {
     // Get AP Info
-    ret = sendCmdGet("AT+CWJAP_CUR?", ",\"", "\",", buf, sizeof(buf));
+    LOGINFO(F("AT+CWJAP_CUR?"));
+    ret = sendCmdGet("AT+CWJAP_CUR?", ",\"", "\",", buf, sizeof(buf));    
   }
   
   if (ret)
@@ -615,15 +793,18 @@ int32_t ESP8266_AT_Drv::getCurrentRSSI()
   if (useESP32_AT)
   {
     // Get AP Info
-    sendCmdGet("AT+CWJAP?", ",-", "\r\n", buf, sizeof(buf));
+    LOGINFO(F("AT+CWJAP?"));
+    sendCmdGet("AT+CWJAP?", ",-", "\r\n", buf, sizeof(buf));    
   }
   else
   {
     // Get AP Info
-    sendCmdGet("AT+CWJAP_CUR?", ",-", "\r\n", buf, sizeof(buf));
+    LOGINFO(F("AT+CWJAP_CUR?"));
+    sendCmdGet("AT+CWJAP_CUR?", ",-", "\r\n", buf, sizeof(buf));    
   }
   
-  if (isDigit(buf[0])) {
+  if (isDigit(buf[0])) 
+  {
     ret = -atoi(buf);
   }
 
@@ -641,6 +822,7 @@ uint8_t ESP8266_AT_Drv::getScanNetworks()
   LOGDEBUG(F(">> AT+CWLAP"));
 
   espSerial->println("AT+CWLAP");
+  LOGINFO(F("AT+CWLAP"));
 
   idx = readUntil(10000, "+CWLAP:(");
   
@@ -694,12 +876,14 @@ bool ESP8266_AT_Drv::getNetmask(IPAddress& mask) {
   if (useESP32_AT)
   {
     // Get STA IP Info
-    ret = sendCmdGet("AT+CIPSTA?", "+CIPSTA:netmask:\"", "\"", buf, sizeof(buf));
+    LOGINFO(F("AT+CIPSTA?"));
+    ret = sendCmdGet("AT+CIPSTA?", "+CIPSTA:netmask:\"", "\"", buf, sizeof(buf));   
   }
   else
   {
     // Get STA IP Info
-    ret = sendCmdGet("AT+CIPSTA_CUR?", "+CIPSTA:netmask:\"", "\"", buf, sizeof(buf));
+    LOGINFO(F("AT+CIPSTA_CUR?"));
+    ret = sendCmdGet("AT+CIPSTA_CUR?", "+CIPSTA:netmask:\"", "\"", buf, sizeof(buf));   
   }
   
   if (ret)
@@ -722,12 +906,14 @@ bool ESP8266_AT_Drv::getGateway(IPAddress& gw)
   if (useESP32_AT)
   {
     // Get STA IP Info
-    ret = sendCmdGet("AT+CIPSTA?", "+CIPSTA:gateway:\"", "\"", buf, sizeof(buf));
+    LOGINFO(F("AT+CIPSTA?"));
+    ret = sendCmdGet("AT+CIPSTA?", "+CIPSTA:gateway:\"", "\"", buf, sizeof(buf));   
   }
   else
   {
     // Get STA IP Info
-    ret = sendCmdGet("AT+CIPSTA?", "+CIPSTA:gateway:\"", "\"", buf, sizeof(buf));
+    LOGINFO(F("AT+CIPSTA_CUR?"));
+    ret = sendCmdGet("AT+CIPSTA_CUR?", "+CIPSTA:gateway:\"", "\"", buf, sizeof(buf));   
   }
   
   if (ret)
@@ -769,8 +955,9 @@ char* ESP8266_AT_Drv::getFwVersion()
 
   fwVersion[0] = 0;
 
+  LOGINFO(F("AT+GMR"));
   sendCmdGet("AT+GMR", "SDK version:", "\r\n", fwVersion, sizeof(fwVersion));
-
+  
   return fwVersion;
 }
 
@@ -778,8 +965,10 @@ bool ESP8266_AT_Drv::ping(const char *host)
 {
   LOGDEBUG(F("> ping"));
 
-  int ret = sendCmd("AT+PING=\"%s\"", 8000, host);
+  LOGINFO1(F("AT+PING="), host);
 
+  int ret = sendCmd("AT+PING=\"%s\"", 8000, host);
+  
   if (ret == TAG_OK)
     return true;
 
@@ -790,9 +979,20 @@ bool ESP8266_AT_Drv::ping(const char *host)
 bool ESP8266_AT_Drv::startServer(uint16_t port, uint8_t sock)
 {
   LOGDEBUG1(F("> startServer"), port);
+  
+  // KH, Not needed
+#if 0
+  if (useESP32_AT)
+  {
+    // KH add
+    LOGINFO(F("AT+CIPSERVERMAXCONN=5"));
+    sendCmd("AT+CIPSERVERMAXCONN=5");    
+  }
+#endif
 
+  LOGINFO2(F("AT+CIPSERVER="), sock, port);
   int ret = sendCmd("AT+CIPSERVER=%d,%d", 1000, sock, port);
-
+  
   return ret == TAG_OK;
 }
 
@@ -811,21 +1011,33 @@ bool ESP8266_AT_Drv::startClient(const char* host, uint16_t port, uint8_t sock, 
 
 
   int ret = -1;
+  
   if (protMode == TCP_MODE)
-    ret = sendCmd("AT+CIPSTART=%d,\"TCP\",\"%s\",%u", 5000, sock, host, port);
+  {
+    LOGINFO2(F("TCP => AT+CIPSTART="), sock, host);
+    LOGINFO1(F("TCP => AT+CIPSTART="), port);
+    ret = sendCmd("AT+CIPSTART=%d,\"TCP\",\"%s\",%u", 5000, sock, host, port);   
+  }
   else if (protMode == SSL_MODE)
   {
     // better to put the CIPSSLSIZE here because it is not supported before firmware 1.4
     if (!useESP32_AT)
     {
       // Set SSL Buffer to 4K, only for ESP8266
-      sendCmd("AT+CIPSSLSIZE=4096");
+      LOGINFO(F("AT+CIPSSLSIZE=4096"));
+      sendCmd("AT+CIPSSLSIZE=4096");     
     }    
     
-    ret = sendCmd("AT+CIPSTART=%d,\"SSL\",\"%s\",%u", 5000, sock, host, port);
+    LOGINFO2(F("SSL => AT+CIPSTART="), sock, host);
+    LOGINFO1(F("SSL => AT+CIPSTART="), port);
+    ret = sendCmd("AT+CIPSTART=%d,\"SSL\",\"%s\",%u", 5000, sock, host, port);   
   }
   else if (protMode == UDP_MODE)
-    ret = sendCmd("AT+CIPSTART=%d,\"UDP\",\"%s\",0,%u,2", 5000, sock, host, port);
+  {
+    LOGINFO2(F("UDP => AT+CIPSTART="), sock, host);
+    LOGINFO1(F("UDP => AT+CIPSTART="), port);
+    ret = sendCmd("AT+CIPSTART=%d,\"UDP\",\"%s\",0,%u,2", 5000, sock, host, port);    
+  }
 
   return ret == TAG_OK;
 }
@@ -835,6 +1047,7 @@ void ESP8266_AT_Drv::stopClient(uint8_t sock)
 {
   LOGDEBUG1(F("> stopClient"), sock);
 
+  LOGINFO1(F("AT+CIPCLOSE="), sock);
   sendCmd("AT+CIPCLOSE=%d", 4000, sock);
 }
 
@@ -852,10 +1065,17 @@ uint8_t ESP8266_AT_Drv::getServerState(uint8_t sock)
 uint16_t ESP8266_AT_Drv::availData(uint8_t connId)
 {
   //LOGDEBUG(bufPos);
+  // KH
+  LOGDEBUG1("availData: _bufPos=", _bufPos);
+  LOGDEBUG1(_connId, connId);
 
   // if there is data in the buffer
   if (_bufPos > 0)
   {
+    // KH
+    LOGDEBUG1("availData: _bufPos=", _bufPos);
+    LOGDEBUG1(_connId, connId);
+    
     if (_connId == connId)
       return _bufPos;
     else if (_connId == 0)
@@ -863,6 +1083,9 @@ uint16_t ESP8266_AT_Drv::availData(uint8_t connId)
   }
 
   int bytes = espSerial->available();
+  
+  // KH
+  LOGDEBUG1("availData: bytes=", bytes);
 
   if (bytes)
   {
