@@ -83,7 +83,22 @@ The ESP8266_AT_Web_Server class found in `ESP8266_AT_Web_Server.h` header, is a 
 
 1. Tested OK with for ESP8266-AT shields:
   - [`Ai-Thinker AT Firmware v1.5.4`](AT_Firmwares/At_firmware_bin1.54.zip)
+  
+    ```
+    AT version:1.1.0.0(May 11 2016 18:09:56)
+    SDK version:1.5.4(baaeaebb)
+    Ai-Thinker Technology Co. Ltd.
+    Jun 13 2016 11:29:20
+    ```
   - [`AT Firmware v1.7.4.0`](AT_Firmwares/AT_Firmware_bin_1.7.4.0.zip)
+  
+    ```
+    AT version:1.7.4.0(May 11 2020 19:13:04)
+    SDK version:3.0.4(9532ceb)
+    compile time:May 27 2020 10:12:17
+    Bin version(Wroom 02):1.7.4
+    ```
+    
   - [`WIS600-01S`](https://www.aliexpress.com/item/32956707239.html) and [`W600`](https://www.seeedstudio.com/w600.html) using either ESP8266 or ESP32-AT commands and stock firmware
   
     ```
