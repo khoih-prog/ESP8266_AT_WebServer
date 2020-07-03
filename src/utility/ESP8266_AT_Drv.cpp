@@ -6,7 +6,7 @@
    Forked and modified from ESP8266 https://github.com/esp8266/Arduino/releases
    Built by Khoi Hoang https://github.com/khoih-prog/ESP8266_AT_WebServer
    Licensed under MIT license
-   Version: 1.0.8
+   Version: 1.0.9
 
    Original author:
    @file       Esp8266WebServer.h
@@ -24,12 +24,13 @@
                                     Itsy-Bitsy nRF52840 Express, Metro nRF52840 Express, NINA_B302_ublox, NINA_B112_ublox, etc.
     1.0.7   K Hoang      23/06/2020 Add support to ESP32-AT. Update deprecated ESP8266-AT commands. Restructure examples. 
     1.0.8   K Hoang      01/07/2020 Fix bug. Add features to ESP32-AT.   
+    1.0.9   K Hoang      03/07/2020 Fix bug. Add functions. Restructure codes.    
  *****************************************************************************************************************************/
 
 #include <Arduino.h>
 #include <avr/pgmspace.h>
 
-#define _ESP_AT_LOGLEVEL_       0
+#define _ESP_AT_LOGLEVEL_       1
 
 #if    ( defined(ARDUINO_SAMD_ZERO) || defined(ARDUINO_SAMD_MKR1000) || defined(ARDUINO_SAMD_MKRWIFI1010) \
       || defined(ARDUINO_SAMD_NANO_33_IOT) || defined(ARDUINO_SAMD_MKRFox1200) || defined(ARDUINO_SAMD_MKRWAN1300) || defined(ARDUINO_SAMD_MKRWAN1310) \
@@ -89,16 +90,17 @@ typedef enum
 } TagsEnum;
 
 
-Stream *ESP8266_AT_Drv::espSerial;
+Stream *ESP8266_AT_Drv::espSerial = NULL;
 
-#ifdef CORE_TEENSY
-//AT_RingBuffer ESP8266_AT_Drv::ringBuf(4096);
-AT_RingBuffer ESP8266_AT_Drv::ringBuf(512);
-//AT_RingBuffer ESP8266_AT_Drv::ringBuf(256);
+#if ( defined(ARDUINO_AVR_MEGA) || defined(ARDUINO_AVR_MEGA2560) || defined(STM32F2) || defined(STM32F3) )
+  AT_RingBuffer ESP8266_AT_Drv::ringBuf(512);
+  #warning Using RingBuffer(512) from ESP8266_AT_Drv
+#elif ( defined(STM32F1) )
+  AT_RingBuffer ESP8266_AT_Drv::ringBuf(256);
+  #warning Using RingBuffer(256) from ESP8266_AT_Drv
 #else
-//AT_RingBuffer ESP8266_AT_Drv::ringBuf(32);
-//AT_RingBuffer ESP8266_AT_Drv::ringBuf(256);
-AT_RingBuffer ESP8266_AT_Drv::ringBuf(512);
+  AT_RingBuffer ESP8266_AT_Drv::ringBuf(2048);
+  #warning Using RingBuffer(2048) from ESP8266_AT_Drv
 #endif
 
 // Array of data to cache the information related to the networks discovered
@@ -119,12 +121,16 @@ uint8_t ESP8266_AT_Drv::_connId = 0;
 uint16_t  ESP8266_AT_Drv::_remotePort  = 0;
 uint8_t   ESP8266_AT_Drv::_remoteIp[] = {0};
 
-
-void ESP8266_AT_Drv::wifiDriverInit(Stream *espSerial)
+// KH New from v1.0.8
+// ReInit, don't need to specify but use current espSerial
+void ESP8266_AT_Drv::wifiDriverReInit(void)
 {
-  LOGDEBUG(F("> wifiDriverInit"));
 
-  ESP8266_AT_Drv::espSerial = espSerial;
+  if (ESP8266_AT_Drv::espSerial == NULL)
+  {
+    LOGDEBUG(F("> Error. Can't use wifiDriverReInit"));
+    return;
+  }
 
   bool initOK = false;
 
@@ -184,6 +190,15 @@ void ESP8266_AT_Drv::wifiDriverInit(Stream *espSerial)
   delay(4000);
 }
 
+void ESP8266_AT_Drv::wifiDriverInit(Stream *espSerial)
+{
+  LOGDEBUG(F("> wifiDriverInit"));
+
+  ESP8266_AT_Drv::espSerial = espSerial;
+
+  wifiDriverReInit();
+}
+
 void ESP8266_AT_Drv::reset()
 {
   LOGDEBUG(F("> reset"));
@@ -201,7 +216,7 @@ void ESP8266_AT_Drv::reset()
   // set station mode
   if (useESP32_AT)
   {
-    LOGERROR(F("Use ESP32-AT Command"));
+    LOGERROR(F("Using ESP32-AT Command"));
     LOGINFO(F("AT+CWMODE=1"));
     sendCmd("AT+CWMODE=1"); 
   }
@@ -252,6 +267,19 @@ void ESP8266_AT_Drv::reset()
   }
 
   delay(200);
+}
+
+// KH New from v1.0.8
+// For ESP32-AT to restores the Factory Default Settings
+void ESP8266_AT_Drv::restore()
+{
+  LOGDEBUG(F("> restore"));
+
+  LOGINFO(F("AT+RESTORE"));
+  sendCmd("AT+RESTORE");
+  
+  delay(1000);
+  espEmptyBuf(false);  // empty dirty characters from the buffer
 }
 
 bool ESP8266_AT_Drv::wifiConnect(const char* ssid, const char* passphrase)
@@ -608,6 +636,9 @@ uint8_t ESP8266_AT_Drv::getConnectionStatus()
 
 uint8_t ESP8266_AT_Drv::getClientState(uint8_t sock)
 {
+  // KH add to fix dirty buf issue
+  espEmptyBuf(true);  // empty dirty characters from the buffer
+  
   LOGDEBUG1(F("> getClientState"), sock);
 
   char findBuf[20];
@@ -962,7 +993,7 @@ char* ESP8266_AT_Drv::getFwVersion()
 
   LOGINFO(F("AT+GMR"));
   sendCmdGet("AT+GMR", "SDK version:", "\r\n", fwVersion, sizeof(fwVersion));
-  
+   
   return fwVersion;
 }
 
@@ -985,16 +1016,6 @@ bool ESP8266_AT_Drv::startServer(uint16_t port, uint8_t sock)
 {
   LOGDEBUG1(F("> startServer"), port);
   
-  // KH, Not needed
-#if 0
-  if (useESP32_AT)
-  {
-    // KH add
-    LOGINFO(F("AT+CIPSERVERMAXCONN=5"));
-    sendCmd("AT+CIPSERVERMAXCONN=5");    
-  }
-#endif
-
   LOGINFO2(F("AT+CIPSERVER="), sock, port);
   int ret = sendCmd("AT+CIPSERVER=%d,%d", 1000, sock, port);
   
@@ -1069,17 +1090,12 @@ uint8_t ESP8266_AT_Drv::getServerState(uint8_t sock)
 
 uint16_t ESP8266_AT_Drv::availData(uint8_t connId)
 {
-  //LOGDEBUG(bufPos);
-  // KH
-  LOGDEBUG1("availData: _bufPos=", _bufPos);
-  LOGDEBUG1(_connId, connId);
-
   // if there is data in the buffer
   if (_bufPos > 0)
   {
     // KH
-    LOGDEBUG1("availData: _bufPos=", _bufPos);
-    LOGDEBUG1(_connId, connId);
+    //LOGDEBUG1("availData: _bufPos=", _bufPos);
+    //LOGDEBUG1(_connId, connId);
     
     if (_connId == connId)
       return _bufPos;
@@ -1090,11 +1106,11 @@ uint16_t ESP8266_AT_Drv::availData(uint8_t connId)
   int bytes = espSerial->available();
   
   // KH
-  LOGDEBUG1("availData: bytes=", bytes);
+  //LOGDEBUG1("availData: bytes=", bytes);
 
   if (bytes)
   {
-    //LOGDEBUG1(F("Bytes in the serial buffer: "), bytes);
+    LOGDEBUG1(F("Bytes in the serial buffer: "), bytes);
     if (espSerial->find((char *)"+IPD,"))
     {
       // format is : +IPD,<id>,<len>:<data>

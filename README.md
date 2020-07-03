@@ -8,6 +8,13 @@
 
 ---
 
+### New Version v1.0.9
+
+1. Fix bug. 
+2. Add functions (ESP8266_AT_Drv::wifiDriverReInit and ESP8266_AT_Class::reInit). 
+3. Restructure codes. Increase RingBuffer Size.
+4. Add support to WIS600-01S and W600 WiFi shields
+
 ### New Version v1.0.8
 
 1. Fix bug. 
@@ -76,7 +83,14 @@ The ESP8266_AT_Web_Server class found in `ESP8266_AT_Web_Server.h` header, is a 
 
 1. Tested OK with for ESP8266-AT shields:
   - [`Ai-Thinker AT Firmware v1.5.4`](AT_Firmwares/At_firmware_bin1.54.zip)
-  - [`AT Firmware v1.7.4.0`](AT_Firmwares/AT_Firmware_bin_1.7.4.0.zip) 
+  - [`AT Firmware v1.7.4.0`](AT_Firmwares/AT_Firmware_bin_1.7.4.0.zip)
+  - [`WIS600-01S`](https://www.aliexpress.com/item/32956707239.html) and [`W600`](https://www.seeedstudio.com/w600.html) using either ESP8266 or ESP32-AT commands and stock firmware
+  
+    ```
+    AT version:1.1.4(Dec 05 2018 11:06:45)
+    SDK version:3.0.0
+    Dec 05 2018 11:06:45
+    ```
   
   
 2. Tested OK with for ESP32-AT shields:
@@ -667,6 +681,13 @@ HTTP server started @ 192.168.2.107
 ```
 
 ---
+
+### New Version v1.0.9
+
+1. Fix bug. 
+2. Add functions (ESP8266_AT_Drv::wifiDriverReInit and ESP8266_AT_Class::reInit). 
+3. Restructure codes. Increase RingBuffer Size.
+4. Add support to WIS600-01S and W600 WiFi shields
 
 ### New Version v1.0.8
 

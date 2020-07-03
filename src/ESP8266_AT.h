@@ -6,7 +6,7 @@
    Forked and modified from ESP8266 https://github.com/esp8266/Arduino/releases
    Built by Khoi Hoang https://github.com/khoih-prog/ESP8266_AT_WebServer
    Licensed under MIT license
-   Version: 1.0.8
+   Version: 1.0.9
 
    Original author:
    @file       Esp8266WebServer.h
@@ -24,6 +24,7 @@
                                     Itsy-Bitsy nRF52840 Express, Metro nRF52840 Express, NINA_B302_ublox, NINA_B112_ublox, etc.
     1.0.7   K Hoang      23/06/2020 Add support to ESP32-AT. Update deprecated ESP8266-AT commands. Restructure examples. 
     1.0.8   K Hoang      01/07/2020 Fix bug. Add features to ESP32-AT.   
+    1.0.9   K Hoang      03/07/2020 Fix bug. Add functions. Restructure codes.
  *****************************************************************************************************************************/
 
 #ifndef ESP8266_AT_h
@@ -34,13 +35,7 @@
 #include <IPAddress.h>
 #include <inttypes.h>
 
-
-#include "ESP8266_AT_Client.h"
-#include "ESP8266_AT_Server.h"
 #include "utility/ESP8266_AT_Drv.h"
-#include "utility/RingBuffer.h"
-#include "utility/ESP8266_AT_Debug.h"
-
 
 class ESP8266_AT_Class
 {
@@ -52,6 +47,13 @@ class ESP8266_AT_Class
 
     ESP8266_AT_Class();
 
+    // KH New from v1.0.8
+    /**
+      ReInitialize the ESP module, using current espSerial
+
+      param espSerial: the serial interface (HW or SW) used to communicate with the ESP module
+    */
+    static void reInit(void);
 
     /**
       Initialize the ESP module.
@@ -258,6 +260,12 @@ class ESP8266_AT_Class
       Restart the ESP module.
     */
     void reset();
+    
+    /**
+      Restore the the Factory Default Settings of ESP module.
+      Sometimes necessaty for ESP32-AT
+    */
+    void restore();
 
     /**
       Ping a host.
@@ -278,5 +286,7 @@ class ESP8266_AT_Class
 };
 
 extern ESP8266_AT_Class WiFi;
+
+#include "ESP8266_AT-impl.h"
 
 #endif

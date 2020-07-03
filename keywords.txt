@@ -69,6 +69,7 @@ streamFile  KEYWORD2
 # ESP8266_AT_Class
 #######################
 init  KEYWORD2
+reInit  KEYWORD2
 firmwareVersion KEYWORD2
 begin KEYWORD2
 config  KEYWORD2
@@ -143,8 +144,9 @@ urlDecode KEYWORD2
 _parseFormUploadAborted KEYWORD2
 
 #######################
-# ESP8266_AT_Drv-impl
+# ESP8266_AT_Drv
 #######################
+wifiDriverReInit  KEYWORD2
 wifiDriverInit  KEYWORD2
 wifiConnect KEYWORD2
 wifiStartAP KEYWORD2
