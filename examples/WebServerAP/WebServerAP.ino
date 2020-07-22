@@ -6,7 +6,7 @@
    Forked and modified from ESP8266 https://github.com/esp8266/Arduino/releases
    Built by Khoi Hoang https://github.com/khoih-prog/ESP8266_AT_WebServer
    Licensed under MIT license
-   Version: 1.0.9
+   Version: 1.0.10
 
    A simple web server that shows the value of the analog input pins via a web page using an ESP8266 module.
    This sketch will start an access point and print the IP address of your ESP8266 module to the Serial monitor.
@@ -27,7 +27,8 @@
                                     Itsy-Bitsy nRF52840 Express, Metro nRF52840 Express, NINA_B30_ublox, etc. 
     1.0.7   K Hoang      23/06/2020 Add support to ESP32-AT. Update deprecated ESP8266-AT commands. Restructure examples. 
     1.0.8   K Hoang      01/07/2020 Fix bug. Add features to ESP32-AT.   
-    1.0.9   K Hoang      03/07/2020 Fix bug. Add functions. Restructure codes. 
+    1.0.9   K Hoang      03/07/2020 Fix bug. Add functions. Restructure codes.
+    1.0.10  K Hoang      22/07/2020 Fix bug not closing client and releasing socket.
  *****************************************************************************************************************************/
 
 #include "defines.h"
@@ -79,7 +80,7 @@ void setup()
   Serial.begin(115200);
   while (!Serial);
 
-  Serial.println("\nStarting WebServerAP on " + String(BOARD_TYPE));
+  Serial.println("\nStarting WebServerAP on " + String(BOARD_NAME));
 
   // initialize serial for ESP module
   EspSerial.begin(115200);
@@ -106,10 +107,11 @@ void setup()
   WiFi.configAP(localIp);
 
   // start access point
-  int AP_channel = 10;
+  int AP_channel = 1;
   status = WiFi.beginAP(ssid, AP_channel, pass, ENC_TYPE_WPA2_PSK);
 
-  Serial.println(F("Access point started"));
+  Serial.print(F("Access point started @ channel "));
+  Serial.println(AP_channel);
 
   printWifiStatus();
 

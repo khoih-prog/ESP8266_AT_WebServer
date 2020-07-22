@@ -6,7 +6,7 @@
    Forked and modified from ESP8266 https://github.com/esp8266/Arduino/releases
    Built by Khoi Hoang https://github.com/khoih-prog/ESP8266_AT_WebServer
    Licensed under MIT license
-   Version: 1.0.9
+   Version: 1.0.10
 
    Original author:
    @file       Esp8266WebServer.h
@@ -24,7 +24,8 @@
                                     Itsy-Bitsy nRF52840 Express, Metro nRF52840 Express, NINA_B302_ublox, NINA_B112_ublox, etc.
     1.0.7   K Hoang      23/06/2020 Add support to ESP32-AT. Update deprecated ESP8266-AT commands. Restructure examples. 
     1.0.8   K Hoang      01/07/2020 Fix bug. Add features to ESP32-AT.   
-    1.0.9   K Hoang      03/07/2020 Fix bug. Add functions. Restructure codes.  
+    1.0.9   K Hoang      03/07/2020 Fix bug. Add functions. Restructure codes.
+    1.0.10  K Hoang      22/07/2020 Fix bug not closing client and releasing socket.
  *****************************************************************************************************************************/
 
 #ifndef ESP8266_AT_Debug_H
@@ -50,18 +51,20 @@
 #endif
 
 
-#define LOGERROR(x)    if(_ESP_AT_LOGLEVEL_>0) { DEBUG_OUTPUT.print("[ESP_AT] "); DEBUG_OUTPUT.println(x); }
-#define LOGERROR1(x,y) if(_ESP_AT_LOGLEVEL_>0) { DEBUG_OUTPUT.print("[ESP_AT] "); DEBUG_OUTPUT.print(x); DEBUG_OUTPUT.print(" "); DEBUG_OUTPUT.println(y); }
-#define LOGWARN(x)     if(_ESP_AT_LOGLEVEL_>1) { DEBUG_OUTPUT.print("[ESP_AT] "); DEBUG_OUTPUT.println(x); }
-#define LOGWARN1(x,y)  if(_ESP_AT_LOGLEVEL_>1) { DEBUG_OUTPUT.print("[ESP_AT] "); DEBUG_OUTPUT.print(x); DEBUG_OUTPUT.print(" "); DEBUG_OUTPUT.println(y); }
-#define LOGINFO(x)     if(_ESP_AT_LOGLEVEL_>2) { DEBUG_OUTPUT.print("[ESP_AT] "); DEBUG_OUTPUT.println(x); }
-#define LOGINFO1(x,y)  if(_ESP_AT_LOGLEVEL_>2) { DEBUG_OUTPUT.print("[ESP_AT] "); DEBUG_OUTPUT.print(x); DEBUG_OUTPUT.print(" "); DEBUG_OUTPUT.println(y); }
-#define LOGINFO2(x,y,z) if(_ESP_AT_LOGLEVEL_>2) { DEBUG_OUTPUT.print(x); DEBUG_OUTPUT.print(" "); DEBUG_OUTPUT.print(y); DEBUG_OUTPUT.print(" "); DEBUG_OUTPUT.println(z); }
+#define AT_LOGERROR(x)    if(_ESP_AT_LOGLEVEL_>0) { DEBUG_OUTPUT.print("[ESP_AT] "); DEBUG_OUTPUT.println(x); }
+#define AT_LOGERROR1(x,y) if(_ESP_AT_LOGLEVEL_>0) { DEBUG_OUTPUT.print("[ESP_AT] "); DEBUG_OUTPUT.print(x); DEBUG_OUTPUT.print(" "); DEBUG_OUTPUT.println(y); }
 
-#define LOGDEBUG(x)      if(_ESP_AT_LOGLEVEL_>3) { DEBUG_OUTPUT.println(x); }
-#define LOGDEBUG0(x)     if(_ESP_AT_LOGLEVEL_>3) { DEBUG_OUTPUT.print(x); }
-#define LOGDEBUG1(x,y)   if(_ESP_AT_LOGLEVEL_>3) { DEBUG_OUTPUT.print(x); DEBUG_OUTPUT.print(" "); DEBUG_OUTPUT.println(y); }
-#define LOGDEBUG2(x,y,z) if(_ESP_AT_LOGLEVEL_>3) { DEBUG_OUTPUT.print(x); DEBUG_OUTPUT.print(" "); DEBUG_OUTPUT.print(y); DEBUG_OUTPUT.print(" "); DEBUG_OUTPUT.println(z); }
+#define AT_LOGWARN(x)     if(_ESP_AT_LOGLEVEL_>1) { DEBUG_OUTPUT.print("[ESP_AT] "); DEBUG_OUTPUT.println(x); }
+#define AT_LOGWARN1(x,y)  if(_ESP_AT_LOGLEVEL_>1) { DEBUG_OUTPUT.print("[ESP_AT] "); DEBUG_OUTPUT.print(x); DEBUG_OUTPUT.print(" "); DEBUG_OUTPUT.println(y); }
+
+#define AT_LOGINFO(x)     if(_ESP_AT_LOGLEVEL_>2) { DEBUG_OUTPUT.print("[ESP_AT] "); DEBUG_OUTPUT.println(x); }
+#define AT_LOGINFO1(x,y)  if(_ESP_AT_LOGLEVEL_>2) { DEBUG_OUTPUT.print("[ESP_AT] "); DEBUG_OUTPUT.print(x); DEBUG_OUTPUT.print(" "); DEBUG_OUTPUT.println(y); }
+#define AT_LOGINFO2(x,y,z) if(_ESP_AT_LOGLEVEL_>2) { DEBUG_OUTPUT.print(x); DEBUG_OUTPUT.print(" "); DEBUG_OUTPUT.print(y); DEBUG_OUTPUT.print(" "); DEBUG_OUTPUT.println(z); }
+
+#define AT_LOGDEBUG(x)      if(_ESP_AT_LOGLEVEL_>3) { DEBUG_OUTPUT.println(x); }
+#define AT_LOGDEBUG0(x)     if(_ESP_AT_LOGLEVEL_>3) { DEBUG_OUTPUT.print(x); }
+#define AT_LOGDEBUG1(x,y)   if(_ESP_AT_LOGLEVEL_>3) { DEBUG_OUTPUT.print(x); DEBUG_OUTPUT.print(" "); DEBUG_OUTPUT.println(y); }
+#define AT_LOGDEBUG2(x,y,z) if(_ESP_AT_LOGLEVEL_>3) { DEBUG_OUTPUT.print(x); DEBUG_OUTPUT.print(" "); DEBUG_OUTPUT.print(y); DEBUG_OUTPUT.print(" "); DEBUG_OUTPUT.println(z); }
 
 
 #endif

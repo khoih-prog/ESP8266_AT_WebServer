@@ -8,6 +8,12 @@
 
 ---
 
+#### New in v1.0.10
+
+1. Fix bug not closing client and releasing socket.
+2. Enhance examples.
+3. Add function to be enable to work with [WebSockets2_Generic Library](https://github.com/khoih-prog/WebSockets2_Generic)
+
 ### New Version v1.0.9
 
 1. Fix bug. 
@@ -68,16 +74,19 @@ The ESP8266_AT_Web_Server class found in `ESP8266_AT_Web_Server.h` header, is a 
 ---
 
 ## Prerequisite
- 1. [`Arduino IDE 1.8.12 or later` for Arduino](https://www.arduino.cc/en/Main/Software)
- 2. [`Arduino Core for STM32 v1.8.0 or later`](https://github.com/khoih-prog/Arduino_Core_STM32) for STM32 boards
- 3. [`Teensy core 1.51 or later`](https://www.pjrc.com/teensy/td_download.html) for Teensy (4.0, 3.6, 3.5, 3,2, 3.1, 3.0, LC) boards
- 4. [`Arduino SAM DUE core 1.6.12 or later`](https://www.arduino.cc/en/Guide/ArduinoDue) for SAM DUE ARM Cortex-M3 boards
- 5. [`Arduino SAMD core 1.8.5 or later`](https://www.arduino.cc/en/Guide/ArduinoM0) for SAMD ARM Cortex-M0+ boards
- 6. [`Adafruit SAMD core 1.5.11 or later`](https://www.adafruit.com/) for SAMD ARM Cortex-M0+ and M4 boards (Nano 33 IoT, etc.)
- 7. [`Adafruit nRF52 v0.20.1 or later`](www.adafruit.com) for nRF52 boards such as AdaFruit Feather nRF52840 Express, NINA_B302_ublox, etc.
- 8. [`Functional-VLPP library`](https://github.com/khoih-prog/functional-vlpp) to use server's lambda function. To install. check [![arduino-library-badge](https://www.ardu-badge.com/badge/Functional-Vlpp.svg?)](https://www.ardu-badge.com/Functional-Vlpp)
+ 1. [`Arduino IDE 1.8.12+` for Arduino](https://www.arduino.cc/en/Main/Software)
+ 2. `Arduino AVR core 1.8.2+` for Arduino (Use Arduino Board Manager) for AVR boards
+ 3. [`Arduino Core for STM32 v1.9.0+`](https://github.com/khoih-prog/Arduino_Core_STM32) for STM32 boards
+ 4. [`Teensy core 1.53+`](https://www.pjrc.com/teensy/td_download.html) for Teensy (4.1, 4.0, 3.6, 3.5, 3,2, 3.1, 3.0, LC) boards
+ 5. [`Arduino SAM DUE core 1.6.12+`](https://www.arduino.cc/en/Guide/ArduinoDue) for SAM DUE ARM Cortex-M3 boards
+ 6. [`Arduino SAMD core 1.8.6+`](https://www.arduino.cc/en/Guide/ArduinoM0) for SAMD ARM Cortex-M0+ boards  (Nano 33 IoT, etc.).
+ 7. [`Adafruit SAMD core 1.5.14+`](https://www.adafruit.com/)  for SAMD ARM Cortex-M0+ and M4 boards (Itsy-Bitsy M4, etc.)
+ 8. [`Adafruit nRF52 v0.20.5+`](www.adafruit.com) for nRF52 boards such as AdaFruit Feather nRF52840 Express, NINA_B302_ublox, NINA_B112_ublox, etc.
+ 9. [`Functional-VLPP library v1.0.1+`](https://github.com/khoih-prog/functional-vlpp) to use server's lambda function. To install. check [![arduino-library-badge](https://www.ardu-badge.com/badge/Functional-Vlpp.svg?)](https://www.ardu-badge.com/Functional-Vlpp)
 10. [`Ai-Thinker AT Firmware v1.5.4`](AT_Firmwares/At_firmware_bin1.54.zip) or [`AT Firmware v1.7.4.0`](AT_Firmwares/AT_Firmware_bin_1.7.4.0.zip) for ESP8266-AT shields.
 11. [`AT version_2.1.0.0_dev`](AT_Firmwares/AT_version_2.1.0.0_dev.zip) for ESP32-AT shields.
+
+---
 
 ### Important Notes
 
@@ -159,9 +168,84 @@ You can also use this link [![arduino-library-badge](https://www.ardu-badge.com/
 4. Copy whole 
   - `ESP8266_AT_WebServer-master` folder to Arduino libraries' directory such as `~/Arduino/libraries/`.
 
+### VS Code & PlatformIO:
+1. Install [VS Code](https://code.visualstudio.com/)
+2. Install [PlatformIO](https://platformio.org/platformio-ide)
+3. Install **ESP8266_AT_WebServer** library by using [Library Manager](https://docs.platformio.org/en/latest/librarymanager/). Search for ***ESP8266_AT_WebServer*** in [Platform.io Author's Libraries](https://platformio.org/lib/search?query=author:%22Khoi%20Hoang%22)
+4. Use included [platformio.ini](examples/platformio/platformio.ini) file from examples to ensure that all dependent libraries will installed automatically.
+
 ---
 
-#### Usage
+### Packages' Patches
+
+1. ***To be able to compile, run and automatically detect and display BOARD_NAME on nRF52840 boards***, you have to copy the whole [nRF52 0.20.5](https://github.com/khoih-prog/ESP8266_AT_WebServer/tree/master/Packages_Patches/adafruit/hardware/nrf52/0.20.5) directory into Adafruit nRF52 directory (~/.arduino15/packages/adafruit/hardware/nrf52/0.20.5). 
+
+Supposing the Adafruit nRF52 version is 0.20.5. These files must be copied into the directory:
+- `~/.arduino15/packages/adafruit/hardware/nrf52/0.20.5/platform.txt`
+- `~/.arduino15/packages/adafruit/hardware/nrf52/0.20.5/boards.txt`
+- `~/.arduino15/packages/adafruit/hardware/nrf52/0.20.5/variants/NINA_B302_ublox/variant.h`
+- `~/.arduino15/packages/adafruit/hardware/nrf52/0.20.5/variants/NINA_B302_ublox/variant.cpp`
+- `~/.arduino15/packages/adafruit/hardware/nrf52/0.20.5/variants/NINA_B112_ublox/variant.h`
+- `~/.arduino15/packages/adafruit/hardware/nrf52/0.20.5/variants/NINA_B112_ublox/variant.cpp`
+
+Whenever a new version is installed, remember to copy these files into the new version directory. For example, new version is x.yy.z
+These files must be copied into the directory:
+
+- `~/.arduino15/packages/adafruit/hardware/nrf52/x.yy.z/platform.txt`
+- `~/.arduino15/packages/adafruit/hardware/nrf52/x.yy.z/boards.txt`
+- `~/.arduino15/packages/adafruit/hardware/nrf52/x.yy.z/variants/NINA_B302_ublox/variant.h`
+- `~/.arduino15/packages/adafruit/hardware/nrf52/x.yy.z/variants/NINA_B302_ublox/variant.cpp`
+- `~/.arduino15/packages/adafruit/hardware/nrf52/x.yy.z/variants/NINA_B112_ublox/variant.h`
+- `~/.arduino15/packages/adafruit/hardware/nrf52/x.yy.z/variants/NINA_B112_ublox/variant.cpp`
+
+2. ***To be able to compile and run on Teensy boards***, you have to copy the file [Teensy boards.txt](https://github.com/khoih-prog/ESP8266_AT_WebServer/blob/master/Packages_Patches/hardware/teensy/avr/boards.txt) into Teensy hardware directory (./arduino-1.8.12/hardware/teensy/avr/boards.txt). 
+
+Supposing the Arduino version is 1.8.12. This file must be copied into the directory:
+
+- `./arduino-1.8.12/hardware/teensy/avr/boards.txt`
+
+Whenever a new version is installed, remember to copy this file into the new version directory. For example, new version is x.yy.zz
+This file must be copied into the directory:
+
+- `./arduino-x.yy.zz/hardware/teensy/avr/boards.txt`
+
+3. ***To be able to compile and run on SAM DUE boards***, you have to copy the whole [SAM DUE](https://github.com/khoih-prog/ESP8266_AT_WebServer/tree/master/Packages_Patches/arduino/hardware/sam/1.6.12) directory into Arduino sam directory (~/.arduino15/packages/arduino/hardware/sam/1.6.12). 
+
+Supposing the Arduino SAM core version is 1.6.12. This file must be copied into the directory:
+
+- `~/.arduino15/packages/arduino/hardware/sam/1.6.12/platform.txt`
+
+Whenever a new version is installed, remember to copy this file into the new version directory. For example, new version is x.yy.zz
+This file must be copied into the directory:
+
+- `~/.arduino15/packages/arduino/hardware/sam/x.yy.zz/platform.txt`
+
+4. ***To be able to automatically detect and display BOARD_NAME on Arduino SAMD (Nano-33-IoT, etc) boards***, you have to copy the file [Arduino SAMD platform.txt](https://github.com/khoih-prog/ESP8266_AT_WebServer/tree/master/Packages_Patches/arduino/hardware/samd/1.8.6) into Arduino samd directory (~/.arduino15/packages/arduino/hardware/samd/1.8.6). 
+
+Supposing the Arduino SAMD core version is 1.8.6. This file must be copied into the directory:
+
+- `~/.arduino15/packages/arduino/hardware/samd/1.8.6/platform.txt`
+
+Whenever a new version is installed, remember to copy this file into the new version directory. For example, new version is x.yy.zz
+This file must be copied into the directory:
+
+- `~/.arduino15/packages/arduino/hardware/samd/x.yy.zz/platform.txt`
+
+5. ***To be able to automatically detect and display BOARD_NAME on Adafruit SAMD (Itsy-Bitsy M4, etc) boards***, you have to copy the file [Adafruit SAMD platform.txt](https://github.com/khoih-prog/ESP8266_AT_WebServer/tree/master/Packages_Patches/adafruit/hardware/samd/1.5.14) into Adafruit samd directory (~/.arduino15/packages/adafruit/hardware/samd/1.5.14). 
+
+Supposing the Adafruit SAMD core version is 1.5.14. This file must be copied into the directory:
+
+- `~/.arduino15/packages/adafruit/hardware/samd/1.5.14/platform.txt`
+
+Whenever a new version is installed, remember to copy this file into the new version directory. For example, new version is x.yy.zz
+This file must be copied into the directory:
+
+- `~/.arduino15/packages/adafruit/hardware/samd/x.yy.zz/platform.txt`
+
+
+---
+
+### Usage
 
 #### Class Constructor
 
@@ -312,6 +396,8 @@ Example:*
 
 ---
 
+### Examples
+
 Also see examples: 
  1. [HelloServer](examples/HelloServer)
  2. [HelloServer2](examples/HelloServer2)
@@ -373,7 +459,7 @@ void setup(void)
   Serial.begin(115200);
   while (!Serial);
 
-  Serial.println("\nStarting HelloServer on " + String(BOARD_TYPE));
+  Serial.println("\nStarting HelloServer on " + String(BOARD_NAME));
 
   // initialize serial for ESP module
   EspSerial.begin(115200);
@@ -433,6 +519,9 @@ void loop(void)
 
 #define DEBUG_ESP8266_AT_WEBSERVER_PORT Serial
 
+// Debug Level from 0 to 4
+#define _ESP_AT_LOGLEVEL_       1
+
 // Uncomment to use ESP32-AT commands
 //#define USE_ESP32_AT      true
 
@@ -474,11 +563,25 @@ void loop(void)
 // For Teensy 4.0
 #define EspSerial Serial2   //Serial2, Pin RX2 : 7, TX2 : 8
 #if defined(__IMXRT1062__)
-#define BOARD_TYPE      "TEENSY 4.0"
-#elif ( defined(__MKL26Z64__) || defined(ARDUINO_ARCH_AVR) )
-#define BOARD_TYPE      "TEENSY LC or 2.0"
+// For Teensy 4.1/4.0
+#define BOARD_TYPE      "TEENSY 4.1/4.0"
+#elif defined(__MK66FX1M0__)
+#define BOARD_TYPE "Teensy 3.6"
+#elif defined(__MK64FX512__)
+#define BOARD_TYPE "Teensy 3.5"
+#elif defined(__MKL26Z64__)
+#define BOARD_TYPE "Teensy LC"
+#elif defined(__MK20DX256__)
+#define BOARD_TYPE "Teensy 3.2" // and Teensy 3.1 (obsolete)
+#elif defined(__MK20DX128__)
+#define BOARD_TYPE "Teensy 3.0"
+#elif defined(__AVR_AT90USB1286__)
+#error Teensy 2.0++ not supported yet
+#elif defined(__AVR_ATmega32U4__)
+#error Teensy 2.0 not supported yet
 #else
-#define BOARD_TYPE      "TEENSY 3.X"
+// For Other Boards
+#define BOARD_TYPE      "Unknown Teensy Board"
 #endif
 
 #elif defined(ESP8266_AT_USE_SAMD)
@@ -633,6 +736,10 @@ void loop(void)
 #define BOARD_TYPE      "AVR Mega"
 #endif
 
+#ifndef BOARD_NAME
+  #define BOARD_NAME    BOARD_TYPE
+#endif
+
 #include <ESP8266_AT_WebServer.h>
 
 char ssid[] = "****";        // your network SSID (name)
@@ -651,51 +758,132 @@ The following are debug terminal output and screen shot when running example [Ad
 
 ```
 Starting AdvancedServer on NRF52840_ITSYBITSY_EXPRESS
+[ESP_AT] Initializing ESP module
 [ESP_AT] Use ES8266-AT Command
 WiFi shield init done
-Connecting to SSID: HueNet1
-HTTP server started @ 192.168.2.107
-[ESP_AT] send1: len =  289
-[ESP_AT] content =  <html><head><meta http-equiv='refresh' content='5'/><title>ESP8266 Demo</title><style>body { background-color: #cccccc; font-family: Arial, Helvetica, Sans-Serif; Color: #000088; }</style></head><body><h1>Hello from ESP8266!</h1><p>Uptime: 00:00:27</p><img src="/test.svg" /></body></html>
-[ESP_AT] send1: len =  1946
-[ESP_AT] content =  <svg xmlns="http://www.w3.org/2000/svg" version="1.1" width="310" height="150">
+Connecting to WPA SSID: HueNet1
+Starting server
+[ESP_AT] Server started on port 80
+HTTP server started @ 192.168.2.44
+[ESP_AT] New client 0
+ESP8266_AT_WebServer::handleClient: New Client
+method:  GET
+url:  /
+search:
+headerName: Host
+headerValue: 192.168.2.44
+headerName: Connection
+headerValue: keep-alive
+headerName: Cache-Control
+headerValue: max-age=0
+headerName: Upgrade-Insecure-Requests
+headerValue: 1
+headerName: DNT
+headerValue: 1
+headerName: Accept
+headerValue: text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9
+headerName: Referer
+headerValue: http://192.168.2.44/
+headerName: Accept-Encoding
+headerValue: gzip, deflate
+[ESP_AT] TIMEOUT: 104
+args:
+args count:  0
+args:
+args count:  0
+Request: /
+Arguments: 
+Final list of key/value pairs:
+ESP8266_AT_WebServer::_handleRequest handle
+[ESP_AT] ReqHandler::handle
+AT_WebServer::send1: len =  314
+content =  <html><head><meta http-equiv='refresh' content='5'/><title>ESP-AT NRF52840_ITSYBITSY_EXPRESS</title><style>body { background-color: #cccccc; font-family: Arial, Helvetica, Sans-Serif; Color: #000088; }</style></head><body><h1>Hello from ESP-AT</h1><h3>on NRF52840_ITSYBITSY_EXPRESS</h3><p>Uptime: 0 d 00:00:23</p><img src="/test.svg" /></body></html>
+AT_WebServer::_prepareHeader sendHeader Conn close
+AT_WebServer::send1: write header =  HTTP/1.1 200 OK
+Content-Type: text/html
+Content-Length: 314
+Connection: close
+
+ESP8266_AT_WebServer::sendContent: Client.write content:  <html><head><meta http-equiv='refresh' content='5'/><title>ESP-AT AVR Mega</title><style>body { background-color: #cccccc; font-family: Arial, Helvetica, Sans-Serif; Color: #000088; }</style></head><body><h1>Hello from ESP-AT</h1><h3>on NRF52840_ITSYBITSY_EXPRESS</h3><p>Uptime: 0 d 00:00:23</p><img src="/test.svg" /></body></html>
+[ESP_AT] ReqHandler::handle done
+ESP8266_AT_WebServer::_handleRequest OK
+ESP8266_AT_WebServer::handleClient: Don't keepCurrentClient
+ESP8266_AT_WebServer::handleClient: Client disconnected
+[ESP_AT] New client 0
+ESP8266_AT_WebServer::handleClient: New Client
+method:  GET
+url:  /test.svg
+search:
+headerName: Host
+headerValue: 192.168.2.44
+headerName: Connection
+headerValue: keep-alive
+headerName: User-Agent
+headerValue: Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 ike Gecko) Chrome/84.0.4147.89 Safari/537.36
+headerName: DNT
+headerValue: 1
+headerName: Accept
+headerValue: image/webp,image/apng,image/*,*/*;q=0.8
+args:
+args count:  0
+args:
+args count:  0
+[ESP_AT] TIMEOUT: 81
+Request: /test.svg
+Arguments: 
+Final list of key/value pairs:
+ESP8266_AT_WebServer::_handleRequest handle
+[ESP_AT] ReqHandler::handle
+AT_WebServer::send1: len =  1949
+content =  <svg xmlns="http://www.w3.org/2000/svg" version="1.1" width="310" height="150">
 <rect width="310" height="150" fill="rgb(250, 230, 210)" stroke-width="1" stroke="rgb(0, 0, 0)" />
 <g stroke="black">
-<line x1="10" y1="77" x2="20" y2="67" stroke-width="1" />
-<line x1="20" y1="67" x2="30" y2="98" stroke-width="1" />
-<line x1="30" y1="98" x2="40" y2="111" stroke-width="1" />
-<line x1="40" y1="111" x2="50" y2="90" stroke-width="1" />
-<line x1="50" y1="90" x2="60" y2="22" stroke-width="1" />
-<line x1="60" y1="22" x2="70" y2="98" stroke-width="1" />
-<line x1="70" y1="98" x2="80" y2="64" stroke-width="1" />
-<line x1="80" y1="64" x2="90" y2="104" stroke-width="1" />
-<line x1="90" y1="104" x2="100" y2="31" stroke-width="1" />
-<line x1="100" y1="31" x2="110" y2="59" stroke-width="1" />
-<line x1="110" y1="59" x2="120" y2="139" stroke-width="1" />
-<line x1="120" y1="139" x2="130" y2="117" stroke-width="1" />
-<line x1="130" y1="117" x2="140" y2="75" stroke-width="1" />
-<line x1="140" y1="75" x2="150" y2="72" stroke-width="1" />
-<line x1="150" y1="72" x2="160" y2="137" stroke-width="1" />
-<line x1="160" y1="137" x2="170" y2="20" stroke-width="1" />
-<line x1="170" y1="20" x2="180" y2="94" stroke-width="1" />
-<line x1="180" y1="94" x2="190" y2="81" stroke-width="1" />
-<line x1="190" y1="81" x2="200" y2="38" stroke-width="1" />
-<line x1="200" y1="38" x2="210" y2="33" stroke-width="1" />
-<line x1="210" y1="33" x2="220" y2="53" stroke-width="1" />
-<line x1="220" y1="53" x2="230" y2="88" stroke-width="1" />
-<line x1="230" y1="88" x2="240" y2="32" stroke-width="1" />
-<line x1="240" y1="32" x2="250" y2="110" stroke-width="1" />
-<line x1="250" y1="110" x2="260" y2="87" stroke-width="1" />
-<line x1="260" y1="87" x2="270" y2="11" stroke-width="1" />
-<line x1="270" y1="11" x2="280" y2="98" stroke-width="1" />
-<line x1="280" y1="98" x2="290" y2="76" stroke-width="1" />
-<line x1="290" y1="76" x2="300" y2="121" stroke-width="1" />
+<line x1="10" y1="103" x2="20" y2="131" stroke-width="1" />
+<line x1="20" y1="131" x2="30" y2="99" stroke-width="1" />
+<line x1="30" y1="99" x2="40" y2="16" stroke-width="1" />
+<line x1="40" y1="16" x2="50" y2="100" stroke-width="1" />
+<line x1="50" y1="100" x2="60" y2="40" stroke-width="1" />
+<line x1="60" y1="40" x2="70" y2="110" stroke-width="1" />
+<line x1="70" y1="110" x2="80" y2="52" stroke-width="1" />
+<line x1="80" y1="52" x2="90" y2="131" stroke-width="1" />
+<line x1="90" y1="131" x2="100" y2="79" stroke-width="1" />
+<line x1="100" y1="79" x2="110" y2="84" stroke-width="1" />
+<line x1="110" y1="84" x2="120" y2="35" stroke-width="1" />
+<line x1="120" y1="35" x2="130" y2="72" stroke-width="1" />
+<line x1="130" y1="72" x2="140" y2="18" stroke-width="1" />
+<line x1="140" y1="18" x2="150" y2="37" stroke-width="1" />
+<line x1="150" y1="37" x2="160" y2="29" stroke-width="1" />
+<line x1="160" y1="29" x2="170" y2="85" stroke-width="1" />
+<line x1="170" y1="85" x2="180" y2="123" stroke-width="1" />
+<line x1="180" y1="123" x2="190" y2="126" stroke-width="1" />
+<line x1="190" y1="126" x2="200" y2="88" stroke-width="1" />
+<line x1="200" y1="88" x2="210" y2="17" stroke-width="1" />
+<line x1="210" y1="17" x2="220" y2="35" stroke-width="1" />
+<line x1="220" y1="35" x2="230" y2="53" stroke-width="1" />
+<line x1="230" y1="53" x2="240" y2="49" stroke-width="1" />
+<line x1="240" y1="49" x2="250" y2="122" stroke-width="1" />
+<line x1="250" y1="122" x2="260" y2="43" stroke-width="1" />
+<line x1="260" y1="43" x2="270" y2="37" stroke-width="1" />
+<line x1="270" y1="37" x2="280" y2="42" stroke-width="1" />
+<line x1="280" y1="42" x2="290" y2="90" stroke-width="1" />
+<line x1="290" y1="90" x2="300" y2="119" stroke-width="1" />
 </g>
 </svg>
 
+AT_WebServer::_prepareHeader sendHeader Conn close
+AT_WebServer::send1: write header =  HTTP/1.1 200 OK
+Content-Type: image/svg+xml
+Content-Length: 1949
+Connection: close
 ```
 
 ---
+
+#### New in v1.0.10
+
+1. Fix bug not closing client and releasing socket.
+2. Enhance examples.
+3. Add function to be enable to work with [WebSockets2_Generic Library](https://github.com/khoih-prog/WebSockets2_Generic)
 
 ### New Version v1.0.9
 
@@ -757,12 +945,32 @@ The library supports
 1. Bug Searching and Killing
 2. Add SSL/TLS Client and Server support
 3. Support more types of boards using ESP8266 AT-command shields.
+4. Add mDNS features.
 
+### DONE
 
+ 1. Add support to ***Arduino SAMD21 (ZERO, MKR, NANO_33_IOT, etc.)***
+ 2. Add support to ***Adafruit SAMD21 (Itsy-Bitsy M0, Metro M0, Feather M0 Express, etc.)***.
+ 3. Add support to ***Adafruit SAMD51 (Itsy-Bitsy M4, Metro M4, Grand Central M4, Feather M4 Express, etc.)***.
+ 4. Add support to ***Adafruit nRF52 ( Feather nRF52832, nRF52840 Express, BlueFruit Sense, Itsy-Bitsy nRF52840 Express, Metro nRF52840 Express, NINA_B302_ublox, NINA_B112_ublox, etc.***.
+ 5. Add support to SAM DUE.
+ 6. Add support to ESP32-AT
+ 7. Add support to W600 and WIS600-01S
+ 
+---
+ 
 ### Contributions and thanks
 1. Based on and modified [Ivan Grokhotkov's ESP8266WebServer](https://github.com/esp8266/Arduino/tree/master/libraries/ESP8266WebServer)
 2. Based on and modified from [bportaluri's WiFiEsp library](https://github.com/bportaluri/WiFiEsp)
-3. Thanks to good work of [Miguel Alexandre Wisintainer](https://github.com/tcpipchip) for initiating, inspriring, working with, developing, debugging and testing. Without that, support to nRF52, especially ***U-Box B302, B112 running as nRF52840 / nRF52832***, has never been started and finished.
+3. Thanks to good work of [Miguel Alexandre Wisintainer](https://github.com/tcpipchip) for initiating, inspriring, working with, developing, debugging and testing. Without that, support to nRF52, especially ***U-Blox B302 running as nRF52840 and U-Blox B112 running as nRF52832***, has never been started and finished. Also see [ESP32-based U-BLOX NINA W102 running ENC28J60](https://u-blox-ethernet-ninaw.blogspot.com/).
+
+<table>
+  <tr>
+    <td align="center"><a href="https://github.com/igrr"><img src="https://github.com/igrr.png" width="100px;" alt="igrr"/><br /><sub><b>⭐️ igrr</b></sub></a><br /></td>
+    <td align="center"><a href="https://github.com/bportaluri"><img src="https://github.com/bportaluri.png" width="100px;" alt="bportaluri"/><br /><sub><b>⭐️ bportaluri</b></sub></a><br /></td>
+<td align="center"><a href="https://github.com/tcpipchip"><img src="https://github.com/tcpipchip.png" width="100px;" alt="tcpipchip"/><br /><sub><b>⭐️ tcpipchip</b></sub></a><br /></td>
+  </tr> 
+</table>
 
 ## Contributing
 

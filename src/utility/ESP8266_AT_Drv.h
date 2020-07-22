@@ -6,7 +6,7 @@
    Forked and modified from ESP8266 https://github.com/esp8266/Arduino/releases
    Built by Khoi Hoang https://github.com/khoih-prog/ESP8266_AT_WebServer
    Licensed under MIT license
-   Version: 1.0.9
+   Version: 1.0.10
 
    Original author:
    @file       Esp8266WebServer.h
@@ -24,7 +24,8 @@
                                     Itsy-Bitsy nRF52840 Express, Metro nRF52840 Express, NINA_B302_ublox, NINA_B112_ublox, etc.
     1.0.7   K Hoang      23/06/2020 Add support to ESP32-AT. Update deprecated ESP8266-AT commands. Restructure examples. 
     1.0.8   K Hoang      01/07/2020 Fix bug. Add features to ESP32-AT.   
-    1.0.9   K Hoang      03/07/2020 Fix bug. Add functions. Restructure codes.  
+    1.0.9   K Hoang      03/07/2020 Fix bug. Add functions. Restructure codes.
+    1.0.10  K Hoang      22/07/2020 Fix bug not closing client and releasing socket.
  *****************************************************************************************************************************/
 
 #ifndef ESP8266_AT_Drv_h
@@ -65,17 +66,22 @@ extern bool useESP32_AT;
 // maximum size of AT command
 #define CMD_BUFFER_SIZE 200
 
+typedef enum eProtMode 
+{
+  TCP_MODE, 
+  UDP_MODE, 
+  SSL_MODE
+} tProtMode;
 
-typedef enum eProtMode {TCP_MODE, UDP_MODE, SSL_MODE} tProtMode;
-
-
-typedef enum {
+typedef enum 
+{
   WL_FAILURE = -1,
   WL_SUCCESS = 1,
 } wl_error_code_t;
 
 /* Authentication modes */
-enum wl_auth_mode {
+enum wl_auth_mode 
+{
   AUTH_MODE_INVALID,
   AUTH_MODE_AUTO,
   AUTH_MODE_OPEN_SYSTEM,
@@ -87,9 +93,10 @@ enum wl_auth_mode {
 };
 
 
-typedef enum {
-  WL_NO_SHIELD = 255,
-  WL_IDLE_STATUS = 0,
+typedef enum 
+{
+  WL_NO_SHIELD    = 255,
+  WL_IDLE_STATUS  = 0,
   //WL_NO_SSID_AVAIL,
   //WL_SCAN_COMPLETED,
   WL_CONNECTED,
@@ -99,16 +106,18 @@ typedef enum {
 } wl_status_t;
 
 /* Encryption modes */
-enum wl_enc_type {
-  ENC_TYPE_NONE = 0,
-  ENC_TYPE_WEP = 1,
-  ENC_TYPE_WPA_PSK = 2,
-  ENC_TYPE_WPA2_PSK = 3,
+enum wl_enc_type 
+{
+  ENC_TYPE_NONE         = 0,
+  ENC_TYPE_WEP          = 1,
+  ENC_TYPE_WPA_PSK      = 2,
+  ENC_TYPE_WPA2_PSK     = 3,
   ENC_TYPE_WPA_WPA2_PSK = 4
 };
 
 
-enum wl_tcp_state {
+enum wl_tcp_state 
+{
   CLOSED      = 0,
   LISTEN      = 1,
   SYN_SENT    = 2,

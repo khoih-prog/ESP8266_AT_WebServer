@@ -6,7 +6,7 @@
    Forked and modified from ESP8266 https://github.com/esp8266/Arduino/releases
    Built by Khoi Hoang https://github.com/khoih-prog/ESP8266_AT_WebServer
    Licensed under MIT license
-   Version: 1.0.9
+   Version: 1.0.10
 
    Original author:
    @file       Esp8266WebServer.h
@@ -24,11 +24,14 @@
                                     Itsy-Bitsy nRF52840 Express, Metro nRF52840 Express, NINA_B302_ublox, NINA_B112_ublox, etc.
     1.0.7   K Hoang      23/06/2020 Add support to ESP32-AT. Update deprecated ESP8266-AT commands. Restructure examples. 
     1.0.8   K Hoang      01/07/2020 Fix bug. Add features to ESP32-AT.   
-    1.0.9   K Hoang      03/07/2020 Fix bug. Add functions. Restructure codes.                    
+    1.0.9   K Hoang      03/07/2020 Fix bug. Add functions. Restructure codes.
+    1.0.10  K Hoang      22/07/2020 Fix bug not closing client and releasing socket.                  
  *****************************************************************************************************************************/
 
 #ifndef ESP8266_AT_WebServer_h
 #define ESP8266_AT_WebServer_h
+
+#define USE_NEW_WEBSERVER_VERSION     true
 
 #ifndef USE_ESP32_AT
   // Use ESP8266-AT commands only, some ESP32-AT commands not support _CUR and _DEF options
@@ -99,35 +102,62 @@
 #include <ESP8266_AT.h>
 #include "utility/mimetable.h"
 
-enum HTTPMethod { HTTP_ANY, HTTP_GET, HTTP_HEAD, HTTP_POST, HTTP_PUT, HTTP_PATCH, HTTP_DELETE, HTTP_OPTIONS };
-enum HTTPUploadStatus { UPLOAD_FILE_START, UPLOAD_FILE_WRITE, UPLOAD_FILE_END,
-                        UPLOAD_FILE_ABORTED
-                      };
-enum HTTPClientStatus { HC_NONE, HC_WAIT_READ, HC_WAIT_CLOSE };
-enum HTTPAuthMethod { BASIC_AUTH, DIGEST_AUTH };
+enum HTTPMethod 
+{ 
+  HTTP_ANY, 
+  HTTP_GET,
+  HTTP_HEAD,
+  HTTP_POST, 
+  HTTP_PUT, 
+  HTTP_PATCH, 
+  HTTP_DELETE, 
+  HTTP_OPTIONS 
+};
+
+enum HTTPUploadStatus 
+{ 
+  UPLOAD_FILE_START, 
+  UPLOAD_FILE_WRITE, 
+  UPLOAD_FILE_END,
+  UPLOAD_FILE_ABORTED
+};
+
+enum HTTPClientStatus 
+{ 
+  HC_NONE, 
+  HC_WAIT_READ, 
+  HC_WAIT_CLOSE 
+};
+
+enum HTTPAuthMethod 
+{ 
+  BASIC_AUTH, 
+  DIGEST_AUTH 
+};
 
 #define HTTP_DOWNLOAD_UNIT_SIZE 1460
 
-#define HTTP_UPLOAD_BUFLEN 2048
+#define HTTP_UPLOAD_BUFLEN      2048
 
-#define HTTP_MAX_DATA_WAIT 5000 //ms to wait for the client to send the request
-#define HTTP_MAX_POST_WAIT 5000 //ms to wait for POST data to arrive
-#define HTTP_MAX_SEND_WAIT 5000 //ms to wait for data chunk to be ACKed
-#define HTTP_MAX_CLOSE_WAIT 2000 //ms to wait for the client to close the connection
+#define HTTP_MAX_DATA_WAIT      5000 //ms to wait for the client to send the request
+#define HTTP_MAX_POST_WAIT      5000 //ms to wait for POST data to arrive
+#define HTTP_MAX_SEND_WAIT      5000 //ms to wait for data chunk to be ACKed
+#define HTTP_MAX_CLOSE_WAIT     2000 //ms to wait for the client to close the connection
 
-#define CONTENT_LENGTH_UNKNOWN ((size_t) -1)
-#define CONTENT_LENGTH_NOT_SET ((size_t) -2)
+#define CONTENT_LENGTH_UNKNOWN  ((size_t) -1)
+#define CONTENT_LENGTH_NOT_SET  ((size_t) -2)
 
 class ESP8266_AT_WebServer;
 
-typedef struct {
+typedef struct 
+{
   HTTPUploadStatus status;
   String  filename;
   String  name;
   String  type;
-  size_t  totalSize;    // total size of uploaded file so far
-  size_t  currentSize;  // size of data currently in buf
-  size_t  contentLength; // size of entire post request, file size + headers and other request data.
+  size_t  totalSize;      // file size
+  size_t  currentSize;    // size of data currently in buf
+  size_t  contentLength;  // size of entire post request, file size + headers and other request data.
   uint8_t buf[HTTP_UPLOAD_BUFLEN];
 } HTTPUpload;
 
@@ -159,16 +189,21 @@ class ESP8266_AT_WebServer
     void onNotFound(THandlerFunction fn);  //called when handler is not assigned
     void onFileUpload(THandlerFunction fn); //handle file uploads
 
-    String uri() {
+    String uri() 
+    {
       return _currentUri;
     }
-    HTTPMethod method() {
+    
+    HTTPMethod method() 
+    {
       return _currentMethod;
     }
-    ESP8266_AT_Client client() {
+    
+    ESP8266_AT_Client client() 
+    {
       return _currentClient;
     }
-    //KH
+    
     #if USE_NEW_WEBSERVER_VERSION
     HTTPUpload& upload() 
     {
@@ -208,14 +243,15 @@ class ESP8266_AT_WebServer
 #if !( defined(CORE_TEENSY) || (ESP8266_AT_USE_SAMD) || (ESP8266_AT_USE_STM32) || (ESP8266_AT_USE_SAM_DUE) || (ESP8266_AT_USE_NRF528XX) )
     void send_P(int code, PGM_P content_type, PGM_P content);
     void send_P(int code, PGM_P content_type, PGM_P content, size_t contentLength);
+    void sendContent_P(PGM_P content);
+    void sendContent_P(PGM_P content, size_t size);
 #endif
 
     void setContentLength(size_t contentLength);
     void sendHeader(const String& name, const String& value, bool first = false);
     void sendContent(const String& content);
     void sendContent(const String& content, size_t size);
-    void sendContent_P(PGM_P content);
-    void sendContent_P(PGM_P content, size_t size);
+    
 
     static String urlDecode(const String& text);
 
@@ -224,12 +260,13 @@ class ESP8266_AT_WebServer
       using namespace mime;
       setContentLength(file.size());
       
-      //if (String(file.name()).endsWith(".gz") && contentType != "application/x-gzip" && contentType != "application/octet-stream") 
       if (String(file.name()).endsWith(mimeTable[gz].endsWith) && contentType != mimeTable[gz].mimeType && contentType != mimeTable[none].mimeType) 
       {
         sendHeader("Content-Encoding", "gzip");
       }
+      
       send(200, contentType, "");
+      
       return _currentClient.write(file);
     }
 
@@ -256,7 +293,8 @@ class ESP8266_AT_WebServer
     void _prepareHeader(String& response, int code, const char* content_type, size_t contentLength);
     bool _collectHeader(const char* headerName, const char* headerValue);
     
-    struct RequestArgument {
+    struct RequestArgument 
+    {
       String key;
       String value;
     };
@@ -264,20 +302,20 @@ class ESP8266_AT_WebServer
     ESP8266_AT_Server  _server;
 
     ESP8266_AT_Client  _currentClient;
-    HTTPMethod  _currentMethod;
-    String      _currentUri;
-    uint8_t     _currentVersion;
-    HTTPClientStatus _currentStatus;
-    unsigned long _statusChange;
+    HTTPMethod          _currentMethod;
+    String              _currentUri;
+    uint8_t             _currentVersion;
+    HTTPClientStatus    _currentStatus;
+    unsigned long       _statusChange;
 
-    RequestHandler*  _currentHandler;
-    RequestHandler*  _firstHandler;
-    RequestHandler*  _lastHandler;
-    THandlerFunction _notFoundHandler;
-    THandlerFunction _fileUploadHandler;
+    RequestHandler*     _currentHandler;
+    RequestHandler*     _firstHandler;
+    RequestHandler*     _lastHandler;
+    THandlerFunction    _notFoundHandler;
+    THandlerFunction    _fileUploadHandler;
 
-    int              _currentArgCount;
-    RequestArgument* _currentArgs;
+    int                 _currentArgCount;
+    RequestArgument*    _currentArgs;
     
 
     //KH

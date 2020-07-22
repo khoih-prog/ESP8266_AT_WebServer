@@ -6,7 +6,7 @@
    Forked and modified from ESP8266 https://github.com/esp8266/Arduino/releases
    Built by Khoi Hoang https://github.com/khoih-prog/ESP8266_AT_WebServer
    Licensed under MIT license
-   Version: 1.0.9
+   Version: 1.0.10
 
    Version Modified By   Date      Comments
    ------- -----------  ---------- -----------
@@ -20,13 +20,17 @@
                                     Itsy-Bitsy nRF52840 Express, Metro nRF52840 Express, NINA_B30_ublox, etc. 
     1.0.7   K Hoang      23/06/2020 Add support to ESP32-AT. Update deprecated ESP8266-AT commands. Restructure examples. 
     1.0.8   K Hoang      01/07/2020 Fix bug. Add features to ESP32-AT.   
-    1.0.9   K Hoang      03/07/2020 Fix bug. Add functions. Restructure codes.       
+    1.0.9   K Hoang      03/07/2020 Fix bug. Add functions. Restructure codes.
+    1.0.10  K Hoang      22/07/2020 Fix bug not closing client and releasing socket.      
  *****************************************************************************************************************************/
 
 #ifndef defines_h
 #define defines_h
 
 #define DEBUG_ESP8266_AT_WEBSERVER_PORT Serial
+
+// Debug Level from 0 to 4
+#define _ESP_AT_LOGLEVEL_       1
 
 // Uncomment to use ESP32-AT commands
 //#define USE_ESP32_AT      true
@@ -69,11 +73,25 @@
 // For Teensy 4.0
 #define EspSerial Serial2   //Serial2, Pin RX2 : 7, TX2 : 8
 #if defined(__IMXRT1062__)
-#define BOARD_TYPE      "TEENSY 4.0"
-#elif ( defined(__MKL26Z64__) || defined(ARDUINO_ARCH_AVR) )
-#define BOARD_TYPE      "TEENSY LC or 2.0"
+// For Teensy 4.1/4.0
+#define BOARD_TYPE      "TEENSY 4.1/4.0"
+#elif defined(__MK66FX1M0__)
+#define BOARD_TYPE "Teensy 3.6"
+#elif defined(__MK64FX512__)
+#define BOARD_TYPE "Teensy 3.5"
+#elif defined(__MKL26Z64__)
+#define BOARD_TYPE "Teensy LC"
+#elif defined(__MK20DX256__)
+#define BOARD_TYPE "Teensy 3.2" // and Teensy 3.1 (obsolete)
+#elif defined(__MK20DX128__)
+#define BOARD_TYPE "Teensy 3.0"
+#elif defined(__AVR_AT90USB1286__)
+#error Teensy 2.0++ not supported yet
+#elif defined(__AVR_ATmega32U4__)
+#error Teensy 2.0 not supported yet
 #else
-#define BOARD_TYPE      "TEENSY 3.X"
+// For Other Boards
+#define BOARD_TYPE      "Unknown Teensy Board"
 #endif
 
 #elif defined(ESP8266_AT_USE_SAMD)
@@ -226,6 +244,10 @@
 // For Mega
 #define EspSerial Serial3
 #define BOARD_TYPE      "AVR Mega"
+#endif
+
+#ifndef BOARD_NAME
+  #define BOARD_NAME    BOARD_TYPE
 #endif
 
 #include <ESP8266_AT_WebServer.h>

@@ -6,7 +6,7 @@
    Forked and modified from ESP8266 https://github.com/esp8266/Arduino/releases
    Built by Khoi Hoang https://github.com/khoih-prog/ESP8266_AT_WebServer
    Licensed under MIT license
-   Version: 1.0.9
+   Version: 1.0.10
 
    Original author:
    @file       Esp8266WebServer.h
@@ -24,7 +24,8 @@
                                     Itsy-Bitsy nRF52840 Express, Metro nRF52840 Express, NINA_B302_ublox, NINA_B112_ublox, etc.
     1.0.7   K Hoang      23/06/2020 Add support to ESP32-AT. Update deprecated ESP8266-AT commands. Restructure examples. 
     1.0.8   K Hoang      01/07/2020 Fix bug. Add features to ESP32-AT.   
-    1.0.9   K Hoang      03/07/2020 Fix bug. Add functions. Restructure codes. 
+    1.0.9   K Hoang      03/07/2020 Fix bug. Add functions. Restructure codes.
+    1.0.10  K Hoang      22/07/2020 Fix bug not closing client and releasing socket.
  *****************************************************************************************************************************/
 
 #ifndef RequestHandlerImpl_h
@@ -33,7 +34,8 @@
 #include "RequestHandler.h"
 #include "mimetable.h"
 
-class FunctionRequestHandler : public RequestHandler {
+class FunctionRequestHandler : public RequestHandler 
+{
   public:
     FunctionRequestHandler(ESP8266_AT_WebServer::THandlerFunction fn, ESP8266_AT_WebServer::THandlerFunction ufn, const String &uri, HTTPMethod method)
       : _fn(fn)
@@ -55,6 +57,7 @@ class FunctionRequestHandler : public RequestHandler {
       {
         String _uristart = _uri;
         _uristart.replace("/*", "");
+        
         if (requestUri.startsWith(_uristart))
           return true;
       }
@@ -77,11 +80,11 @@ class FunctionRequestHandler : public RequestHandler {
       if (!canHandle(requestMethod, requestUri))
         return false;
 
-      LOGINFO(F("ReqHandler::handle"));
+      AT_LOGINFO(F("ReqHandler::handle"));
 
       _fn();
 
-      LOGINFO(F("ReqHandler::handle done"));
+      AT_LOGINFO(F("ReqHandler::handle done"));
       return true;
     }
 
@@ -123,49 +126,56 @@ class StaticRequestHandler : public RequestHandler
     {
         using namespace mime;
         char buff[sizeof(mimeTable[0].mimeType)];
+        
         // Check all entries but last one for match, return if found
         for (size_t i=0; i < sizeof(mimeTable)/sizeof(mimeTable[0])-1; i++) 
         {
             strcpy(buff, mimeTable[i].endsWith);
+            
             if (path.endsWith(buff)) {
                 strcpy(buff, mimeTable[i].mimeType);
                 return String(buff);
             }
         }
+        
         // Fall-through and just return default type
         strcpy(buff, mimeTable[sizeof(mimeTable)/sizeof(mimeTable[0])-1].mimeType);
         return String(buff);
     }
     
     #else
-    static String getContentType(const String& path) {
-      if (path.endsWith(".html")) return "text/html";
-      else if (path.endsWith(".htm")) return "text/html";
-      else if (path.endsWith(".css")) return "text/css";
-      else if (path.endsWith(".txt")) return "text/plain";
-      else if (path.endsWith(".js")) return "application/javascript";
-      else if (path.endsWith(".png")) return "image/png";
-      else if (path.endsWith(".gif")) return "image/gif";
-      else if (path.endsWith(".jpg")) return "image/jpeg";
-      else if (path.endsWith(".ico")) return "image/x-icon";
-      else if (path.endsWith(".svg")) return "image/svg+xml";
-      else if (path.endsWith(".ttf")) return "application/x-font-ttf";
-      else if (path.endsWith(".otf")) return "application/x-font-opentype";
-      else if (path.endsWith(".woff")) return "application/font-woff";
-      else if (path.endsWith(".woff2")) return "application/font-woff2";
-      else if (path.endsWith(".eot")) return "application/vnd.ms-fontobject";
-      else if (path.endsWith(".sfnt")) return "application/font-sfnt";
-      else if (path.endsWith(".xml")) return "text/xml";
-      else if (path.endsWith(".pdf")) return "application/pdf";
-      else if (path.endsWith(".zip")) return "application/zip";
-      else if (path.endsWith(".gz")) return "application/x-gzip";
-      else if (path.endsWith(".appcache")) return "text/cache-manifest";
+    
+    static String getContentType(const String& path) 
+    {
+      if (path.endsWith(".html"))           return "text/html";
+      else if (path.endsWith(".htm"))       return "text/html";
+      else if (path.endsWith(".css"))       return "text/css";
+      else if (path.endsWith(".txt"))       return "text/plain";
+      else if (path.endsWith(".js"))        return "application/javascript";
+      else if (path.endsWith(".png"))       return "image/png";
+      else if (path.endsWith(".gif"))       return "image/gif";
+      else if (path.endsWith(".jpg"))       return "image/jpeg";
+      else if (path.endsWith(".ico"))       return "image/x-icon";
+      else if (path.endsWith(".svg"))       return "image/svg+xml";
+      else if (path.endsWith(".ttf"))       return "application/x-font-ttf";
+      else if (path.endsWith(".otf"))       return "application/x-font-opentype";
+      else if (path.endsWith(".woff"))      return "application/font-woff";
+      else if (path.endsWith(".woff2"))     return "application/font-woff2";
+      else if (path.endsWith(".eot"))       return "application/vnd.ms-fontobject";
+      else if (path.endsWith(".sfnt"))      return "application/font-sfnt";
+      else if (path.endsWith(".xml"))       return "text/xml";
+      else if (path.endsWith(".pdf"))       return "application/pdf";
+      else if (path.endsWith(".zip"))       return "application/zip";
+      else if (path.endsWith(".gz"))        return "application/x-gzip";
+      else if (path.endsWith(".appcache"))  return "text/cache-manifest";
       return "application/octet-stream";
     }
+    
   #endif
   
   
   protected:
+  
     String _uri;
     String _path;
     String _cache_header;
@@ -174,4 +184,4 @@ class StaticRequestHandler : public RequestHandler
 };
 
 
-#endif //RequestHandlerImpl_h
+#endif //RequestHandlerImpl_h  

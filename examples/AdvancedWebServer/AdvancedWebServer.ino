@@ -6,7 +6,7 @@
     Forked and modified from ESP8266 https://github.com/esp8266/Arduino/releases
     Built by Khoi Hoang https://github.com/khoih-prog/ESP8266_AT_WebServer
     Licensed under MIT license
-    Version: 1.0.9
+    Version: 1.0.10
 
     Copyright (c) 2015, Majenko Technologies
     All rights reserved.
@@ -48,7 +48,8 @@
                                     Itsy-Bitsy nRF52840 Express, Metro nRF52840 Express, NINA_B30_ublox, etc. 
     1.0.7   K Hoang      23/06/2020 Add support to ESP32-AT. Update deprecated ESP8266-AT commands. Restructure examples. 
     1.0.8   K Hoang      01/07/2020 Fix bug. Add features to ESP32-AT.   
-    1.0.9   K Hoang      03/07/2020 Fix bug. Add functions. Restructure codes.          
+    1.0.9   K Hoang      03/07/2020 Fix bug. Add functions. Restructure codes.
+    1.0.10  K Hoang      22/07/2020 Fix bug not closing client and releasing socket.          
  *****************************************************************************************************************************/
 
 #include "defines.h"
@@ -62,28 +63,31 @@ const int led = 13;
 
 void handleRoot()
 {
+#define BUFFER_SIZE     400
+  
   digitalWrite(led, 1);
-  char temp[400];
+  char temp[BUFFER_SIZE];
   int sec = millis() / 1000;
   int min = sec / 60;
   int hr = min / 60;
+  int day = hr / 24;
 
-  snprintf(temp, 400,
+  snprintf(temp, BUFFER_SIZE - 1,
            "<html>\
 <head>\
 <meta http-equiv='refresh' content='5'/>\
-<title>ESP8266 Demo</title>\
+<title>ESP-AT %s</title>\
 <style>\
 body { background-color: #cccccc; font-family: Arial, Helvetica, Sans-Serif; Color: #000088; }\
 </style>\
 </head>\
 <body>\
-<h1>Hello from ESP8266!</h1>\
-<p>Uptime: %02d:%02d:%02d</p>\
+<h1>Hello from ESP-AT</h1>\
+<h3>on %s</h3>\
+<p>Uptime: %d d %02d:%02d:%02d</p>\
 <img src=\"/test.svg\" />\
 </body>\
-</html>",
-           hr, min % 60, sec % 60);
+</html>", BOARD_NAME, BOARD_NAME, day, hr, min % 60, sec % 60);
 
   server.send(200, "text/html", temp);
   digitalWrite(led, 0);
@@ -140,7 +144,7 @@ void setup(void)
   Serial.begin(115200);
   while (!Serial);
   
-  Serial.println("\nStarting AdvancedServer on " + String(BOARD_TYPE));
+  Serial.println("\nStarting AdvancedServer on " + String(BOARD_NAME));
 
   // initialize serial for ESP module
   EspSerial.begin(115200);

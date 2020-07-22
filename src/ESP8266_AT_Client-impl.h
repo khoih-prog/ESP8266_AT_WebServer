@@ -6,7 +6,7 @@
    Forked and modified from ESP8266 https://github.com/esp8266/Arduino/releases
    Built by Khoi Hoang https://github.com/khoih-prog/ESP8266_AT_WebServer
    Licensed under MIT license
-   Version: 1.0.9
+   Version: 1.0.10
 
    Original author:
    @file       Esp8266WebServer.h
@@ -24,7 +24,8 @@
                                     Itsy-Bitsy nRF52840 Express, Metro nRF52840 Express, NINA_B302_ublox, NINA_B112_ublox, etc.
     1.0.7   K Hoang      23/06/2020 Add support to ESP32-AT. Update deprecated ESP8266-AT commands. Restructure examples. 
     1.0.8   K Hoang      01/07/2020 Fix bug. Add features to ESP32-AT.   
-    1.0.9   K Hoang      03/07/2020 Fix bug. Add functions. Restructure codes.   
+    1.0.9   K Hoang      03/07/2020 Fix bug. Add functions. Restructure codes.
+    1.0.10  K Hoang      22/07/2020 Fix bug not closing client and releasing socket. 
  *****************************************************************************************************************************/
 
 #ifndef ESP8266_AT_Client_impl_h
@@ -101,7 +102,7 @@ int ESP8266_AT_Client::connect(IPAddress ip, uint16_t port)
 /* Private method */
 int ESP8266_AT_Client::connect(const char* host, uint16_t port, uint8_t protMode)
 {
-  LOGINFO1(F("Connecting to"), host);
+  AT_LOGINFO1(F("Connecting to"), host);
 
   _sock = ESP8266_AT_Class::getFreeSocket();
 
@@ -114,7 +115,7 @@ int ESP8266_AT_Client::connect(const char* host, uint16_t port, uint8_t protMode
   }
   else
   {
-    LOGERROR(F("No socket available"));
+    AT_LOGERROR(F("No socket available"));
     return 0;
   }
   return 1;
@@ -137,7 +138,7 @@ size_t ESP8266_AT_Client::write(const uint8_t *buf, size_t size)
   if (!r)
   {
     setWriteError();
-    LOGERROR1(F("Client_write: Failed to write to socket"), _sock);
+    AT_LOGERROR1(F("Client_write: Failed to write to socket"), _sock);
     delay(4000);
     stop();
     return 0;
@@ -214,7 +215,7 @@ void ESP8266_AT_Client::stop()
   if (_sock == 255)
     return;
 
-  LOGINFO1(F("Disconnecting "), _sock);
+  AT_LOGINFO1(F("Disconnecting "), _sock);
 
   ESP8266_AT_Drv::stopClient(_sock);
 
@@ -243,26 +244,26 @@ uint8_t ESP8266_AT_Client::status()
 {
   if (_sock == 255)
   {
-    //LOGINFO(F("Client::status: sock closed"));
+    //AT_LOGINFO(F("Client::status: sock closed"));
     return CLOSED;
   }
 
   if (ESP8266_AT_Drv::availData(_sock))
   {
-    //LOGINFO(F("Client::status: availData OK"));
+    //AT_LOGINFO(F("Client::status: availData OK"));
     return ESTABLISHED;
   }
 
   if (ESP8266_AT_Drv::getClientState(_sock))
   {
-    //LOGINFO(F("Client::status: getClientState OK"));
+    //AT_LOGINFO(F("Client::status: getClientState OK"));
     return ESTABLISHED;
   }
 
   ESP8266_AT_Class::releaseSocket(_sock);
   _sock = 255;
 
-  //LOGINFO(F("Client::status: sock released"));
+  //AT_LOGINFO(F("Client::status: sock released"));
   return CLOSED;
 }
 
@@ -291,7 +292,7 @@ size_t ESP8266_AT_Client::printFSH(const __FlashStringHelper *ifsh, bool appendC
   if (!r)
   {
     setWriteError();
-    LOGERROR1(F("printFSH: Failed to write to socket"), _sock);
+    AT_LOGERROR1(F("printFSH: Failed to write to socket"), _sock);
     delay(4000);
     stop();
     return 0;
