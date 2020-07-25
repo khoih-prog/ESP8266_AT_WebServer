@@ -86,7 +86,7 @@ The ESP8266_AT_Web_Server class found in `ESP8266_AT_Web_Server.h` header, is a 
  6. [`Arduino SAMD core 1.8.6+`](https://www.arduino.cc/en/Guide/ArduinoM0) for SAMD ARM Cortex-M0+ boards  (Nano 33 IoT, etc.).
  7. [`Adafruit SAMD core 1.6.0+`](https://www.adafruit.com/)  for SAMD ARM Cortex-M0+ and M4 boards (Itsy-Bitsy M4, etc.)
  8. [`Adafruit nRF52 v0.20.5+`](www.adafruit.com) for nRF52 boards such as AdaFruit Feather nRF52840 Express, NINA_B302_ublox, NINA_B112_ublox, etc.
- 9. [`Seeeduino SAMD core 1.7.7+`](https://www.adafruit.com/) for SAMD21/SAMD51 boards (XIAO M0, Wio Terminal, etc.) 
+ 9. [`Seeeduino SAMD core 1.7.7+`](https://www.seeedstudio.com/) for SAMD21/SAMD51 boards (XIAO M0, Wio Terminal, etc.) 
 10. [`Functional-VLPP library v1.0.1+`](https://github.com/khoih-prog/functional-vlpp) to use server's lambda function. To install. check [![arduino-library-badge](https://www.ardu-badge.com/badge/Functional-Vlpp.svg?)](https://www.ardu-badge.com/Functional-Vlpp)
 11. [`Ai-Thinker AT Firmware v1.5.4`](AT_Firmwares/At_firmware_bin1.54.zip) or [`AT Firmware v1.7.4.0`](AT_Firmwares/AT_Firmware_bin_1.7.4.0.zip) for ESP8266-AT shields.
 12. [`AT version_2.1.0.0_dev`](AT_Firmwares/AT_version_2.1.0.0_dev.zip) for ESP32-AT shields.
@@ -260,8 +260,6 @@ This file must be copied into the directory:
 
 ---
 
----
-
 ### Usage
 
 #### Class Constructor
@@ -413,7 +411,7 @@ Example:*
 
 ---
 
-### Examples
+## Examples
 
 Also see examples:
  1. [AdvancedWebServer](examples/AdvancedWebServer)
@@ -432,7 +430,7 @@ Also see examples:
 14. [WebServerAP](examples/WebServerAP)
 
 
-## Example [AdvancedWebServer](examples/AdvancedWebServer)
+### Example [AdvancedWebServer](examples/AdvancedWebServer)
 Please take a look at other examples, as well.
 
 ### File [AdvancedWebServer](examples/AdvancedWebServer/AdvancedWebServer.ino)
@@ -996,12 +994,12 @@ and this is the screen shot when running example [AdvancedWebServer](https://git
 
 ---
 
-#### New in v1.0.11
+### New in v1.0.11
 
 1. Add support to all STM32F/L/H/G/WB/MP1
 2. Add support to Seeeduino SAMD21/SAMD51 boards (SEEED_WIO_TERMINAL, SEEED_FEMTO_M0, SEEED_XIAO_M0, Wio_Lite_MG126, WIO_GPS_BOARD, SEEEDUINO_ZERO, SEEEDUINO_LORAWAN, SEEED_GROVE_UI_WIRELESS, etc.)
 
-#### New in v1.0.10
+### New in v1.0.10
 
 1. Fix bug not closing client and releasing socket.
 2. Enhance examples.
@@ -1063,7 +1061,7 @@ The library supports
 
 ---
 
-## TO DO
+### TO DO
 1. Bug Searching and Killing
 2. Add SSL/TLS Client and Server support
 3. Support more types of boards using ESP8266 AT-command shields.
@@ -1097,7 +1095,7 @@ The library supports
   </tr> 
 </table>
 
-## Contributing
+### Contributing
 
 If you want to contribute to this project:
 - Report bugs and errors
