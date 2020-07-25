@@ -8,7 +8,12 @@
 
 ---
 
-#### New in v1.0.10
+### New in v1.0.11
+
+1. Add support to all STM32F/L/H/G/WB/MP1
+2. Add support to Seeeduino SAMD21/SAMD51 boards (SEEED_WIO_TERMINAL, SEEED_FEMTO_M0, SEEED_XIAO_M0, Wio_Lite_MG126, WIO_GPS_BOARD, SEEEDUINO_ZERO, SEEEDUINO_LORAWAN, SEEED_GROVE_UI_WIRELESS, etc.)
+
+### New in v1.0.10
 
 1. Fix bug not closing client and releasing socket.
 2. Enhance examples.
@@ -35,7 +40,6 @@
 ### New Version v1.0.6
 
 1. Add support to ***nRF52*** boards, such as ***AdaFruit Feather nRF52832, nRF52840 Express, BlueFruit Sense, Itsy-Bitsy nRF52840 Express, Metro nRF52840 Express, NINA_B30_ublox, NINA_B112_ublox, etc.*** 
-
 
 ### New Version v1.0.5
 
@@ -80,11 +84,12 @@ The ESP8266_AT_Web_Server class found in `ESP8266_AT_Web_Server.h` header, is a 
  4. [`Teensy core 1.53+`](https://www.pjrc.com/teensy/td_download.html) for Teensy (4.1, 4.0, 3.6, 3.5, 3,2, 3.1, 3.0, LC) boards
  5. [`Arduino SAM DUE core 1.6.12+`](https://www.arduino.cc/en/Guide/ArduinoDue) for SAM DUE ARM Cortex-M3 boards
  6. [`Arduino SAMD core 1.8.6+`](https://www.arduino.cc/en/Guide/ArduinoM0) for SAMD ARM Cortex-M0+ boards  (Nano 33 IoT, etc.).
- 7. [`Adafruit SAMD core 1.5.14+`](https://www.adafruit.com/)  for SAMD ARM Cortex-M0+ and M4 boards (Itsy-Bitsy M4, etc.)
+ 7. [`Adafruit SAMD core 1.6.0+`](https://www.adafruit.com/)  for SAMD ARM Cortex-M0+ and M4 boards (Itsy-Bitsy M4, etc.)
  8. [`Adafruit nRF52 v0.20.5+`](www.adafruit.com) for nRF52 boards such as AdaFruit Feather nRF52840 Express, NINA_B302_ublox, NINA_B112_ublox, etc.
- 9. [`Functional-VLPP library v1.0.1+`](https://github.com/khoih-prog/functional-vlpp) to use server's lambda function. To install. check [![arduino-library-badge](https://www.ardu-badge.com/badge/Functional-Vlpp.svg?)](https://www.ardu-badge.com/Functional-Vlpp)
-10. [`Ai-Thinker AT Firmware v1.5.4`](AT_Firmwares/At_firmware_bin1.54.zip) or [`AT Firmware v1.7.4.0`](AT_Firmwares/AT_Firmware_bin_1.7.4.0.zip) for ESP8266-AT shields.
-11. [`AT version_2.1.0.0_dev`](AT_Firmwares/AT_version_2.1.0.0_dev.zip) for ESP32-AT shields.
+ 9. [`Seeeduino SAMD core 1.7.7+`](https://www.adafruit.com/) for SAMD21/SAMD51 boards (XIAO M0, Wio Terminal, etc.) 
+10. [`Functional-VLPP library v1.0.1+`](https://github.com/khoih-prog/functional-vlpp) to use server's lambda function. To install. check [![arduino-library-badge](https://www.ardu-badge.com/badge/Functional-Vlpp.svg?)](https://www.ardu-badge.com/Functional-Vlpp)
+11. [`Ai-Thinker AT Firmware v1.5.4`](AT_Firmwares/At_firmware_bin1.54.zip) or [`AT Firmware v1.7.4.0`](AT_Firmwares/AT_Firmware_bin_1.7.4.0.zip) for ESP8266-AT shields.
+12. [`AT version_2.1.0.0_dev`](AT_Firmwares/AT_version_2.1.0.0_dev.zip) for ESP32-AT shields.
 
 ---
 
@@ -178,7 +183,7 @@ You can also use this link [![arduino-library-badge](https://www.ardu-badge.com/
 
 ### Packages' Patches
 
-1. ***To be able to compile, run and automatically detect and display BOARD_NAME on nRF52840 boards***, you have to copy the whole [nRF52 0.20.5](https://github.com/khoih-prog/ESP8266_AT_WebServer/tree/master/Packages_Patches/adafruit/hardware/nrf52/0.20.5) directory into Adafruit nRF52 directory (~/.arduino15/packages/adafruit/hardware/nrf52/0.20.5). 
+ 1. ***To be able to compile, run and automatically detect and display BOARD_NAME on nRF52840/nRF52832 boards***, you have to copy the whole [nRF52 0.20.5](https://github.com/khoih-prog/ESP8266_AT_WebServer/tree/master/Packages_Patches/adafruit/hardware/nrf52/0.20.5) directory into Adafruit nRF52 directory (~/.arduino15/packages/adafruit/hardware/nrf52/0.20.5). 
 
 Supposing the Adafruit nRF52 version is 0.20.5. These files must be copied into the directory:
 - `~/.arduino15/packages/adafruit/hardware/nrf52/0.20.5/platform.txt`
@@ -198,7 +203,7 @@ These files must be copied into the directory:
 - `~/.arduino15/packages/adafruit/hardware/nrf52/x.yy.z/variants/NINA_B112_ublox/variant.h`
 - `~/.arduino15/packages/adafruit/hardware/nrf52/x.yy.z/variants/NINA_B112_ublox/variant.cpp`
 
-2. ***To be able to compile and run on Teensy boards***, you have to copy the file [Teensy boards.txt](https://github.com/khoih-prog/ESP8266_AT_WebServer/blob/master/Packages_Patches/hardware/teensy/avr/boards.txt) into Teensy hardware directory (./arduino-1.8.12/hardware/teensy/avr/boards.txt). 
+ 2. ***To be able to compile and run on Teensy boards***, you have to copy the file [Teensy boards.txt](https://github.com/khoih-prog/ESP8266_AT_WebServer/blob/master/Packages_Patches/hardware/teensy/avr/boards.txt) into Teensy hardware directory (./arduino-1.8.12/hardware/teensy/avr/boards.txt). 
 
 Supposing the Arduino version is 1.8.12. This file must be copied into the directory:
 
@@ -209,7 +214,7 @@ This file must be copied into the directory:
 
 - `./arduino-x.yy.zz/hardware/teensy/avr/boards.txt`
 
-3. ***To be able to compile and run on SAM DUE boards***, you have to copy the whole [SAM DUE](https://github.com/khoih-prog/ESP8266_AT_WebServer/tree/master/Packages_Patches/arduino/hardware/sam/1.6.12) directory into Arduino sam directory (~/.arduino15/packages/arduino/hardware/sam/1.6.12). 
+ 3. ***To be able to compile and run on SAM DUE boards***, you have to copy the whole [SAM DUE](https://github.com/khoih-prog/ESP8266_AT_WebServer/tree/master/Packages_Patches/arduino/hardware/sam/1.6.12) directory into Arduino sam directory (~/.arduino15/packages/arduino/hardware/sam/1.6.12). 
 
 Supposing the Arduino SAM core version is 1.6.12. This file must be copied into the directory:
 
@@ -220,7 +225,7 @@ This file must be copied into the directory:
 
 - `~/.arduino15/packages/arduino/hardware/sam/x.yy.zz/platform.txt`
 
-4. ***To be able to automatically detect and display BOARD_NAME on Arduino SAMD (Nano-33-IoT, etc) boards***, you have to copy the file [Arduino SAMD platform.txt](https://github.com/khoih-prog/ESP8266_AT_WebServer/tree/master/Packages_Patches/arduino/hardware/samd/1.8.6) into Arduino samd directory (~/.arduino15/packages/arduino/hardware/samd/1.8.6). 
+ 4. ***To be able to automatically detect and display BOARD_NAME on Arduino SAMD (Nano-33-IoT, etc) boards***, you have to copy the file [Arduino SAMD platform.txt](https://github.com/khoih-prog/ESP8266_AT_WebServer/tree/master/Packages_Patches/arduino/hardware/samd/1.8.6) into Arduino samd directory (~/.arduino15/packages/arduino/hardware/samd/1.8.6). 
 
 Supposing the Arduino SAMD core version is 1.8.6. This file must be copied into the directory:
 
@@ -231,17 +236,29 @@ This file must be copied into the directory:
 
 - `~/.arduino15/packages/arduino/hardware/samd/x.yy.zz/platform.txt`
 
-5. ***To be able to automatically detect and display BOARD_NAME on Adafruit SAMD (Itsy-Bitsy M4, etc) boards***, you have to copy the file [Adafruit SAMD platform.txt](https://github.com/khoih-prog/ESP8266_AT_WebServer/tree/master/Packages_Patches/adafruit/hardware/samd/1.5.14) into Adafruit samd directory (~/.arduino15/packages/adafruit/hardware/samd/1.5.14). 
+ 5. ***To be able to automatically detect and display BOARD_NAME on Adafruit SAMD (Itsy-Bitsy M4, etc) boards***, you have to copy the file [Adafruit SAMD platform.txt](https://github.com/khoih-prog/ESP8266_AT_WebServer/tree/master/Packages_Patches/adafruit/hardware/samd/1.6.0) into Adafruit samd directory (~/.arduino15/packages/adafruit/hardware/samd/1.6.0). 
 
-Supposing the Adafruit SAMD core version is 1.5.14. This file must be copied into the directory:
+Supposing the Adafruit SAMD core version is 1.6.0. This file must be copied into the directory:
 
-- `~/.arduino15/packages/adafruit/hardware/samd/1.5.14/platform.txt`
+- `~/.arduino15/packages/adafruit/hardware/samd/1.6.0/platform.txt`
 
 Whenever a new version is installed, remember to copy this file into the new version directory. For example, new version is x.yy.zz
 This file must be copied into the directory:
 
 - `~/.arduino15/packages/adafruit/hardware/samd/x.yy.zz/platform.txt`
 
+ 6. ***To be able to automatically detect and display BOARD_NAME on Seeeduino SAMD (XIAO M0, Wio Terminal, etc) boards***, you have to copy the file [Seeeduino SAMD platform.txt](https://github.com/khoih-prog/ESP8266_AT_WebServer/tree/master/Packages_Patches/Seeeduino/hardware/samd/1.7.7) into Adafruit samd directory (~/.arduino15/packages/Seeeduino/hardware/samd/1.7.7). 
+
+Supposing the Seeeduino SAMD core version is 1.7.7. This file must be copied into the directory:
+
+- `~/.arduino15/packages/Seeeduino/hardware/samd/1.7.7/platform.txt`
+
+Whenever a new version is installed, remember to copy this file into the new version directory. For example, new version is x.yy.zz
+This file must be copied into the directory:
+
+- `~/.arduino15/packages/Seeeduino/hardware/samd/x.yy.zz/platform.txt`
+
+---
 
 ---
 
@@ -398,10 +415,10 @@ Example:*
 
 ### Examples
 
-Also see examples: 
- 1. [HelloServer](examples/HelloServer)
- 2. [HelloServer2](examples/HelloServer2)
- 3. [AdvancedWebServer](examples/AdvancedWebServer)
+Also see examples:
+ 1. [AdvancedWebServer](examples/AdvancedWebServer)
+ 2. [HelloServer](examples/HelloServer)
+ 3. [HelloServer2](examples/HelloServer2)
  4. [HttpBasicAuth](examples/HttpBasicAuth)
  5. [PostServer](examples/PostServer)
  6. [SimpleAuthentication](examples/SimpleAuthentication)
@@ -415,10 +432,10 @@ Also see examples:
 14. [WebServerAP](examples/WebServerAP)
 
 
-## Example [HelloServer](examples/HelloServer)
+## Example [AdvancedWebServer](examples/AdvancedWebServer)
 Please take a look at other examples, as well.
 
-### File [HelloServer](examples/HelloServer/HelloServer.ino)
+### File [AdvancedWebServer](examples/AdvancedWebServer/AdvancedWebServer.ino)
 
 ```cpp
 #include "defines.h"
@@ -432,11 +449,39 @@ const int led = 13;
 
 void handleRoot()
 {
-  server.send(200, "text/plain", "Hello from ESP8266_AT_WebServer!");
+#define BUFFER_SIZE     400
+  
+  digitalWrite(led, 1);
+  char temp[BUFFER_SIZE];
+  int sec = millis() / 1000;
+  int min = sec / 60;
+  int hr = min / 60;
+  int day = hr / 24;
+
+  snprintf(temp, BUFFER_SIZE - 1,
+           "<html>\
+<head>\
+<meta http-equiv='refresh' content='5'/>\
+<title>ESP-AT %s</title>\
+<style>\
+body { background-color: #cccccc; font-family: Arial, Helvetica, Sans-Serif; Color: #000088; }\
+</style>\
+</head>\
+<body>\
+<h1>Hello from ESP-AT</h1>\
+<h3>on %s</h3>\
+<p>Uptime: %d d %02d:%02d:%02d</p>\
+<img src=\"/test.svg\" />\
+</body>\
+</html>", BOARD_NAME, BOARD_NAME, day, hr, min % 60, sec % 60);
+
+  server.send(200, "text/html", temp);
+  digitalWrite(led, 0);
 }
 
 void handleNotFound()
 {
+  digitalWrite(led, 1);
   String message = "File Not Found\n\n";
   message += "URI: ";
   message += server.uri();
@@ -445,21 +490,47 @@ void handleNotFound()
   message += "\nArguments: ";
   message += server.args();
   message += "\n";
+
   for (uint8_t i = 0; i < server.args(); i++)
   {
     message += " " + server.argName(i) + ": " + server.arg(i) + "\n";
   }
+
   server.send(404, "text/plain", message);
   digitalWrite(led, 0);
 }
 
+void drawGraph()
+{
+  String out;
+  out.reserve(3000);
+  char temp[70];
+  out += "<svg xmlns=\"http://www.w3.org/2000/svg\" version=\"1.1\" width=\"310\" height=\"150\">\n";
+  out += "<rect width=\"310\" height=\"150\" fill=\"rgb(250, 230, 210)\" stroke-width=\"1\" stroke=\"rgb(0, 0, 0)\" />\n";
+  out += "<g stroke=\"black\">\n";
+  int y = rand() % 130;
+
+  for (int x = 10; x < 300; x += 10)
+  {
+    int y2 = rand() % 130;
+    sprintf(temp, "<line x1=\"%d\" y1=\"%d\" x2=\"%d\" y2=\"%d\" stroke-width=\"1\" />\n", x, 140 - y, x + 10, 140 - y2);
+    out += temp;
+    y = y2;
+  }
+  out += "</g>\n</svg>\n";
+
+  server.send(200, "image/svg+xml", out);
+}
+
 void setup(void)
 {
-  // Open serial communications and wait for port to open:
+  pinMode(led, OUTPUT);
+  digitalWrite(led, 0);
+
   Serial.begin(115200);
   while (!Serial);
-
-  Serial.println("\nStarting HelloServer on " + String(BOARD_NAME));
+  
+  Serial.println("\nStarting AdvancedWebServer on " + String(BOARD_NAME));
 
   // initialize serial for ESP module
   EspSerial.begin(115200);
@@ -485,22 +556,15 @@ void setup(void)
     status = WiFi.begin(ssid, pass);
   }
 
-  server.begin();
-
-  Serial.print("WebServer is @ ");
-  Serial.println(WiFi.localIP());
-
   server.on("/", handleRoot);
-
+  server.on("/test.svg", drawGraph);
   server.on("/inline", []()
   {
-    server.send(200, "text/plain", "This works as well");
+    server.send(200, "text/plain", "this works as well");
   });
 
   server.onNotFound(handleNotFound);
-
   server.begin();
-
   Serial.print(F("HTTP server started @ "));
   Serial.println(WiFi.localIP());
 }
@@ -529,7 +593,7 @@ void loop(void)
       || defined(ARDUINO_SAMD_NANO_33_IOT) || defined(ARDUINO_SAMD_MKRFox1200) || defined(ARDUINO_SAMD_MKRWAN1300) || defined(ARDUINO_SAMD_MKRWAN1310) \
       || defined(ARDUINO_SAMD_MKRGSM1400) || defined(ARDUINO_SAMD_MKRNB1500) || defined(ARDUINO_SAMD_MKRVIDOR4000) || defined(__SAMD21G18A__) \
       || defined(ARDUINO_SAMD_CIRCUITPLAYGROUND_EXPRESS) || defined(__SAMD21E18A__) || defined(__SAMD51__) || defined(__SAMD51J20A__) || defined(__SAMD51J19A__) \
-      || defined(__SAMD51G19A__) || defined(__SAMD21G18A__) )
+      || defined(__SAMD51G19A__) || defined(__SAMD51P19A__) || defined(__SAMD21G18A__) )
 #if defined(ESP8266_AT_USE_SAMD)
 #undef ESP8266_AT_USE_SAMD
 #endif
@@ -552,7 +616,9 @@ void loop(void)
 #define ESP8266_AT_USE_SAM_DUE      true
 #endif
 
-#if ( defined(STM32F0) || defined(STM32F1) || defined(STM32F2) || defined(STM32F3)  ||defined(STM32F4) || defined(STM32F7) )
+#if ( defined(STM32F0) || defined(STM32F1) || defined(STM32F2) || defined(STM32F3)  ||defined(STM32F4) || defined(STM32F7) || \
+       defined(STM32L0) || defined(STM32L1) || defined(STM32L4) || defined(STM32H7)  ||defined(STM32G0) || defined(STM32G4) || \
+       defined(STM32WB) || defined(STM32MP1) )
 #if defined(ESP8266_AT_USE_STM32)
 #undef ESP8266_AT_USE_STM32
 #endif
@@ -560,7 +626,7 @@ void loop(void)
 #endif
 
 #ifdef CORE_TEENSY
-// For Teensy 4.0
+// For Teensy 4.1/4.0
 #define EspSerial Serial2   //Serial2, Pin RX2 : 7, TX2 : 8
 #if defined(__IMXRT1062__)
 // For Teensy 4.1/4.0
@@ -650,6 +716,22 @@ void loop(void)
 #define BOARD_TYPE      "SAMD51 ADAFRUIT_MONSTER_M4SK_EXPRESS"
 #elif defined(ADAFRUIT_HALLOWING_M4_EXPRESS)
 #define BOARD_TYPE      "SAMD51 ADAFRUIT_HALLOWING_M4_EXPRESS"
+#elif defined(SEEED_WIO_TERMINAL)
+#define BOARD_TYPE      "SAMD SEEED_WIO_TERMINAL"
+#elif defined(SEEED_FEMTO_M0)
+#define BOARD_TYPE      "SAMD SEEED_FEMTO_M0"
+#elif defined(SEEED_XIAO_M0)
+#define BOARD_TYPE      "SAMD SEEED_XIAO_M0"
+#elif defined(Wio_Lite_MG126)
+#define BOARD_TYPE      "SAMD SEEED Wio_Lite_MG126"
+#elif defined(WIO_GPS_BOARD)
+#define BOARD_TYPE      "SAMD SEEED WIO_GPS_BOARD"
+#elif defined(SEEEDUINO_ZERO)
+#define BOARD_TYPE      "SAMD SEEEDUINO_ZERO"
+#elif defined(SEEEDUINO_LORAWAN)
+#define BOARD_TYPE      "SAMD SEEEDUINO_LORAWAN"
+#elif defined(SEEED_GROVE_UI_WIRELESS)
+#define BOARD_TYPE      "SAMD SEEED_GROVE_UI_WIRELESS"
 #elif defined(__SAMD21E18A__)
 #define BOARD_TYPE      "SAMD21E18A"
 #elif defined(__SAMD21G18A__)
@@ -710,25 +792,56 @@ void loop(void)
 #define BOARD_TYPE      "SAM DUE"
 
 #elif defined(ESP8266_AT_USE_STM32)
-// For STM32
-#define EspSerial Serial1
+  // For STM32
+  #warning EspSerial using SERIAL_PORT_HARDWARE, can be Serial or Serial1. See your board variant.h
+  #define EspSerial     SERIAL_PORT_HARDWARE    //Serial1
 
 #if defined(STM32F0)
-#define BOARD_TYPE  "STM32F0"
-#elif defined(STM32F1)
-#define BOARD_TYPE  "STM32F1"
-#elif defined(STM32F2)
-#define BOARD_TYPE  "STM32F2"
-#elif defined(STM32F3)
-#define BOARD_TYPE  "STM32F3"
-#elif defined(STM32F4)
-#define BOARD_TYPE  "STM32F4"
-#elif defined(STM32F7)
-#define BOARD_TYPE  "STM32F7"
-#else
-#warning STM32 unknown board selected
-#define BOARD_TYPE  "STM32 Unknown"
-#endif
+  #warning STM32F0 board selected
+  #define BOARD_TYPE  "STM32F0"
+  #elif defined(STM32F1)
+  #warning STM32F1 board selected
+  #define BOARD_TYPE  "STM32F1"
+  #elif defined(STM32F2)
+  #warning STM32F2 board selected
+  #define BOARD_TYPE  "STM32F2"
+  #elif defined(STM32F3)
+  #warning STM32F3 board selected
+  #define BOARD_TYPE  "STM32F3"
+  #elif defined(STM32F4)
+  #warning STM32F4 board selected
+  #define BOARD_TYPE  "STM32F4"
+  #elif defined(STM32F7)
+  #warning STM32F7 board selected
+  #define BOARD_TYPE  "STM32F7"
+  #elif defined(STM32L0)
+  #warning STM32L0 board selected
+  #define BOARD_TYPE  "STM32L0"
+  #elif defined(STM32L1)
+  #warning STM32L1 board selected
+  #define BOARD_TYPE  "STM32L1"
+  #elif defined(STM32L4)
+  #warning STM32L4 board selected
+  #define BOARD_TYPE  "STM32L4"
+  #elif defined(STM32H7)
+  #warning STM32H7 board selected
+  #define BOARD_TYPE  "STM32H7"
+  #elif defined(STM32G0)
+  #warning STM32G0 board selected
+  #define BOARD_TYPE  "STM32G0"
+  #elif defined(STM32G4)
+  #warning STM32G4 board selected
+  #define BOARD_TYPE  "STM32G4"
+  #elif defined(STM32WB)
+  #warning STM32WB board selected
+  #define BOARD_TYPE  "STM32WB"
+  #elif defined(STM32MP1)
+  #warning STM32MP1 board selected
+  #define BOARD_TYPE  "STM32MP1"
+  #else
+  #warning STM32 unknown board selected
+  #define BOARD_TYPE  "STM32 Unknown"
+  #endif
 
 #else
 // For Mega
@@ -750,14 +863,11 @@ char pass[] = "****";        // your network password
 
 ---
 
-The following are debug terminal output and screen shot when running example [AdvancedWebServer](examples/AdvancedWebServer) on NRF52840_ITSYBITSY_EXPRESS and ESP8266-AT shield.
+The following are debug terminal output when running example [AdvancedWebServer](examples/AdvancedWebServer) on NRF52840_ITSYBITSY_EXPRESS and ESP8266-AT shield.
 
-<p align="center">
-    <img src="https://github.com/khoih-prog/ESP8266_AT_WebServer/blob/master/pics/AdvancedWebServer.png">
-</p>
 
 ```
-Starting AdvancedServer on NRF52840_ITSYBITSY_EXPRESS
+Starting AdvancedWebServer on NRF52840_ITSYBITSY_EXPRESS
 [ESP_AT] Initializing ESP module
 [ESP_AT] Use ES8266-AT Command
 WiFi shield init done
@@ -877,7 +987,19 @@ Content-Length: 1949
 Connection: close
 ```
 
+and this is the screen shot when running example [AdvancedWebServer](https://github.com/khoih-prog/ESP8266_AT_WebServer/tree/master/examples/AdvancedWebServer) on ***Seeeduino SEEED_XIAO_M0*** board using this [ESP8266_AT_WebServer Library](https://github.com/khoih-prog/ESP8266_AT_WebServer)
+
+<p align="center">
+    <img src="https://github.com/khoih-prog/ESP8266_AT_WebServer/blob/master/pics/AdvancedWebServer.png">
+</p>
+
+
 ---
+
+#### New in v1.0.11
+
+1. Add support to all STM32F/L/H/G/WB/MP1
+2. Add support to Seeeduino SAMD21/SAMD51 boards (SEEED_WIO_TERMINAL, SEEED_FEMTO_M0, SEEED_XIAO_M0, Wio_Lite_MG126, WIO_GPS_BOARD, SEEEDUINO_ZERO, SEEEDUINO_LORAWAN, SEEED_GROVE_UI_WIRELESS, etc.)
 
 #### New in v1.0.10
 
@@ -952,14 +1074,17 @@ The library supports
  1. Add support to ***Arduino SAMD21 (ZERO, MKR, NANO_33_IOT, etc.)***
  2. Add support to ***Adafruit SAMD21 (Itsy-Bitsy M0, Metro M0, Feather M0 Express, etc.)***.
  3. Add support to ***Adafruit SAMD51 (Itsy-Bitsy M4, Metro M4, Grand Central M4, Feather M4 Express, etc.)***.
- 4. Add support to ***Adafruit nRF52 ( Feather nRF52832, nRF52840 Express, BlueFruit Sense, Itsy-Bitsy nRF52840 Express, Metro nRF52840 Express, NINA_B302_ublox, NINA_B112_ublox, etc.***.
+ 4. Add support to ***Adafruit nRF52 ( Feather nRF52832, nRF52840 Express, BlueFruit Sense, Itsy-Bitsy nRF52840 Express, Metro nRF52840 Express, NINA_B302_ublox, NINA_B112_ublox, etc.)***.
  5. Add support to SAM DUE.
  6. Add support to ESP32-AT
  7. Add support to W600 and WIS600-01S
+ 8. Add support to all ***STM32F/L/H/G/WB/MP1***
+ 9. Add support to ***Seeeduino SAMD21/SAMD51 boards (SEEED_WIO_TERMINAL, SEEED_FEMTO_M0, SEEED_XIAO_M0, Wio_Lite_MG126, WIO_GPS_BOARD, SEEEDUINO_ZERO, SEEEDUINO_LORAWAN, SEEED_GROVE_UI_WIRELESS, etc.)***
  
 ---
  
-### Contributions and thanks
+### Contributions and Thanks
+
 1. Based on and modified [Ivan Grokhotkov's ESP8266WebServer](https://github.com/esp8266/Arduino/tree/master/libraries/ESP8266WebServer)
 2. Based on and modified from [bportaluri's WiFiEsp library](https://github.com/bportaluri/WiFiEsp)
 3. Thanks to good work of [Miguel Alexandre Wisintainer](https://github.com/tcpipchip) for initiating, inspriring, working with, developing, debugging and testing. Without that, support to nRF52, especially ***U-Blox B302 running as nRF52840 and U-Blox B112 running as nRF52832***, has never been started and finished. Also see [ESP32-based U-BLOX NINA W102 running ENC28J60](https://u-blox-ethernet-ninaw.blogspot.com/).

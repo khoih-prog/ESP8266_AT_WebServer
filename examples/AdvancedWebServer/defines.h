@@ -1,27 +1,28 @@
 /****************************************************************************************************************************
-   defines.h for AdvancedWebServer.ino
+   defines.h
    For ESP8266/ESP32 AT-command running shields
 
    ESP8266_AT_WebServer is a library for the ESP8266/ESP32 AT-command shields to run WebServer
    Forked and modified from ESP8266 https://github.com/esp8266/Arduino/releases
    Built by Khoi Hoang https://github.com/khoih-prog/ESP8266_AT_WebServer
    Licensed under MIT license
-   Version: 1.0.10
+   Version: 1.0.11
 
    Version Modified By   Date      Comments
    ------- -----------  ---------- -----------
     1.0.0   K Hoang      12/02/2020 Initial coding for Arduino Mega, Teensy, etc
     1.0.1   K Hoang      17/02/2020 Add support to server's lambda function calls
-    1.0.2   K Hoang      22/02/2020 Add support to SAMD (DUE, ZERO, MKR, NANO_33_IOT, M0, Mo Pro, AdaFruit, etc) boards
+    1.0.2   K Hoang      22/02/2020 Add support to SAMD (DUE, ZERO, MKR, NANO_33_IOT, M0, M0 Pro, AdaFruit, etc) boards
     1.0.3   K Hoang      03/03/2020 Add support to STM32 (STM32,F0,F1, F2, F3, F4, F7, etc) boards
     1.0.4   K Hoang      19/03/2020 Fix bug. Sync with ESP8266WebServer library of core v2.6.3
     1.0.5   K Hoang      17/04/2020 Add support to SAMD51 and SAM DUE boards
     1.0.6   K Hoang      11/06/2020 Add support to nRF52 boards, such as AdaFruit Feather nRF52832, nRF52840 Express, BlueFruit Sense, 
-                                    Itsy-Bitsy nRF52840 Express, Metro nRF52840 Express, NINA_B30_ublox, etc. 
+                                    Itsy-Bitsy nRF52840 Express, Metro nRF52840 Express, NINA_B302_ublox, NINA_B112_ublox, etc.
     1.0.7   K Hoang      23/06/2020 Add support to ESP32-AT. Update deprecated ESP8266-AT commands. Restructure examples. 
     1.0.8   K Hoang      01/07/2020 Fix bug. Add features to ESP32-AT.   
     1.0.9   K Hoang      03/07/2020 Fix bug. Add functions. Restructure codes.
-    1.0.10  K Hoang      22/07/2020 Fix bug not closing client and releasing socket.        
+    1.0.10  K Hoang      22/07/2020 Fix bug not closing client and releasing socket.
+    1.0.11  K Hoang      25/07/2020 Add support to all STM32F/L/H/G/WB/MP1 and Seeeduino SAMD21/SAMD51 boards       
  *****************************************************************************************************************************/
 
 #ifndef defines_h
@@ -39,7 +40,7 @@
       || defined(ARDUINO_SAMD_NANO_33_IOT) || defined(ARDUINO_SAMD_MKRFox1200) || defined(ARDUINO_SAMD_MKRWAN1300) || defined(ARDUINO_SAMD_MKRWAN1310) \
       || defined(ARDUINO_SAMD_MKRGSM1400) || defined(ARDUINO_SAMD_MKRNB1500) || defined(ARDUINO_SAMD_MKRVIDOR4000) || defined(__SAMD21G18A__) \
       || defined(ARDUINO_SAMD_CIRCUITPLAYGROUND_EXPRESS) || defined(__SAMD21E18A__) || defined(__SAMD51__) || defined(__SAMD51J20A__) || defined(__SAMD51J19A__) \
-      || defined(__SAMD51G19A__) || defined(__SAMD21G18A__) )
+      || defined(__SAMD51G19A__) || defined(__SAMD51P19A__) || defined(__SAMD21G18A__) )
 #if defined(ESP8266_AT_USE_SAMD)
 #undef ESP8266_AT_USE_SAMD
 #endif
@@ -62,7 +63,9 @@
 #define ESP8266_AT_USE_SAM_DUE      true
 #endif
 
-#if ( defined(STM32F0) || defined(STM32F1) || defined(STM32F2) || defined(STM32F3)  ||defined(STM32F4) || defined(STM32F7) )
+#if ( defined(STM32F0) || defined(STM32F1) || defined(STM32F2) || defined(STM32F3)  ||defined(STM32F4) || defined(STM32F7) || \
+       defined(STM32L0) || defined(STM32L1) || defined(STM32L4) || defined(STM32H7)  ||defined(STM32G0) || defined(STM32G4) || \
+       defined(STM32WB) || defined(STM32MP1) )
 #if defined(ESP8266_AT_USE_STM32)
 #undef ESP8266_AT_USE_STM32
 #endif
@@ -70,7 +73,7 @@
 #endif
 
 #ifdef CORE_TEENSY
-// For Teensy 4.0
+// For Teensy 4.1/4.0
 #define EspSerial Serial2   //Serial2, Pin RX2 : 7, TX2 : 8
 #if defined(__IMXRT1062__)
 // For Teensy 4.1/4.0
@@ -160,6 +163,22 @@
 #define BOARD_TYPE      "SAMD51 ADAFRUIT_MONSTER_M4SK_EXPRESS"
 #elif defined(ADAFRUIT_HALLOWING_M4_EXPRESS)
 #define BOARD_TYPE      "SAMD51 ADAFRUIT_HALLOWING_M4_EXPRESS"
+#elif defined(SEEED_WIO_TERMINAL)
+#define BOARD_TYPE      "SAMD SEEED_WIO_TERMINAL"
+#elif defined(SEEED_FEMTO_M0)
+#define BOARD_TYPE      "SAMD SEEED_FEMTO_M0"
+#elif defined(SEEED_XIAO_M0)
+#define BOARD_TYPE      "SAMD SEEED_XIAO_M0"
+#elif defined(Wio_Lite_MG126)
+#define BOARD_TYPE      "SAMD SEEED Wio_Lite_MG126"
+#elif defined(WIO_GPS_BOARD)
+#define BOARD_TYPE      "SAMD SEEED WIO_GPS_BOARD"
+#elif defined(SEEEDUINO_ZERO)
+#define BOARD_TYPE      "SAMD SEEEDUINO_ZERO"
+#elif defined(SEEEDUINO_LORAWAN)
+#define BOARD_TYPE      "SAMD SEEEDUINO_LORAWAN"
+#elif defined(SEEED_GROVE_UI_WIRELESS)
+#define BOARD_TYPE      "SAMD SEEED_GROVE_UI_WIRELESS"
 #elif defined(__SAMD21E18A__)
 #define BOARD_TYPE      "SAMD21E18A"
 #elif defined(__SAMD21G18A__)
@@ -220,25 +239,56 @@
 #define BOARD_TYPE      "SAM DUE"
 
 #elif defined(ESP8266_AT_USE_STM32)
-// For STM32
-#define EspSerial Serial1
+  // For STM32
+  #warning EspSerial using SERIAL_PORT_HARDWARE, can be Serial or Serial1. See your board variant.h
+  #define EspSerial     SERIAL_PORT_HARDWARE    //Serial1
 
 #if defined(STM32F0)
-#define BOARD_TYPE  "STM32F0"
-#elif defined(STM32F1)
-#define BOARD_TYPE  "STM32F1"
-#elif defined(STM32F2)
-#define BOARD_TYPE  "STM32F2"
-#elif defined(STM32F3)
-#define BOARD_TYPE  "STM32F3"
-#elif defined(STM32F4)
-#define BOARD_TYPE  "STM32F4"
-#elif defined(STM32F7)
-#define BOARD_TYPE  "STM32F7"
-#else
-#warning STM32 unknown board selected
-#define BOARD_TYPE  "STM32 Unknown"
-#endif
+  #warning STM32F0 board selected
+  #define BOARD_TYPE  "STM32F0"
+  #elif defined(STM32F1)
+  #warning STM32F1 board selected
+  #define BOARD_TYPE  "STM32F1"
+  #elif defined(STM32F2)
+  #warning STM32F2 board selected
+  #define BOARD_TYPE  "STM32F2"
+  #elif defined(STM32F3)
+  #warning STM32F3 board selected
+  #define BOARD_TYPE  "STM32F3"
+  #elif defined(STM32F4)
+  #warning STM32F4 board selected
+  #define BOARD_TYPE  "STM32F4"
+  #elif defined(STM32F7)
+  #warning STM32F7 board selected
+  #define BOARD_TYPE  "STM32F7"
+  #elif defined(STM32L0)
+  #warning STM32L0 board selected
+  #define BOARD_TYPE  "STM32L0"
+  #elif defined(STM32L1)
+  #warning STM32L1 board selected
+  #define BOARD_TYPE  "STM32L1"
+  #elif defined(STM32L4)
+  #warning STM32L4 board selected
+  #define BOARD_TYPE  "STM32L4"
+  #elif defined(STM32H7)
+  #warning STM32H7 board selected
+  #define BOARD_TYPE  "STM32H7"
+  #elif defined(STM32G0)
+  #warning STM32G0 board selected
+  #define BOARD_TYPE  "STM32G0"
+  #elif defined(STM32G4)
+  #warning STM32G4 board selected
+  #define BOARD_TYPE  "STM32G4"
+  #elif defined(STM32WB)
+  #warning STM32WB board selected
+  #define BOARD_TYPE  "STM32WB"
+  #elif defined(STM32MP1)
+  #warning STM32MP1 board selected
+  #define BOARD_TYPE  "STM32MP1"
+  #else
+  #warning STM32 unknown board selected
+  #define BOARD_TYPE  "STM32 Unknown"
+  #endif
 
 #else
 // For Mega
