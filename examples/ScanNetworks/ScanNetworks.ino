@@ -14,10 +14,10 @@
 
     For more details see: http://yaab-arduino.blogspot.com/p/wifiesp.html
 
-    Version: 1.0.11
-    
-    Version Modified By   Date      Comments
-    ------- -----------  ---------- -----------
+    Version: 1.0.12
+
+   Version Modified By   Date      Comments
+   ------- -----------  ---------- -----------
     1.0.0   K Hoang      12/02/2020 Initial coding for Arduino Mega, Teensy, etc
     1.0.1   K Hoang      17/02/2020 Add support to server's lambda function calls
     1.0.2   K Hoang      22/02/2020 Add support to SAMD (DUE, ZERO, MKR, NANO_33_IOT, M0, M0 Pro, AdaFruit, etc) boards
@@ -30,7 +30,8 @@
     1.0.8   K Hoang      01/07/2020 Fix bug. Add features to ESP32-AT.   
     1.0.9   K Hoang      03/07/2020 Fix bug. Add functions. Restructure codes.
     1.0.10  K Hoang      22/07/2020 Fix bug not closing client and releasing socket.
-    1.0.11  K Hoang      25/07/2020 Add support to all STM32F/L/H/G/WB/MP1 and Seeeduino SAMD21/SAMD51 boards 
+    1.0.11  K Hoang      25/07/2020 Add support to all STM32F/L/H/G/WB/MP1 and Seeeduino SAMD21/SAMD51 boards  
+    1.0.12  K Hoang      26/07/2020 Add example and sample Packages_Patches for STM32F/L/H/G/WB/MP boards
  *****************************************************************************************************************************/
 
 // Credits of [Miguel Alexandre Wisintainer](https://github.com/tcpipchip) for this simple yet effective method
