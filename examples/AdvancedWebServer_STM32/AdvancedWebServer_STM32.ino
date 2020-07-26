@@ -1,5 +1,5 @@
 /****************************************************************************************************************************
-    AdvancedWebServer.ino - Simple Arduino web server sample for ESP8266/ESP32 AT-command shield
+    AdvancedWebServerSTM32.ino - Simple Arduino web server sample for ESP8266/ESP32 AT-command shield
     For ESP8266/ESP32 AT-command running shields
 
     ESP8266_AT_WebServer is a library for the ESP8266/ESP32 AT-command shields to run WebServer
