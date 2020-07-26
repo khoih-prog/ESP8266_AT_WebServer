@@ -10,7 +10,7 @@
 
 ### New in v1.0.11
 
-1. Add support to all STM32F/L/H/G/WB/MP1
+1. Add support to all STM32F/L/H/G/WB/MP1 (Nucleo-144 NUCLEO_F767ZI, Nucleo-64 NUCLEO_L053R8, etc.)
 2. Add support to Seeeduino SAMD21/SAMD51 boards (SEEED_WIO_TERMINAL, SEEED_FEMTO_M0, SEEED_XIAO_M0, Wio_Lite_MG126, WIO_GPS_BOARD, SEEEDUINO_ZERO, SEEEDUINO_LORAWAN, SEEED_GROVE_UI_WIRELESS, etc.)
 
 ### New in v1.0.10
@@ -39,7 +39,7 @@
 
 ### New Version v1.0.6
 
-1. Add support to ***nRF52*** boards, such as ***AdaFruit Feather nRF52832, nRF52840 Express, BlueFruit Sense, Itsy-Bitsy nRF52840 Express, Metro nRF52840 Express, NINA_B30_ublox, NINA_B112_ublox, etc.*** 
+1. Add support to ***nRF52*** boards, such as ***AdaFruit Feather nRF52832, nRF52840 Express, BlueFruit Sense, Itsy-Bitsy nRF52840 Express, Metro nRF52840 Express, NINA_B302_ublox, NINA_B112_ublox, etc.*** 
 
 ### New Version v1.0.5
 
@@ -80,7 +80,7 @@ The ESP8266_AT_Web_Server class found in `ESP8266_AT_Web_Server.h` header, is a 
 ## Prerequisite
  1. [`Arduino IDE 1.8.12+` for Arduino](https://www.arduino.cc/en/Main/Software)
  2. `Arduino AVR core 1.8.2+` for Arduino (Use Arduino Board Manager) for AVR boards
- 3. [`Arduino Core for STM32 v1.9.0+`](https://github.com/khoih-prog/Arduino_Core_STM32) for STM32 boards
+ 3. [`Arduino Core for STM32 v1.9.0+`](https://github.com/khoih-prog/Arduino_Core_STM32) for STM32 boards (Nucleo-144 NUCLEO_F767ZI, Nucleo-64 NUCLEO_L053R8, etc.)
  4. [`Teensy core 1.53+`](https://www.pjrc.com/teensy/td_download.html) for Teensy (4.1, 4.0, 3.6, 3.5, 3,2, 3.1, 3.0, LC) boards
  5. [`Arduino SAM DUE core 1.6.12+`](https://www.arduino.cc/en/Guide/ArduinoDue) for SAM DUE ARM Cortex-M3 boards
  6. [`Arduino SAMD core 1.8.6+`](https://www.arduino.cc/en/Guide/ArduinoM0) for SAMD ARM Cortex-M0+ boards  (Nano 33 IoT, etc.).
@@ -258,6 +258,19 @@ This file must be copied into the directory:
 
 - `~/.arduino15/packages/Seeeduino/hardware/samd/x.yy.zz/platform.txt`
 
+7. ***To use Serial1 on some STM32 boards without Serial1 definition (Nucleo-144 NUCLEO_F767ZI, Nucleo-64 NUCLEO_L053R8, etc.) boards***, you have to copy the files [STM32 variant.h](https://github.com/khoih-prog/ESP8266_AT_WebServer/tree/master/Packages_Patches/STM32/hardware/stm32/1.9.0) into STM32 stm32 directory (~/.arduino15/packages/STM32/hardware/stm32/1.9.0). You have to modify the files corresponding to your boards, this is just an illustration how to do.
+
+Supposing the STM32 stm32 core version is 1.9.0. These files must be copied into the directory:
+
+- `~/.arduino15/packages/STM32/hardware/stm32/1.9.0/variants/NUCLEO_F767ZI/variant.h` for Nucleo-144 NUCLEO_F767ZI.
+- `~/.arduino15/packages/STM32/hardware/stm32/1.9.0/variants/NUCLEO_L053R8/variant.h` for Nucleo-64 NUCLEO_L053R8.
+
+Whenever a new version is installed, remember to copy this file into the new version directory. For example, new version is x.yy.zz,
+theses files must be copied into the corresponding directory:
+
+- `~/.arduino15/packages/STM32/hardware/stm32/x.yy.zz/variants/NUCLEO_F767ZI/variant.h`
+- `~/.arduino15/packages/STM32/hardware/stm32/x.yy.zz/variants/NUCLEO_L053R8/variant.h`
+
 ---
 
 ### Usage
@@ -415,19 +428,20 @@ Example:*
 
 Also see examples:
  1. [AdvancedWebServer](examples/AdvancedWebServer)
- 2. [HelloServer](examples/HelloServer)
- 3. [HelloServer2](examples/HelloServer2)
- 4. [HttpBasicAuth](examples/HttpBasicAuth)
- 5. [PostServer](examples/PostServer)
- 6. [SimpleAuthentication](examples/SimpleAuthentication)
- 7. [ConnectWPA](examples/ConnectWPA)
- 8. [ScanNetworks](examples/ScanNetworks)
- 9. [UdpNTPClient](examples/UdpNTPClient)
-10. [UdpSendReceive](examples/UdpSendReceive)
-11. [WebClient](examples/WebClient)
-12. [WebClientRepeating](examples/WebClientRepeating)
-13. [WebServer](examples/WebServer)
-14. [WebServerAP](examples/WebServerAP)
+ 2. [AdvancedWebServer_STM32](examples/AdvancedWebServer_STM32)
+ 3. [HelloServer](examples/HelloServer)
+ 4. [HelloServer2](examples/HelloServer2)
+ 5. [HttpBasicAuth](examples/HttpBasicAuth)
+ 6. [PostServer](examples/PostServer)
+ 7. [SimpleAuthentication](examples/SimpleAuthentication)
+ 8. [ConnectWPA](examples/ConnectWPA)
+ 9. [ScanNetworks](examples/ScanNetworks)
+10. [UdpNTPClient](examples/UdpNTPClient)
+11. [UdpSendReceive](examples/UdpSendReceive)
+12. [WebClient](examples/WebClient)
+13. [WebClientRepeating](examples/WebClientRepeating)
+14. [WebServer](examples/WebServer)
+15. [WebServerAP](examples/WebServerAP)
 
 
 ### Example [AdvancedWebServer](examples/AdvancedWebServer)
@@ -436,6 +450,27 @@ Please take a look at other examples, as well.
 ### File [AdvancedWebServer](examples/AdvancedWebServer/AdvancedWebServer.ino)
 
 ```cpp
+// Credits of [Miguel Alexandre Wisintainer](https://github.com/tcpipchip) for this simple yet effective method
+// For some STM32, there is only definition of Serial in variant.h, and is used for Serial/USB Debugging
+// For example, in Nucleo-144 F767ZI original variant.h
+//
+// #define SERIAL_PORT_MONITOR     Serial
+// #define SERIAL_PORT_HARDWARE    Serial
+//
+// To use ESP8266/ESP32-AT, we need another Serial, such as Serial1
+// To do this, first, in corresponding variant.h, modify as follows:
+
+// #define SERIAL_PORT_HARDWARE    Serial1
+//
+// then assign pins D0 = RX/D1 = TX to be Hardware Serial1 by putting in sketch as follows:
+//
+// #define EspSerial      SERIAL_PORT_HARDWARE    //Serial1
+// HardwareSerial         Serial1(D0, D1);
+//
+// This must be included in defines.h for each board you'd like to use ESPSerial as Serial1
+//
+// The pin usage must be modified according to your boards.
+
 #include "defines.h"
 
 int status = WL_IDLE_STATUS;     // the Wifi radio's status
@@ -794,51 +829,70 @@ void loop(void)
   #warning EspSerial using SERIAL_PORT_HARDWARE, can be Serial or Serial1. See your board variant.h
   #define EspSerial     SERIAL_PORT_HARDWARE    //Serial1
 
-#if defined(STM32F0)
-  #warning STM32F0 board selected
-  #define BOARD_TYPE  "STM32F0"
+  #if defined(STM32F0)
+    #warning STM32F0 board selected
+    #define BOARD_TYPE  "STM32F0"
   #elif defined(STM32F1)
-  #warning STM32F1 board selected
-  #define BOARD_TYPE  "STM32F1"
+    #warning STM32F1 board selected
+    #define BOARD_TYPE  "STM32F1"
   #elif defined(STM32F2)
-  #warning STM32F2 board selected
-  #define BOARD_TYPE  "STM32F2"
+    #warning STM32F2 board selected
+    #define BOARD_TYPE  "STM32F2"
   #elif defined(STM32F3)
-  #warning STM32F3 board selected
-  #define BOARD_TYPE  "STM32F3"
+    #warning STM32F3 board selected
+    #define BOARD_TYPE  "STM32F3"
   #elif defined(STM32F4)
-  #warning STM32F4 board selected
-  #define BOARD_TYPE  "STM32F4"
+    #warning STM32F4 board selected
+    #define BOARD_TYPE  "STM32F4"
   #elif defined(STM32F7)
-  #warning STM32F7 board selected
-  #define BOARD_TYPE  "STM32F7"
+
+    #if defined(ARDUINO_NUCLEO_F767ZI)
+      #warning Nucleo-144 NUCLEO_F767ZI board selected, using HardwareSerial Serial1 @ pin D0/RX and D1/TX
+      // RX TX
+      HardwareSerial Serial1(D0, D1);
+    #else
+    
+      #warning STM32F7 board selected
+      #define BOARD_TYPE  "STM32F7"
+
+    #endif
+    
   #elif defined(STM32L0)
-  #warning STM32L0 board selected
-  #define BOARD_TYPE  "STM32L0"
+    #if defined(ARDUINO_NUCLEO_L053R8)
+      #warning Nucleo-64 NUCLEO_L053R8 board selected, using HardwareSerial Serial1 @ pin D0/RX and D1/TX
+      // RX TX
+      HardwareSerial Serial1(D0, D1);   // (PA3, PA2);
+    #else
+    
+      #warning STM32L0 board selected
+      #define BOARD_TYPE  "STM32L0"
+
+    #endif
+    
   #elif defined(STM32L1)
-  #warning STM32L1 board selected
-  #define BOARD_TYPE  "STM32L1"
+    #warning STM32L1 board selected
+    #define BOARD_TYPE  "STM32L1"
   #elif defined(STM32L4)
-  #warning STM32L4 board selected
-  #define BOARD_TYPE  "STM32L4"
+    #warning STM32L4 board selected
+    #define BOARD_TYPE  "STM32L4"
   #elif defined(STM32H7)
-  #warning STM32H7 board selected
-  #define BOARD_TYPE  "STM32H7"
+    #warning STM32H7 board selected
+    #define BOARD_TYPE  "STM32H7"
   #elif defined(STM32G0)
-  #warning STM32G0 board selected
-  #define BOARD_TYPE  "STM32G0"
+    #warning STM32G0 board selected
+    #define BOARD_TYPE  "STM32G0"
   #elif defined(STM32G4)
-  #warning STM32G4 board selected
-  #define BOARD_TYPE  "STM32G4"
+    #warning STM32G4 board selected
+    #define BOARD_TYPE  "STM32G4"
   #elif defined(STM32WB)
-  #warning STM32WB board selected
-  #define BOARD_TYPE  "STM32WB"
+    #warning STM32WB board selected
+    #define BOARD_TYPE  "STM32WB"
   #elif defined(STM32MP1)
-  #warning STM32MP1 board selected
-  #define BOARD_TYPE  "STM32MP1"
+    #warning STM32MP1 board selected
+    #define BOARD_TYPE  "STM32MP1"
   #else
-  #warning STM32 unknown board selected
-  #define BOARD_TYPE  "STM32 Unknown"
+    #warning STM32 unknown board selected
+    #define BOARD_TYPE  "STM32 Unknown"
   #endif
 
 #else
@@ -860,6 +914,8 @@ char pass[] = "****";        // your network password
 ```
 
 ---
+
+### Debug Terminal Output
 
 The following are debug terminal output when running example [AdvancedWebServer](examples/AdvancedWebServer) on NRF52840_ITSYBITSY_EXPRESS and ESP8266-AT shield.
 
@@ -985,18 +1041,33 @@ Content-Length: 1949
 Connection: close
 ```
 
-and this is the screen shot when running example [AdvancedWebServer](https://github.com/khoih-prog/ESP8266_AT_WebServer/tree/master/examples/AdvancedWebServer) on ***Seeeduino SEEED_XIAO_M0*** board using this [ESP8266_AT_WebServer Library](https://github.com/khoih-prog/ESP8266_AT_WebServer)
+---
+
+### Screen Shots
+
+#### Seeeduino SEEED_XIAO_M0
+
+This is the screen shot when running example [AdvancedWebServer](https://github.com/khoih-prog/ESP8266_AT_WebServer/tree/master/examples/AdvancedWebServer) on ***Seeeduino SEEED_XIAO_M0*** board using this [ESP8266_AT_WebServer Library](https://github.com/khoih-prog/ESP8266_AT_WebServer)
 
 <p align="center">
     <img src="https://github.com/khoih-prog/ESP8266_AT_WebServer/blob/master/pics/AdvancedWebServer.png">
 </p>
 
+### Screen Shots
+
+#### STM32 Nucleo-144 NUCLEO_F767ZI
+
+This is the screen shot when running example [AdvancedWebServer_STM32](https://github.com/khoih-prog/ESP8266_AT_WebServer/tree/master/examples/AdvancedWebServer_STM32) on ***STM32 Nucleo-144 NUCLEO_F767ZI*** board using this [ESP8266_AT_WebServer Library](https://github.com/khoih-prog/ESP8266_AT_WebServer)
+
+<p align="center">
+    <img src="https://github.com/khoih-prog/ESP8266_AT_WebServer/blob/master/pics/AdvancedWebServer_STM32.png">
+</p>
 
 ---
 
 ### New in v1.0.11
 
-1. Add support to all STM32F/L/H/G/WB/MP1
+1. Add support to all STM32F/L/H/G/WB/MP1 (Nucleo-144 NUCLEO_F767ZI, Nucleo-64 NUCLEO_L053R8, etc.)
 2. Add support to Seeeduino SAMD21/SAMD51 boards (SEEED_WIO_TERMINAL, SEEED_FEMTO_M0, SEEED_XIAO_M0, Wio_Lite_MG126, WIO_GPS_BOARD, SEEEDUINO_ZERO, SEEEDUINO_LORAWAN, SEEED_GROVE_UI_WIRELESS, etc.)
 
 ### New in v1.0.10
@@ -1025,7 +1096,7 @@ and this is the screen shot when running example [AdvancedWebServer](https://git
 
 ### New Version v1.0.6
 
-1. Add support to ***nRF52*** boards, such as ***AdaFruit Feather nRF52832, nRF52840 Express, BlueFruit Sense, Itsy-Bitsy nRF52840 Express, Metro nRF52840 Express, NINA_B30_ublox, NINA_B112_ublox, etc.*** 
+1. Add support to ***nRF52*** boards, such as ***AdaFruit Feather nRF52832, nRF52840 Express, BlueFruit Sense, Itsy-Bitsy nRF52840 Express, Metro nRF52840 Express, NINA_B302_ublox, NINA_B112_ublox, etc.*** 
 
 ### New Version v1.0.5
 
