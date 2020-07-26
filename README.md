@@ -8,6 +8,12 @@
 
 ---
 
+### New in v1.0.12
+
+1. Add sample Packages_Patches for STM32 (Nucleo-144 NUCLEO_F767ZI, Nucleo-64 NUCLEO_L053R8)
+2. Add example for STM32 boards.
+3. Add instructions to use EspSerial/Serial1 on some STM32 boards without Serial1 definition (Nucleo-144 NUCLEO_F767ZI, Nucleo-64 NUCLEO_L053R8, etc.)
+
 ### New in v1.0.11
 
 1. Add support to all STM32F/L/H/G/WB/MP1 (Nucleo-144 NUCLEO_F767ZI, Nucleo-64 NUCLEO_L053R8, etc.)
@@ -1064,6 +1070,12 @@ This is the screen shot when running example [AdvancedWebServer_STM32](https://g
 </p>
 
 ---
+
+### New in v1.0.12
+
+1. Add sample Packages_Patches for STM32 (Nucleo-144 NUCLEO_F767ZI, Nucleo-64 NUCLEO_L053R8)
+2. Add example for STM32 boards.
+3. Add instructions to use EspSerial/Serial1 on some STM32 boards without Serial1 definition (Nucleo-144 NUCLEO_F767ZI, Nucleo-64 NUCLEO_L053R8, etc.)
 
 ### New in v1.0.11
 
