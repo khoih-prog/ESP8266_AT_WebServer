@@ -243,51 +243,70 @@
   #warning EspSerial using SERIAL_PORT_HARDWARE, can be Serial or Serial1. See your board variant.h
   #define EspSerial     SERIAL_PORT_HARDWARE    //Serial1
 
-#if defined(STM32F0)
-  #warning STM32F0 board selected
-  #define BOARD_TYPE  "STM32F0"
+  #if defined(STM32F0)
+    #warning STM32F0 board selected
+    #define BOARD_TYPE  "STM32F0"
   #elif defined(STM32F1)
-  #warning STM32F1 board selected
-  #define BOARD_TYPE  "STM32F1"
+    #warning STM32F1 board selected
+    #define BOARD_TYPE  "STM32F1"
   #elif defined(STM32F2)
-  #warning STM32F2 board selected
-  #define BOARD_TYPE  "STM32F2"
+    #warning STM32F2 board selected
+    #define BOARD_TYPE  "STM32F2"
   #elif defined(STM32F3)
-  #warning STM32F3 board selected
-  #define BOARD_TYPE  "STM32F3"
+    #warning STM32F3 board selected
+    #define BOARD_TYPE  "STM32F3"
   #elif defined(STM32F4)
-  #warning STM32F4 board selected
-  #define BOARD_TYPE  "STM32F4"
+    #warning STM32F4 board selected
+    #define BOARD_TYPE  "STM32F4"
   #elif defined(STM32F7)
-  #warning STM32F7 board selected
-  #define BOARD_TYPE  "STM32F7"
+
+    #if defined(ARDUINO_NUCLEO_F767ZI)
+      #warning Nucleo-144 NUCLEO_F767ZI board selected, using HardwareSerial Serial1 @ pin D0/RX and D1/TX
+      // RX TX
+      HardwareSerial Serial1(D0, D1);
+    #else
+    
+      #warning STM32F7 board selected
+      #define BOARD_TYPE  "STM32F7"
+
+    #endif
+    
   #elif defined(STM32L0)
-  #warning STM32L0 board selected
-  #define BOARD_TYPE  "STM32L0"
+    #if defined(ARDUINO_NUCLEO_L053R8)
+      #warning Nucleo-64 NUCLEO_L053R8 board selected, using HardwareSerial Serial1 @ pin D0/RX and D1/TX
+      // RX TX
+      HardwareSerial Serial1(D0, D1);   // (PA3, PA2);
+    #else
+    
+      #warning STM32L0 board selected
+      #define BOARD_TYPE  "STM32L0"
+
+    #endif
+    
   #elif defined(STM32L1)
-  #warning STM32L1 board selected
-  #define BOARD_TYPE  "STM32L1"
+    #warning STM32L1 board selected
+    #define BOARD_TYPE  "STM32L1"
   #elif defined(STM32L4)
-  #warning STM32L4 board selected
-  #define BOARD_TYPE  "STM32L4"
+    #warning STM32L4 board selected
+    #define BOARD_TYPE  "STM32L4"
   #elif defined(STM32H7)
-  #warning STM32H7 board selected
-  #define BOARD_TYPE  "STM32H7"
+    #warning STM32H7 board selected
+    #define BOARD_TYPE  "STM32H7"
   #elif defined(STM32G0)
-  #warning STM32G0 board selected
-  #define BOARD_TYPE  "STM32G0"
+    #warning STM32G0 board selected
+    #define BOARD_TYPE  "STM32G0"
   #elif defined(STM32G4)
-  #warning STM32G4 board selected
-  #define BOARD_TYPE  "STM32G4"
+    #warning STM32G4 board selected
+    #define BOARD_TYPE  "STM32G4"
   #elif defined(STM32WB)
-  #warning STM32WB board selected
-  #define BOARD_TYPE  "STM32WB"
+    #warning STM32WB board selected
+    #define BOARD_TYPE  "STM32WB"
   #elif defined(STM32MP1)
-  #warning STM32MP1 board selected
-  #define BOARD_TYPE  "STM32MP1"
+    #warning STM32MP1 board selected
+    #define BOARD_TYPE  "STM32MP1"
   #else
-  #warning STM32 unknown board selected
-  #define BOARD_TYPE  "STM32 Unknown"
+    #warning STM32 unknown board selected
+    #define BOARD_TYPE  "STM32 Unknown"
   #endif
 
 #else
@@ -304,5 +323,6 @@
 
 char ssid[] = "****";        // your network SSID (name)
 char pass[] = "****";        // your network password
+
 
 #endif    //defines_h
