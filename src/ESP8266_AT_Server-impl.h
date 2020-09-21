@@ -3,7 +3,7 @@
    For ESP8266/ESP32 AT-command running shields
 
    ESP8266_AT_WebServer is a library for the ESP8266/ESP32 AT-command shields to run WebServer
-   Forked and modified from ESP8266 https://github.com/esp8266/Arduino/releases
+   Based on and modified from ESP8266 https://github.com/esp8266/Arduino/releases
    Built by Khoi Hoang https://github.com/khoih-prog/ESP8266_AT_WebServer
    Licensed under MIT license
 
@@ -11,7 +11,7 @@
    @file       Esp8266WebServer.h
    @author     Ivan Grokhotkov
 
-   Version: 1.0.12
+   Version: 1.1.0
 
    Version Modified By   Date      Comments
    ------- -----------  ---------- -----------
@@ -29,6 +29,7 @@
     1.0.10  K Hoang      22/07/2020 Fix bug not closing client and releasing socket.
     1.0.11  K Hoang      25/07/2020 Add support to all STM32F/L/H/G/WB/MP1 and Seeeduino SAMD21/SAMD51 boards  
     1.0.12  K Hoang      26/07/2020 Add example and sample Packages_Patches for STM32F/L/H/G/WB/MP boards
+    1.1.0   K Hoang      21/09/2020 Add support to UDP Multicast. Fix bugs.
  *****************************************************************************************************************************/
 #ifndef ESP8266_AT_Server_impl_h
 #define ESP8266_AT_Server_impl_h
@@ -57,6 +58,7 @@ void ESP8266_AT_Server::begin()
 #else
   _sock = 1; // If this is already in use, the startServer attempt will fail
 #endif
+
   ESP8266_AT_Class::allocateSocket(_sock);
 
   _started = ESP8266_AT_Drv::startServer(_port, _sock);
@@ -92,6 +94,7 @@ ESP8266_AT_Client ESP8266_AT_Server::available(byte* status)
     AT_LOGINFO1(F("New client"), ESP8266_AT_Drv::_connId);
     ESP8266_AT_Class::allocateSocket(ESP8266_AT_Drv::_connId);
     ESP8266_AT_Client client(ESP8266_AT_Drv::_connId);
+    
     return client;
   }
 
@@ -120,6 +123,7 @@ size_t ESP8266_AT_Server::write(const uint8_t *buffer, size_t size)
       n += client.write(buffer, size);
     }
   }
+  
   return n;
 }
 

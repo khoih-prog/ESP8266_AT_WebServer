@@ -3,7 +3,7 @@
    For ESP8266/ESP32 AT-command running shields
 
    ESP8266_AT_WebServer is a library for the ESP8266/ESP32 AT-command shields to run WebServer
-   Forked and modified from ESP8266 https://github.com/esp8266/Arduino/releases
+   Based on and modified from ESP8266 https://github.com/esp8266/Arduino/releases
    Built by Khoi Hoang https://github.com/khoih-prog/ESP8266_AT_WebServer
    Licensed under MIT license
 
@@ -11,7 +11,7 @@
    @file       Esp8266WebServer.h
    @author     Ivan Grokhotkov
 
-   Version: 1.0.12
+   Version: 1.1.0
 
    Version Modified By   Date      Comments
    ------- -----------  ---------- -----------
@@ -29,6 +29,7 @@
     1.0.10  K Hoang      22/07/2020 Fix bug not closing client and releasing socket.
     1.0.11  K Hoang      25/07/2020 Add support to all STM32F/L/H/G/WB/MP1 and Seeeduino SAMD21/SAMD51 boards  
     1.0.12  K Hoang      26/07/2020 Add example and sample Packages_Patches for STM32F/L/H/G/WB/MP boards
+    1.1.0   K Hoang      21/09/2020 Add support to UDP Multicast. Fix bugs.
  *****************************************************************************************************************************/
 
 #ifndef ESP8266_AT_impl_h
@@ -74,6 +75,7 @@ char* ESP8266_AT_Class::firmwareVersion()
 int ESP8266_AT_Class::begin(const char* ssid, const char* passphrase)
 {
   espMode = 1;
+  
   if (ESP8266_AT_Drv::wifiConnect(ssid, passphrase))
     return WL_CONNECTED;
 
@@ -124,33 +126,41 @@ uint8_t* ESP8266_AT_Class::macAddress(uint8_t* mac)
 {
   // TODO we don't need _mac variable
   uint8_t* _mac = ESP8266_AT_Drv::getMacAddress();
+  
   memcpy(mac, _mac, WL_MAC_ADDR_LENGTH);
+  
   return mac;
 }
 
 IPAddress ESP8266_AT_Class::localIP()
 {
   IPAddress ret;
+  
   if (espMode == 1)
     ESP8266_AT_Drv::getIpAddress(ret);
   else
     ESP8266_AT_Drv::getIpAddressAP(ret);
+    
   return ret;
 }
 
 IPAddress ESP8266_AT_Class::subnetMask()
 {
   IPAddress mask;
+  
   if (espMode == 1)
     ESP8266_AT_Drv::getNetmask(mask);
+    
   return mask;
 }
 
 IPAddress ESP8266_AT_Class::gatewayIP()
 {
   IPAddress gw;
+  
   if (espMode == 1)
     ESP8266_AT_Drv::getGateway(gw);
+    
   return gw;
 }
 
@@ -164,7 +174,9 @@ uint8_t* ESP8266_AT_Class::BSSID(uint8_t* bssid)
 {
   // TODO we don't need _bssid
   uint8_t* _bssid = ESP8266_AT_Drv::getCurrentBSSID();
+  
   memcpy(bssid, _bssid, WL_MAC_ADDR_LENGTH);
+  
   return bssid;
 }
 
@@ -246,6 +258,7 @@ uint8_t ESP8266_AT_Class::getFreeSocket()
       return i;
     }
   }
+  
   return SOCK_NOT_AVAIL;
 }
 

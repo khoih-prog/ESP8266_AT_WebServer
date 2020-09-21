@@ -3,7 +3,7 @@
    For ESP8266/ESP32 AT-command running shields
 
    ESP8266_AT_WebServer is a library for the ESP8266/ESP32 AT-command shields to run WebServer
-   Forked and modified from ESP8266 https://github.com/esp8266/Arduino/releases
+   Based on and modified from ESP8266 https://github.com/esp8266/Arduino/releases
    Built by Khoi Hoang https://github.com/khoih-prog/ESP8266_AT_WebServer
    Licensed under MIT license
 
@@ -11,7 +11,7 @@
    @file       Esp8266WebServer.h
    @author     Ivan Grokhotkov
 
-   Version: 1.0.12
+   Version: 1.1.0
 
    Version Modified By   Date      Comments
    ------- -----------  ---------- -----------
@@ -29,6 +29,7 @@
     1.0.10  K Hoang      22/07/2020 Fix bug not closing client and releasing socket.
     1.0.11  K Hoang      25/07/2020 Add support to all STM32F/L/H/G/WB/MP1 and Seeeduino SAMD21/SAMD51 boards  
     1.0.12  K Hoang      26/07/2020 Add example and sample Packages_Patches for STM32F/L/H/G/WB/MP boards
+    1.1.0   K Hoang      21/09/2020 Add support to UDP Multicast. Fix bugs.
  *****************************************************************************************************************************/
 
 #ifndef ESP8266_AT_Client_impl_h
@@ -83,8 +84,10 @@ int ESP8266_AT_Client::connectSSL(const char* host, uint16_t port)
 int ESP8266_AT_Client::connectSSL(IPAddress ip, uint16_t port)
 {
   char s[16];
+  
   //sprintf_P(s, PSTR("%d.%d.%d.%d"), ip[0], ip[1], ip[2], ip[3]);
   sprintf(s, "%d.%d.%d.%d", ip[0], ip[1], ip[2], ip[3]);
+  
   return connect(s, port, SSL_MODE);
 }
 
@@ -96,6 +99,7 @@ int ESP8266_AT_Client::connect(const char* host, uint16_t port)
 int ESP8266_AT_Client::connect(IPAddress ip, uint16_t port)
 {
   char s[16];
+  
   //sprintf_P(s, PSTR("%d.%d.%d.%d"), ip[0], ip[1], ip[2], ip[3]);
   sprintf(s, "%d.%d.%d.%d", ip[0], ip[1], ip[2], ip[3]);
 
@@ -121,6 +125,7 @@ int ESP8266_AT_Client::connect(const char* host, uint16_t port, uint8_t protMode
     AT_LOGERROR(F("No socket available"));
     return 0;
   }
+  
   return 1;
 }
 
@@ -131,19 +136,26 @@ size_t ESP8266_AT_Client::write(uint8_t b)
 
 size_t ESP8266_AT_Client::write(const uint8_t *buf, size_t size)
 {
-  if ( (_sock >= MAX_SOCK_NUM) || (size == 0) )
+  AT_LOGDEBUG3(F("Client_write: buf ="), (char *) buf, ", size =", size);
+  AT_LOGDEBUG1(F("Client_write: sock ="), _sock);
+  
+  // KH, v1.1.0
+  //if ( (_sock >= MAX_SOCK_NUM) || (size == 0) )
+  if ( (_sock >= MAX_SOCK_NUM) || (size == 0) || buf[0] == 0 )
   {
     setWriteError();
     return 0;
   }
 
   bool r = ESP8266_AT_Drv::sendData(_sock, buf, size);
+  
   if (!r)
   {
     setWriteError();
     AT_LOGERROR1(F("Client_write: Failed to write to socket"), _sock);
     delay(4000);
     stop();
+    
     return 0;
   }
 
@@ -155,6 +167,7 @@ int ESP8266_AT_Client::available()
   if (_sock != 255)
   {
     int bytes = ESP8266_AT_Drv::availData(_sock);
+    
     if (bytes > 0)
     {
       return bytes;
@@ -167,6 +180,7 @@ int ESP8266_AT_Client::available()
 int ESP8266_AT_Client::read()
 {
   uint8_t b;
+  
   if (!available())
     return -1;
 
@@ -192,6 +206,7 @@ int ESP8266_AT_Client::read(uint8_t* buf, size_t size)
 int ESP8266_AT_Client::peek()
 {
   uint8_t b;
+  
   if (!available())
     return -1;
 
@@ -247,33 +262,36 @@ uint8_t ESP8266_AT_Client::status()
 {
   if (_sock == 255)
   {
-    //AT_LOGINFO(F("Client::status: sock closed"));
+    AT_LOGDEBUG(F("Client::status: sock closed"));
     return CLOSED;
   }
 
   if (ESP8266_AT_Drv::availData(_sock))
   {
-    //AT_LOGINFO(F("Client::status: availData OK"));
+    AT_LOGDEBUG(F("Client::status: availData OK"));
     return ESTABLISHED;
   }
 
   if (ESP8266_AT_Drv::getClientState(_sock))
   {
-    //AT_LOGINFO(F("Client::status: getClientState OK"));
+    AT_LOGDEBUG(F("Client::status: getClientState OK"));
     return ESTABLISHED;
   }
 
   ESP8266_AT_Class::releaseSocket(_sock);
   _sock = 255;
 
-  //AT_LOGINFO(F("Client::status: sock released"));
+  AT_LOGDEBUG(F("Client::status: sock released"));
+  
   return CLOSED;
 }
 
 IPAddress ESP8266_AT_Client::remoteIP()
 {
   IPAddress ret;
+  
   ESP8266_AT_Drv::getRemoteIpAddress(ret);
+  
   return ret;
 }
 
@@ -292,12 +310,14 @@ size_t ESP8266_AT_Client::printFSH(const __FlashStringHelper *ifsh, bool appendC
   }
 
   bool r = ESP8266_AT_Drv::sendData(_sock, ifsh, size, appendCrLf);
+  
   if (!r)
   {
     setWriteError();
     AT_LOGERROR1(F("printFSH: Failed to write to socket"), _sock);
     delay(4000);
     stop();
+    
     return 0;
   }
 

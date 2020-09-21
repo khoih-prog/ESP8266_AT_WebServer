@@ -3,7 +3,7 @@
    For ESP8266/ESP32 AT-command running shields
 
    ESP8266_AT_WebServer is a library for the ESP8266/ESP32 AT-command shields to run WebServer
-   Forked and modified from ESP8266 https://github.com/esp8266/Arduino/releases
+   Based on and modified from ESP8266 https://github.com/esp8266/Arduino/releases
    Built by Khoi Hoang https://github.com/khoih-prog/ESP8266_AT_WebServer
    Licensed under MIT license
 
@@ -11,7 +11,7 @@
    @file       Esp8266WebServer.h
    @author     Ivan Grokhotkov
 
-   Version: 1.0.12
+   Version: 1.1.0
 
    Version Modified By   Date      Comments
    ------- -----------  ---------- -----------
@@ -28,7 +28,8 @@
     1.0.9   K Hoang      03/07/2020 Fix bug. Add functions. Restructure codes.
     1.0.10  K Hoang      22/07/2020 Fix bug not closing client and releasing socket.
     1.0.11  K Hoang      25/07/2020 Add support to all STM32F/L/H/G/WB/MP1 and Seeeduino SAMD21/SAMD51 boards  
-    1.0.12  K Hoang      26/07/2020 Add example and sample Packages_Patches for STM32F/L/H/G/WB/MP boards             
+    1.0.12  K Hoang      26/07/2020 Add example and sample Packages_Patches for STM32F/L/H/G/WB/MP boards
+    1.1.0   K Hoang      21/09/2020 Add support to UDP Multicast. Fix bugs.           
  *****************************************************************************************************************************/
 
 #ifndef ESP8266_AT_WebServer_h
@@ -66,40 +67,40 @@
       || defined(ARDUINO_SAMD_MKRGSM1400) || defined(ARDUINO_SAMD_MKRNB1500) || defined(ARDUINO_SAMD_MKRVIDOR4000) || defined(__SAMD21G18A__) \
       || defined(ARDUINO_SAMD_CIRCUITPLAYGROUND_EXPRESS) || defined(__SAMD21E18A__) || defined(__SAMD51__) || defined(__SAMD51J20A__) || defined(__SAMD51J19A__) \
       || defined(__SAMD51G19A__) || defined(__SAMD51P19A__) || defined(__SAMD21G18A__) )
-#if defined(ESP8266_AT_USE_SAMD)
-#undef ESP8266_AT_USE_SAMD
-#endif
-#define ESP8266_AT_USE_SAMD      true
-#warning Use SAMD architecture from ESP8266_AT_WebServer
+  #if defined(ESP8266_AT_USE_SAMD)
+    #undef ESP8266_AT_USE_SAMD
+  #endif
+  #define ESP8266_AT_USE_SAMD      true
+  #warning Use SAMD architecture from ESP8266_AT_WebServer
 #endif
 
 #if ( defined(NRF52840_FEATHER) || defined(NRF52832_FEATHER) || defined(NRF52_SERIES) || defined(ARDUINO_NRF52_ADAFRUIT) || \
       defined(NRF52840_FEATHER_SENSE) || defined(NRF52840_ITSYBITSY) || defined(NRF52840_CIRCUITPLAY) || defined(NRF52840_CLUE) || \
       defined(NRF52840_METRO) || defined(NRF52840_PCA10056) || defined(PARTICLE_XENON) || defined(NINA_B302_ublox) || defined(NINA_B112_ublox) )
-#if defined(ESP8266_AT_USE_NRF528XX)
-#undef ESP8266_AT_USE_NRF528XX
-#endif
-#define ESP8266_AT_USE_NRF528XX      true
-#warning Use nFR52 architecture from ESP8266_AT_WebServer
+  #if defined(ESP8266_AT_USE_NRF528XX)
+    #undef ESP8266_AT_USE_NRF528XX
+  #endif
+  #define ESP8266_AT_USE_NRF528XX      true
+  #warning Use nFR52 architecture from ESP8266_AT_WebServer
 #endif
 
 #if ( defined(ARDUINO_SAM_DUE) || defined(__SAM3X8E__) )
-#if defined(ESP8266_AT_USE_SAM_DUE)
-#undef ESP8266_AT_USE_SAM_DUE
-#endif
-#define ESP8266_AT_USE_SAM_DUE      true
-#warning Use SAM_DUE architecture
+  #if defined(ESP8266_AT_USE_SAM_DUE)
+    #undef ESP8266_AT_USE_SAM_DUE
+  #endif
+  #define ESP8266_AT_USE_SAM_DUE      true
+  #warning Use SAM_DUE architecture
 #endif
 
 #if ( defined(STM32F0) || defined(STM32F1) || defined(STM32F2) || defined(STM32F3)  ||defined(STM32F4) || defined(STM32F7) || \
        defined(STM32L0) || defined(STM32L1) || defined(STM32L4) || defined(STM32H7)  ||defined(STM32G0) || defined(STM32G4) || \
        defined(STM32WB) || defined(STM32MP1) )
-#warning STM32 board selected
+  #warning STM32 board selected
 
-#if defined(ESP8266_AT_USE_STM32)
-#undef ESP8266_AT_USE_STM32
-#endif
-#define ESP8266_AT_USE_STM32      true
+  #if defined(ESP8266_AT_USE_STM32)
+    #undef ESP8266_AT_USE_STM32
+  #endif
+  #define ESP8266_AT_USE_STM32      true
 #endif
 
 // To support lambda function in class

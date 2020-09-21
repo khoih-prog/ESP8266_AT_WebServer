@@ -3,7 +3,7 @@
    For ESP8266/ESP32 AT-command running shields
 
    ESP8266_AT_WebServer is a library for the ESP8266/ESP32 AT-command shields to run WebServer
-   Forked and modified from ESP8266 https://github.com/esp8266/Arduino/releases
+   Based on and modified from ESP8266 https://github.com/esp8266/Arduino/releases
    Built by Khoi Hoang https://github.com/khoih-prog/ESP8266_AT_WebServer
    Licensed under MIT license
 
@@ -11,7 +11,7 @@
    @file       Esp8266WebServer.h
    @author     Ivan Grokhotkov
 
-   Version: 1.0.12
+   Version: 1.1.0
 
    Version Modified By   Date      Comments
    ------- -----------  ---------- -----------
@@ -29,6 +29,7 @@
     1.0.10  K Hoang      22/07/2020 Fix bug not closing client and releasing socket.
     1.0.11  K Hoang      25/07/2020 Add support to all STM32F/L/H/G/WB/MP1 and Seeeduino SAMD21/SAMD51 boards  
     1.0.12  K Hoang      26/07/2020 Add example and sample Packages_Patches for STM32F/L/H/G/WB/MP boards
+    1.1.0   K Hoang      21/09/2020 Add support to UDP Multicast. Fix bugs.
  *****************************************************************************************************************************/
 
 #ifndef ESP8266_AT_UDP_impl_h
@@ -47,6 +48,7 @@ ESP8266_AT_UDP::ESP8266_AT_UDP() : _sock(NO_SOCKET_AVAIL) {}
 uint8_t ESP8266_AT_UDP::begin(uint16_t port)
 {
   uint8_t sock = ESP8266_AT_Class::getFreeSocket();
+  
   if (sock != NO_SOCKET_AVAIL)
   {
     ESP8266_AT_Drv::startClient("0", port, sock, UDP_MODE);
@@ -55,11 +57,42 @@ uint8_t ESP8266_AT_UDP::begin(uint16_t port)
     ESP8266_AT_Class::_server_port[sock] = port;
     _sock = sock;
     _port = port;
+    
     return 1;
   }
+  
   return 0;
 
 }
+
+// KH, add to support MultiCast for v1.1.0
+uint8_t ESP8266_AT_UDP::beginMulticast(IPAddress ip, uint16_t port) 
+{
+  uint8_t sock;
+  
+  if (_sock == NO_SOCKET_AVAIL)
+    sock = ESP8266_AT_Class::getFreeSocket();
+     
+  if (sock != NO_SOCKET_AVAIL)
+  {
+    char s[18];
+    sprintf_P(s, PSTR("%d.%d.%d.%d"), ip[0], ip[1], ip[2], ip[3]);
+    
+    ESP8266_AT_Drv::startClient(s, port, sock, UDP_MULTICAST_MODE);
+
+    ESP8266_AT_Class::allocateSocket(sock);  // allocating the socket for the listener
+    _sock = sock;
+    _port = port;
+    
+    _remotePort = port;
+       
+    return 1;
+  }
+  
+  return 0;
+}
+//////
+
 
 /* return number of bytes available in the current packet,
    will return zero if parsePacket hasn't been called yet */
@@ -68,6 +101,7 @@ int ESP8266_AT_UDP::available()
   if (_sock != NO_SOCKET_AVAIL)
   {
     int bytes = ESP8266_AT_Drv::availData(_sock);
+    
     if (bytes > 0)
     {
       return bytes;
@@ -101,12 +135,16 @@ int ESP8266_AT_UDP::beginPacket(const char *host, uint16_t port)
 
   if (_sock != NO_SOCKET_AVAIL)
   {
-    //ESP8266_AT_Drv::startClient(host, port, _sock, UDP_MODE);
+    // KH, v.1.1.0
+    ESP8266_AT_Drv::startClient(host, port, _sock, UDP_MODE);
+    //////
     _remotePort = port;
     strcpy(_remoteHost, host);
     ESP8266_AT_Class::allocateSocket(_sock);
+    
     return 1;
   }
+  
   return 0;
 }
 
@@ -133,6 +171,7 @@ size_t ESP8266_AT_UDP::write(uint8_t byte)
 size_t ESP8266_AT_UDP::write(const uint8_t *buffer, size_t size)
 {
   bool r = ESP8266_AT_Drv::sendDataUdp(_sock, _remoteHost, _remotePort, buffer, size);
+  
   if (!r)
   {
     return 0;
@@ -149,6 +188,7 @@ int ESP8266_AT_UDP::parsePacket()
 int ESP8266_AT_UDP::read()
 {
   uint8_t b;
+  
   if (!available())
     return -1;
 
@@ -165,12 +205,14 @@ int ESP8266_AT_UDP::read(uint8_t* buf, size_t size)
 {
   if (!available())
     return -1;
+    
   return ESP8266_AT_Drv::getDataBuf(_sock, buf, size);
 }
 
 int ESP8266_AT_UDP::peek()
 {
   uint8_t b;
+  
   if (!available())
     return -1;
 
@@ -181,6 +223,7 @@ void ESP8266_AT_UDP::flush()
 {
   // Discard all input data
   int count = available();
+  
   while (count-- > 0)
     read();
 }
@@ -190,6 +233,7 @@ IPAddress  ESP8266_AT_UDP::remoteIP()
 {
   IPAddress ret;
   ESP8266_AT_Drv::getRemoteIpAddress(ret);
+  
   return ret;
 }
 

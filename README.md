@@ -7,6 +7,13 @@
 [![GitHub issues](https://img.shields.io/github/issues/khoih-prog/ESP8266_AT_WebServer.svg)](http://github.com/khoih-prog/ESP8266_AT_WebServer/issues)
 
 ---
+---
+
+### New in v1.1.0
+
+1. Add support to UDP **Multicast**. Now ESP8266/ESP32 AT-command shields can run uPnP libraries to manage Internet Gateway's port forwarding.
+2. Fix bugs.
+3. Enhance debug support.
 
 ### New in v1.0.12
 
@@ -16,8 +23,8 @@
 
 ### New in v1.0.11
 
-1. Add support to all ***STM32F/L/H/G/WB/MP1 (Nucleo-144 NUCLEO_F767ZI, Nucleo-64 NUCLEO_L053R8, etc.)***
-2. Add support to ***Seeeduino SAMD21/SAMD51 boards (SEEED_WIO_TERMINAL, SEEED_FEMTO_M0, SEEED_XIAO_M0, Wio_Lite_MG126, WIO_GPS_BOARD, SEEEDUINO_ZERO, SEEEDUINO_LORAWAN, SEEED_GROVE_UI_WIRELESS, etc.)***
+1. Add support to all **STM32F/L/H/G/WB/MP1 (Nucleo-144 NUCLEO_F767ZI, Nucleo-64 NUCLEO_L053R8, etc.)**
+2. Add support to **Seeeduino SAMD21/SAMD51 boards (SEEED_WIO_TERMINAL, SEEED_FEMTO_M0, SEEED_XIAO_M0, Wio_Lite_MG126, WIO_GPS_BOARD, SEEEDUINO_ZERO, SEEEDUINO_LORAWAN, SEEED_GROVE_UI_WIRELESS, etc.)**
 
 ### New in v1.0.10
 
@@ -39,17 +46,17 @@
 
 ### New Version v1.0.7
 
-1. Add support to ***ESP32-AT-command shield***. 
+1. Add support to **ESP32-AT-command shield**. 
 2. Update deprecated ESP8266-AT commands. 
 3. Restructure examples to separate defines header files.
 
 ### New Version v1.0.6
 
-1. Add support to ***nRF52*** boards, such as ***AdaFruit Feather nRF52832, nRF52840 Express, BlueFruit Sense, Itsy-Bitsy nRF52840 Express, Metro nRF52840 Express, NINA_B302_ublox, NINA_B112_ublox, etc.*** 
+1. Add support to **nRF52** boards, such as **AdaFruit Feather nRF52832, nRF52840 Express, BlueFruit Sense, Itsy-Bitsy nRF52840 Express, Metro nRF52840 Express, NINA_B302_ublox, NINA_B112_ublox, etc.** 
 
 ### New Version v1.0.5
 
-1. Add support to ***SAM51 (Itsy-Bitsy M4, Metro M4, Grand Central M4, Feather M4 Express, etc.) and SAM DUE***.
+1. Add support to **SAM51 (Itsy-Bitsy M4, Metro M4, Grand Central M4, Feather M4 Express, etc.) and SAM DUE**.
 
 ### New Version v1.0.4
 
@@ -62,28 +69,33 @@
 
 ### New Version v1.0.2
 
-1. Add support to SAMD (ZERO, MKR, ***NANO_33_IOT***, M0, M0 Pro, AdaFruit CIRCUITPLAYGROUND_EXPRESS, etc.) boards
+1. Add support to SAMD (ZERO, MKR, **NANO_33_IOT**, M0, M0 Pro, AdaFruit CIRCUITPLAYGROUND_EXPRESS, etc.) boards
 
 ---
 
-This is simple yet complete WebServer library for `AVR, Teensy, SAM DUE, SAMD, STM32, etc.` boards running `ESP8266 AT-command` shields. The functions are similar and compatible to ESP8266/ESP32 WebServer libraries to make life much easier to port sketches from ESP8266/ESP32.
+This is simple yet complete WebServer library for `AVR, Teensy, SAM DUE, SAMD, STM32, etc.` boards running `ESP8266/ESP32 AT-command` shields. The functions are similar and compatible to ESP8266/ESP32 WebServer libraries to make life much easier to port sketches from ESP8266/ESP32.
 
-The library supports 
+The library supports:
+
 1. WiFi Client, STA and AP mode
 2. TCP Server and Client
 3. UDP Server and Client
 4. HTTP Server and Client
 5. HTTP GET and POST requests, provides argument parsing, handles one client at a time.
+6. UDP Multicast and Broadcast.
 
 Library is based on and modified from:
+
 1. [Ivan Grokhotkov's ESP8266WebServer](https://github.com/esp8266/Arduino/tree/master/libraries/ESP8266WebServer)
 2. [bportaluri's WiFiEsp library](https://github.com/bportaluri/WiFiEsp)
 
 The ESP8266_AT_Web_Server class found in `ESP8266_AT_Web_Server.h` header, is a simple web server that knows how to handle HTTP requests such as GET and POST and can only support one simultaneous client.
 
 ---
+---
 
 ## Prerequisite
+
  1. [`Arduino IDE 1.8.12+` for Arduino](https://www.arduino.cc/en/Main/Software)
  2. `Arduino AVR core 1.8.2+` for Arduino (Use Arduino Board Manager) for AVR boards
  3. [`Arduino Core for STM32 v1.9.0+`](https://github.com/khoih-prog/Arduino_Core_STM32) for STM32 boards (Nucleo-144 NUCLEO_F767ZI, Nucleo-64 NUCLEO_L053R8, etc.)
@@ -183,14 +195,15 @@ You can also use this link [![arduino-library-badge](https://www.ardu-badge.com/
 ### VS Code & PlatformIO:
 1. Install [VS Code](https://code.visualstudio.com/)
 2. Install [PlatformIO](https://platformio.org/platformio-ide)
-3. Install **ESP8266_AT_WebServer** library by using [Library Manager](https://docs.platformio.org/en/latest/librarymanager/). Search for ***ESP8266_AT_WebServer*** in [Platform.io Author's Libraries](https://platformio.org/lib/search?query=author:%22Khoi%20Hoang%22)
+3. Install **ESP8266_AT_WebServer** library by using [Library Manager](https://docs.platformio.org/en/latest/librarymanager/). Search for **ESP8266_AT_WebServer** in [Platform.io Author's Libraries](https://platformio.org/lib/search?query=author:%22Khoi%20Hoang%22)
 4. Use included [platformio.ini](platformio/platformio.ini) file from examples to ensure that all dependent libraries will installed automatically. Please visit documentation for the other options and examples at [Project Configuration File](https://docs.platformio.org/page/projectconf.html)
 
+---
 ---
 
 ### Packages' Patches
 
- 1. ***To be able to compile, run and automatically detect and display BOARD_NAME on nRF52840/nRF52832 boards***, you have to copy the whole [nRF52 0.20.5](Packages_Patches/adafruit/hardware/nrf52/0.20.5) directory into Adafruit nRF52 directory (~/.arduino15/packages/adafruit/hardware/nrf52/0.20.5). 
+ 1. **To be able to compile, run and automatically detect and display BOARD_NAME on nRF52840/nRF52832 boards**, you have to copy the whole [nRF52 0.20.5](Packages_Patches/adafruit/hardware/nrf52/0.20.5) directory into Adafruit nRF52 directory (~/.arduino15/packages/adafruit/hardware/nrf52/0.20.5). 
 
 Supposing the Adafruit nRF52 version is 0.20.5. These files must be copied into the directory:
 - `~/.arduino15/packages/adafruit/hardware/nrf52/0.20.5/platform.txt`
@@ -199,7 +212,7 @@ Supposing the Adafruit nRF52 version is 0.20.5. These files must be copied into 
 - `~/.arduino15/packages/adafruit/hardware/nrf52/0.20.5/variants/NINA_B302_ublox/variant.cpp`
 - `~/.arduino15/packages/adafruit/hardware/nrf52/0.20.5/variants/NINA_B112_ublox/variant.h`
 - `~/.arduino15/packages/adafruit/hardware/nrf52/0.20.5/variants/NINA_B112_ublox/variant.cpp`
-- ***`~/.arduino15/packages/adafruit/hardware/nrf52/0.20.5/cores/nRF5/Udp.h`***
+- **`~/.arduino15/packages/adafruit/hardware/nrf52/0.20.5/cores/nRF5/Udp.h`**
 
 Whenever a new version is installed, remember to copy these files into the new version directory. For example, new version is x.yy.z
 These files must be copied into the directory:
@@ -210,9 +223,9 @@ These files must be copied into the directory:
 - `~/.arduino15/packages/adafruit/hardware/nrf52/x.yy.z/variants/NINA_B302_ublox/variant.cpp`
 - `~/.arduino15/packages/adafruit/hardware/nrf52/x.yy.z/variants/NINA_B112_ublox/variant.h`
 - `~/.arduino15/packages/adafruit/hardware/nrf52/x.yy.z/variants/NINA_B112_ublox/variant.cpp`
-- ***`~/.arduino15/packages/adafruit/hardware/nrf52/x.yy.z/cores/nRF5/Udp.h`***
+- **`~/.arduino15/packages/adafruit/hardware/nrf52/x.yy.z/cores/nRF5/Udp.h`**
 
- 2. ***To be able to compile and run on Teensy boards***, you have to copy the file [Teensy boards.txt](Packages_Patches/hardware/teensy/avr/boards.txt) into Teensy hardware directory (./arduino-1.8.12/hardware/teensy/avr/boards.txt). 
+ 2. **To be able to compile and run on Teensy boards**, you have to copy the file [Teensy boards.txt](Packages_Patches/hardware/teensy/avr/boards.txt) into Teensy hardware directory (./arduino-1.8.12/hardware/teensy/avr/boards.txt). 
 
 Supposing the Arduino version is 1.8.12. This file must be copied into the directory:
 
@@ -223,7 +236,7 @@ This file must be copied into the directory:
 
 - `./arduino-x.yy.zz/hardware/teensy/avr/boards.txt`
 
- 3. ***To be able to compile and run on SAM DUE boards***, you have to copy the whole [SAM DUE](Packages_Patches/arduino/hardware/sam/1.6.12) directory into Arduino sam directory (~/.arduino15/packages/arduino/hardware/sam/1.6.12). 
+ 3. **To be able to compile and run on SAM DUE boards**, you have to copy the whole [SAM DUE](Packages_Patches/arduino/hardware/sam/1.6.12) directory into Arduino sam directory (~/.arduino15/packages/arduino/hardware/sam/1.6.12). 
 
 Supposing the Arduino SAM core version is 1.6.12. This file must be copied into the directory:
 
@@ -234,20 +247,20 @@ This file must be copied into the directory:
 
 - `~/.arduino15/packages/arduino/hardware/sam/x.yy.zz/platform.txt`
 
- 4. ***To be able to compile without error and automatically detect and display BOARD_NAME on Arduino SAMD (Nano-33-IoT, etc) boards***, you have to copy the whole [Arduino SAMD cores 1.8.8](Packages_Patches/arduino/hardware/samd/1.8.8) directory into Arduino SAMD directory (~/.arduino15/packages/arduino/hardware/samd/1.8.8).
+ 4. **To be able to compile without error and automatically detect and display BOARD_NAME on Arduino SAMD (Nano-33-IoT, etc) boards**, you have to copy the whole [Arduino SAMD cores 1.8.8](Packages_Patches/arduino/hardware/samd/1.8.8) directory into Arduino SAMD directory (~/.arduino15/packages/arduino/hardware/samd/1.8.8).
  
 Supposing the Arduino SAMD version is 1.8.8. These files must be copied into the directory:
 - `~/.arduino15/packages/arduino/hardware/samd/1.8.8/platform.txt`
-- ***`~/.arduino15/packages/arduino/hardware/samd/1.8.8/cores/arduino/Arduino.h`***
+- **`~/.arduino15/packages/arduino/hardware/samd/1.8.8/cores/arduino/Arduino.h`**
 
 Whenever a new version is installed, remember to copy these files into the new version directory. For example, new version is x.yy.z
 
 These files must be copied into the directory:
 
 - `~/.arduino15/packages/arduino/hardware/samd/x.yy.z/platform.txt`
-- ***`~/.arduino15/packages/arduino/hardware/samd/x.yy.z/cores/arduino/Arduino.h`***
+- **`~/.arduino15/packages/arduino/hardware/samd/x.yy.z/cores/arduino/Arduino.h`**
  
- This is mandatory to fix the ***notorious Arduino SAMD compiler error***. See [Improve Arduino compatibility with the STL (min and max macro)](https://github.com/arduino/ArduinoCore-samd/pull/399)
+ This is mandatory to fix the **notorious Arduino SAMD compiler error**. See [Improve Arduino compatibility with the STL (min and max macro)](https://github.com/arduino/ArduinoCore-samd/pull/399)
  
 ```
  ...\arm-none-eabi\include\c++\7.2.1\bits\stl_algobase.h:243:56: error: macro "min" passed 3 arguments, but takes just 2
@@ -256,7 +269,7 @@ These files must be copied into the directory:
 
 Whenever the above-mentioned compiler error issue is fixed with the new Arduino SAMD release, you don't need to copy the `Arduino.h` file anymore.
 
- 5. ***To be able to automatically detect and display BOARD_NAME on Adafruit SAMD (Itsy-Bitsy M4, etc) boards***, you have to copy the file [Adafruit SAMD platform.txt](Packages_Patches/adafruit/hardware/samd/1.6.0) into Adafruit samd directory (~/.arduino15/packages/adafruit/hardware/samd/1.6.0). 
+ 5. **To be able to automatically detect and display BOARD_NAME on Adafruit SAMD (Itsy-Bitsy M4, etc) boards**, you have to copy the file [Adafruit SAMD platform.txt](Packages_Patches/adafruit/hardware/samd/1.6.0) into Adafruit samd directory (~/.arduino15/packages/adafruit/hardware/samd/1.6.0). 
 
 Supposing the Adafruit SAMD core version is 1.6.0. This file must be copied into the directory:
 
@@ -267,7 +280,7 @@ This file must be copied into the directory:
 
 - `~/.arduino15/packages/adafruit/hardware/samd/x.yy.zz/platform.txt`
 
- 6. ***To be able to automatically detect and display BOARD_NAME on Seeeduino SAMD (XIAO M0, Wio Terminal, etc) boards***, you have to copy the file [Seeeduino SAMD platform.txt](Packages_Patches/Seeeduino/hardware/samd/1.7.8) into Adafruit samd directory (~/.arduino15/packages/Seeeduino/hardware/samd/1.7.8). 
+ 6. **To be able to automatically detect and display BOARD_NAME on Seeeduino SAMD (XIAO M0, Wio Terminal, etc) boards**, you have to copy the file [Seeeduino SAMD platform.txt](Packages_Patches/Seeeduino/hardware/samd/1.7.8) into Adafruit samd directory (~/.arduino15/packages/Seeeduino/hardware/samd/1.7.8). 
 
 Supposing the Seeeduino SAMD core version is 1.7.8. This file must be copied into the directory:
 
@@ -278,7 +291,7 @@ This file must be copied into the directory:
 
 - `~/.arduino15/packages/Seeeduino/hardware/samd/x.yy.zz/platform.txt`
 
-7. ***To use Serial1 on some STM32 boards without Serial1 definition (Nucleo-144 NUCLEO_F767ZI, Nucleo-64 NUCLEO_L053R8, etc.) boards***, you have to copy the files [STM32 variant.h](Packages_Patches/STM32/hardware/stm32/1.9.0) into STM32 stm32 directory (~/.arduino15/packages/STM32/hardware/stm32/1.9.0). You have to modify the files corresponding to your boards, this is just an illustration how to do.
+7. **To use Serial1 on some STM32 boards without Serial1 definition (Nucleo-144 NUCLEO_F767ZI, Nucleo-64 NUCLEO_L053R8, etc.) boards**, you have to copy the files [STM32 variant.h](Packages_Patches/STM32/hardware/stm32/1.9.0) into STM32 stm32 directory (~/.arduino15/packages/STM32/hardware/stm32/1.9.0). You have to modify the files corresponding to your boards, this is just an illustration how to do.
 
 Supposing the STM32 stm32 core version is 1.9.0. These files must be copied into the directory:
 
@@ -292,6 +305,7 @@ theses files must be copied into the corresponding directory:
 - `~/.arduino15/packages/STM32/hardware/stm32/x.yy.zz/variants/NUCLEO_L053R8/variant.h`
 
 
+---
 ---
 
 ### Usage
@@ -310,19 +324,19 @@ host port number: ``int port`` (default is the standard HTTP port 80)
 
 #### Basic Operations
 
-***Starting the server***
+**Starting the server**
 
 ```cpp
   void begin();
 ```
 
-***Handling incoming client requests***
+**Handling incoming client requests**
 
 ```cpp
   void handleClient();
 ```
 
-***Disabling the server***
+**Disabling the server**
 
 ```cpp
   void close();
@@ -331,7 +345,7 @@ host port number: ``int port`` (default is the standard HTTP port 80)
 
 Both methods function the same
 
-***Client request handlers***
+**Client request handlers**
 
 ```cpp
   void on();
@@ -340,7 +354,7 @@ Both methods function the same
   void onFileUpload();	
 ```
 
-Example:*
+Example:
 
 ```cpp
   server.on("/", handlerFunction);
@@ -348,7 +362,7 @@ Example:*
   server.onFileUpload(handlerFunction); // handle file uploads
 ```
 
-***Sending responses to the client***
+**Sending responses to the client**
 
 ```cpp
   void send();
@@ -365,7 +379,7 @@ Example:*
 
 #### Advanced Options
 
-***Getting information about request arguments***
+**Getting information about request arguments**
 
 ```cpp
   const String & arg();
@@ -384,7 +398,7 @@ Example:*
 	
 `hasArg` - check if argument exist
 
-***Getting information about request headers***
+**Getting information about request headers**
 
 ```cpp
   const String & header();
@@ -405,7 +419,7 @@ Example:*
 	
 `hasHeader` - check if header exist
 
-***Authentication***
+**Authentication**
 
 ```cpp
   bool authenticate();
@@ -448,6 +462,7 @@ Example:*
 ### Examples
 
 Also see examples:
+
  1. [AdvancedWebServer](examples/AdvancedWebServer)
  2. [AdvancedWebServer_STM32](examples/AdvancedWebServer_STM32)
  3. [HelloServer](examples/HelloServer)
@@ -465,8 +480,10 @@ Also see examples:
 15. [WebServerAP](examples/WebServerAP)
 
 ---
+---
 
 ### Example [AdvancedWebServer](examples/AdvancedWebServer)
+
 Please take a look at other examples, as well.
 
 #### 1. File [AdvancedWebServer](examples/AdvancedWebServer/AdvancedWebServer.ino)
@@ -629,6 +646,8 @@ void loop(void)
   server.handleClient();
 }
 ```
+
+---
 
 #### 2. File [defines.h](examples/AdvancedWebServer/defines.h)
 
@@ -1069,7 +1088,7 @@ Connection: close
 
 #### 1. Seeeduino SEEED_XIAO_M0
 
-This is the screen shot when running example [AdvancedWebServer](https://github.com/khoih-prog/ESP8266_AT_WebServer/tree/master/examples/AdvancedWebServer) on ***Seeeduino SEEED_XIAO_M0*** board using this [ESP8266_AT_WebServer Library](https://github.com/khoih-prog/ESP8266_AT_WebServer)
+This is the screen shot when running example [AdvancedWebServer](https://github.com/khoih-prog/ESP8266_AT_WebServer/tree/master/examples/AdvancedWebServer) on **Seeeduino SEEED_XIAO_M0** board using this [ESP8266_AT_WebServer Library](https://github.com/khoih-prog/ESP8266_AT_WebServer)
 
 <p align="center">
     <img src="https://github.com/khoih-prog/ESP8266_AT_WebServer/blob/master/pics/AdvancedWebServer.png">
@@ -1078,27 +1097,43 @@ This is the screen shot when running example [AdvancedWebServer](https://github.
 
 #### 2. STM32 Nucleo-144 NUCLEO_F767ZI
 
-This is the screen shot when running example [AdvancedWebServer_STM32](https://github.com/khoih-prog/ESP8266_AT_WebServer/tree/master/examples/AdvancedWebServer_STM32) on ***STM32 Nucleo-144 NUCLEO_F767ZI*** board using this [ESP8266_AT_WebServer Library](https://github.com/khoih-prog/ESP8266_AT_WebServer)
+This is the screen shot when running example [AdvancedWebServer_STM32](https://github.com/khoih-prog/ESP8266_AT_WebServer/tree/master/examples/AdvancedWebServer_STM32) on **STM32 Nucleo-144 NUCLEO_F767ZI** board using this [ESP8266_AT_WebServer Library](https://github.com/khoih-prog/ESP8266_AT_WebServer)
 
 <p align="center">
     <img src="https://github.com/khoih-prog/ESP8266_AT_WebServer/blob/master/pics/AdvancedWebServer_STM32.png">
 </p>
 
+#### 2. Seeeduino SEEED_XIAO_M0
+
+This is the screen shot when running an example using UDP Multicast on **Seeeduino SEEED_XIAO_M0** board using this [ESP8266_AT_WebServer Library](https://github.com/khoih-prog/ESP8266_AT_WebServer). The UDP MUlticast was used to manage Internet Gateway's Port Forwarding so that we can access frpm WAM the WebServer running in LAN, port 5990.
+
+<p align="center">
+    <img src="https://github.com/khoih-prog/ESP8266_AT_WebServer/blob/master/pics/UPnP_Multicast.png">
+</p>
+
+---
 ---
 
-### New in v1.0.12
+### New in v1.1.0
+
+1. Add support to UDP Multicast. Now ESP8266/ESP32 AT-command shields can run uPnP libraries to manage Internet Gateway's port forwarding.
+2. Fix bugs.
+3. Enhance debug support.
+
+
+#### New in v1.0.12
 
 1. Add sample Packages_Patches for STM32 (Nucleo-144 NUCLEO_F767ZI, Nucleo-64 NUCLEO_L053R8)
 2. Add example for STM32F/L/H/G/WB/MP1 boards.
 3. Add instructions to use EspSerial/Serial1 on some STM32 boards without Serial1 definition (Nucleo-144 NUCLEO_F767ZI, Nucleo-64 NUCLEO_L053R8, etc.)
 
-### New in v1.0.11
+#### New in v1.0.11
 
-1. Add support to all ***STM32F/L/H/G/WB/MP1 (Nucleo-144 NUCLEO_F767ZI, Nucleo-64 NUCLEO_L053R8, etc.)***
-2. Add support to ***Seeeduino SAMD21/SAMD51 boards (SEEED_WIO_TERMINAL, SEEED_FEMTO_M0, SEEED_XIAO_M0, Wio_Lite_MG126, WIO_GPS_BOARD, SEEEDUINO_ZERO, SEEEDUINO_LORAWAN, SEEED_GROVE_UI_WIRELESS, etc.)***
+1. Add support to all **STM32F/L/H/G/WB/MP1 (Nucleo-144 NUCLEO_F767ZI, Nucleo-64 NUCLEO_L053R8, etc.)**
+2. Add support to **Seeeduino SAMD21/SAMD51 boards (SEEED_WIO_TERMINAL, SEEED_FEMTO_M0, SEEED_XIAO_M0, Wio_Lite_MG126, WIO_GPS_BOARD, SEEEDUINO_ZERO, SEEEDUINO_LORAWAN, SEEED_GROVE_UI_WIRELESS, etc.)**
 
 
-### New in v1.0.10
+#### New in v1.0.10
 
 1. Fix bug not closing client and releasing socket.
 2. Enhance examples.
@@ -1111,56 +1146,59 @@ This is the screen shot when running example [AdvancedWebServer_STM32](https://g
 3. Restructure codes. Increase RingBuffer Size.
 4. Add support to WIS600-01S and W600 WiFi shields
 
-### New Version v1.0.8
+#### New Version v1.0.8
 
 1. Fix bug. 
 2. Add features to ESP32-AT. 
 
-### New Version v1.0.7
+#### New Version v1.0.7
 
 1. Add support to ESP32-AT-command shield. 
 2. Update deprecated ESP8266-AT commands. 
 3. Restructure examples to separate defines header files.
 
-### New Version v1.0.6
+#### New Version v1.0.6
 
-1. Add support to ***nRF52*** boards, such as ***AdaFruit Feather nRF52832, nRF52840 Express, BlueFruit Sense, Itsy-Bitsy nRF52840 Express, Metro nRF52840 Express, NINA_B302_ublox, NINA_B112_ublox, etc.*** 
+1. Add support to **nRF52** boards, such as **AdaFruit Feather nRF52832, nRF52840 Express, BlueFruit Sense, Itsy-Bitsy nRF52840 Express, Metro nRF52840 Express, NINA_B302_ublox, NINA_B112_ublox, etc.** 
 
 ### New Version v1.0.5
 
-1. Add support to ***SAM51 (Itsy-Bitsy M4, Metro M4, Grand Central M4, Feather M4 Express, etc.)and SAM DUE***.
+1. Add support to **SAM51 (Itsy-Bitsy M4, Metro M4, Grand Central M4, Feather M4 Express, etc.)and SAM DUE**.
 
-### New Version v1.0.4
+#### New Version v1.0.4
 
 1. Sync with ESP8266WebServer library of ESP8266 core v2.6.3
 2. Fix bug.
 
-### New Version v1.0.3
+#### New Version v1.0.3
 
 1. Add support to STM32 (STM32F0, F1, F2, F3, F4, F7, etc) boards
 
-### Version v1.0.2
+#### Version v1.0.2
 
-1. Add support to SAMD (ZERO, MKR, ***NANO_33_IOT***, M0, Mo Pro, AdaFruit CIRCUITPLAYGROUND_EXPRESS, etc.) boards
+1. Add support to SAMD (ZERO, MKR, **NANO_33_IOT**, M0, Mo Pro, AdaFruit CIRCUITPLAYGROUND_EXPRESS, etc.) boards
 
-### Version v1.0.1
+#### Version v1.0.1
 
 1. Add support to server's lambda function calls with dependency on [`Functional-VLPP library`](https://github.com/khoih-prog/functional-vlpp)
 
-### Initial Version v1.0.0
+#### Initial Version v1.0.0
 
-This is simple yet complete WebServer library for `AVR, Teensy, etc.` boards running `ESP8266 AT-command` shields. ***The functions are similar and compatible to ESP8266/ESP32 WebServer libraries*** to make life much easier to port sketches from ESP8266/ESP32.
+This is simple yet complete WebServer library for `AVR, Teensy, etc.` boards running `ESP8266 AT-command` shields. **The functions are similar and compatible to ESP8266/ESP32 WebServer libraries** to make life much easier to port sketches from ESP8266/ESP32.
 
-The library supports 
+The library supports:
+
 1. WiFi Client, STA and AP mode
 2. TCP Server and Client
 3. UDP Server and Client
 4. HTTP Server and Client
 5. HTTP GET and POST requests, provides argument parsing, handles one client at a time.
+6. UDP Multicast and Broadcast.
 
 ---
 
 ### TO DO
+
 1. Bug Searching and Killing
 2. Add SSL/TLS Client and Server support
 3. Support more types of boards using ESP8266 AT-command shields.
@@ -1168,15 +1206,16 @@ The library supports
 
 ### DONE
 
- 1. Add support to ***Arduino SAMD21 (ZERO, MKR, NANO_33_IOT, etc.)***
- 2. Add support to ***Adafruit SAMD21 (Itsy-Bitsy M0, Metro M0, Feather M0 Express, etc.)***.
- 3. Add support to ***Adafruit SAMD51 (Itsy-Bitsy M4, Metro M4, Grand Central M4, Feather M4 Express, etc.)***.
- 4. Add support to ***Adafruit nRF52 ( Feather nRF52832, nRF52840 Express, BlueFruit Sense, Itsy-Bitsy nRF52840 Express, Metro nRF52840 Express, NINA_B302_ublox, NINA_B112_ublox, etc.)***.
+ 1. Add support to **Arduino SAMD21 (ZERO, MKR, NANO_33_IOT, etc.)**
+ 2. Add support to **Adafruit SAMD21 (Itsy-Bitsy M0, Metro M0, Feather M0 Express, etc.)**.
+ 3. Add support to **Adafruit SAMD51 (Itsy-Bitsy M4, Metro M4, Grand Central M4, Feather M4 Express, etc.)**.
+ 4. Add support to **Adafruit nRF52 ( Feather nRF52832, nRF52840 Express, BlueFruit Sense, Itsy-Bitsy nRF52840 Express, Metro nRF52840 Express, NINA_B302_ublox, NINA_B112_ublox, etc.)**.
  5. Add support to SAM DUE.
  6. Add support to ESP32-AT
  7. Add support to W600 and WIS600-01S
- 8. Add support to all ***STM32F/L/H/G/WB/MP1***
- 9. Add support to ***Seeeduino SAMD21/SAMD51 boards (SEEED_WIO_TERMINAL, SEEED_FEMTO_M0, SEEED_XIAO_M0, Wio_Lite_MG126, WIO_GPS_BOARD, SEEEDUINO_ZERO, SEEEDUINO_LORAWAN, SEEED_GROVE_UI_WIRELESS, etc.)***
+ 8. Add support to all **STM32F/L/H/G/WB/MP1**
+ 9. Add support to **Seeeduino SAMD21/SAMD51 boards (SEEED_WIO_TERMINAL, SEEED_FEMTO_M0, SEEED_XIAO_M0, Wio_Lite_MG126, WIO_GPS_BOARD, SEEEDUINO_ZERO, SEEEDUINO_LORAWAN, SEEED_GROVE_UI_WIRELESS, etc.)**
+10. Add UDP Multicast feature.
  
 ---
  
@@ -1184,15 +1223,17 @@ The library supports
 
 1. Based on and modified [Ivan Grokhotkov's ESP8266WebServer](https://github.com/esp8266/Arduino/tree/master/libraries/ESP8266WebServer)
 2. Based on and modified from [bportaluri's WiFiEsp library](https://github.com/bportaluri/WiFiEsp)
-3. Thanks to good work of [Miguel Alexandre Wisintainer](https://github.com/tcpipchip) for initiating, inspriring, working with, developing, debugging and testing. Without that, support to nRF52, especially ***U-Blox B302 running as nRF52840 and U-Blox B112 running as nRF52832***, has never been started and finished. Also see [ESP32-based U-BLOX NINA W102 running ENC28J60](https://u-blox-ethernet-ninaw.blogspot.com/).
+3. Thanks to good work of [Miguel Alexandre Wisintainer](https://github.com/tcpipchip) for initiating, inspriring, working with, developing, debugging and testing. Without that, support to nRF52, especially **U-Blox B302 running as nRF52840 and U-Blox B112 running as nRF52832**, has never been started and finished. Also see [ESP32-based U-BLOX NINA W102 running ENC28J60](https://u-blox-ethernet-ninaw.blogspot.com/).
 
 <table>
   <tr>
-    <td align="center"><a href="https://github.com/igrr"><img src="https://github.com/igrr.png" width="100px;" alt="igrr"/><br /><sub><b>⭐️ igrr</b></sub></a><br /></td>
-    <td align="center"><a href="https://github.com/bportaluri"><img src="https://github.com/bportaluri.png" width="100px;" alt="bportaluri"/><br /><sub><b>⭐️ bportaluri</b></sub></a><br /></td>
-    <td align="center"><a href="https://github.com/tcpipchip"><img src="https://github.com/tcpipchip.png" width="100px;" alt="tcpipchip"/><br /><sub><b>⭐️ tcpipchip</b></sub></a><br /></td>
+    <td align="center"><a href="https://github.com/igrr"><img src="https://github.com/igrr.png" width="100px;" alt="igrr"/><br /><sub><b>⭐️ Ivan Grokhotkov</b></sub></a><br /></td>
+    <td align="center"><a href="https://github.com/bportaluri"><img src="https://github.com/bportaluri.png" width="100px;" alt="bportaluri"/><br /><sub><b>⭐️ Bruno</b></sub></a><br /></td>
+    <td align="center"><a href="https://github.com/tcpipchip"><img src="https://github.com/tcpipchip.png" width="100px;" alt="tcpipchip"/><br /><sub><b>⭐️ Miguel Wisintainer</b></sub></a><br /></td>
   </tr> 
 </table>
+
+---
 
 ### Contributing
 

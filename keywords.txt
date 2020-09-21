@@ -118,6 +118,7 @@ status  KEYWORD2
 # ESP8266_AT_UDP
 #######################
 begin KEYWORD2
+beginMulticast  KEYWORD2
 stop  KEYWORD2
 beginPacket KEYWORD2
 beginPacket KEYWORD2
