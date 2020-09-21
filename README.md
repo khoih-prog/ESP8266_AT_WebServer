@@ -11,7 +11,7 @@
 
 ### New in v1.1.0
 
-1. Add support to UDP **Multicast**. Now ESP8266/ESP32 AT-command shields can run uPnP libraries to manage Internet Gateway's port forwarding.
+1. Add support to UDP **Multicast**. Now ESP8266/ESP32 AT-command shields can run uPnP libraries to manage **Internet Gateway's port forwarding**.
 2. Fix bugs.
 3. Enhance debug support.
 
@@ -1105,7 +1105,7 @@ This is the screen shot when running example [AdvancedWebServer_STM32](https://g
 
 #### 2. Seeeduino SEEED_XIAO_M0
 
-This is the screen shot when running an example using UDP Multicast on **Seeeduino SEEED_XIAO_M0** board using this [ESP8266_AT_WebServer Library](https://github.com/khoih-prog/ESP8266_AT_WebServer). The UDP MUlticast was used to manage Internet Gateway's Port Forwarding so that we can access frpm WAM the WebServer running in LAN, port 5990.
+This is the screen shot when running an example using UDP Multicast on **Seeeduino SEEED_XIAO_M0** board using this [ESP8266_AT_WebServer Library](https://github.com/khoih-prog/ESP8266_AT_WebServer). The UDP MUlticast is used to manage Internet Gateway's Port Forwarding so that we can access from WAN, port 5990, the WebServer running in LAN, port 5990.
 
 <p align="center">
     <img src="https://github.com/khoih-prog/ESP8266_AT_WebServer/blob/master/pics/UPnP_Multicast.png">
@@ -1116,7 +1116,7 @@ This is the screen shot when running an example using UDP Multicast on **Seeedui
 
 ### New in v1.1.0
 
-1. Add support to UDP Multicast. Now ESP8266/ESP32 AT-command shields can run uPnP libraries to manage Internet Gateway's port forwarding.
+1. Add support to UDP **Multicast**. Now ESP8266/ESP32 AT-command shields can run uPnP libraries to manage **Internet Gateway's port forwarding**.
 2. Fix bugs.
 3. Enhance debug support.
 
