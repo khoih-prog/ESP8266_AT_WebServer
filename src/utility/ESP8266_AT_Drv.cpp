@@ -11,7 +11,7 @@
    @file       Esp8266WebServer.h
    @author     Ivan Grokhotkov
 
-   Version: 1.1.0
+   Version: 1.1.1
 
    Version Modified By   Date      Comments
    ------- -----------  ---------- -----------
@@ -30,12 +30,18 @@
     1.0.11  K Hoang      25/07/2020 Add support to all STM32F/L/H/G/WB/MP1 and Seeeduino SAMD21/SAMD51 boards  
     1.0.12  K Hoang      26/07/2020 Add example and sample Packages_Patches for STM32F/L/H/G/WB/MP boards
     1.1.0   K Hoang      21/09/2020 Add support to UDP Multicast. Fix bugs.
+    1.1.1   K Hoang      26/09/2020 Restore support to PROGMEM-related commands, such as sendContent_P() and send_P()
  *****************************************************************************************************************************/
 
 #include <Arduino.h>
-#include <avr/pgmspace.h>
 
-#define _ESP_AT_LOGLEVEL_       0
+// ESP32/ESP8266 includes <pgmspace.h> by default, and memccpy_P was already defined there
+#if !(ESP32 || ESP8266)
+  #include <avr/pgmspace.h>
+  #define memccpy_P(dest, src, c, n) memccpy((dest), (src), (c), (n))
+#endif
+
+#define _ESP_AT_LOGLEVEL_       1
 
 #if    ( defined(ARDUINO_SAMD_ZERO) || defined(ARDUINO_SAMD_MKR1000) || defined(ARDUINO_SAMD_MKRWIFI1010) \
       || defined(ARDUINO_SAMD_NANO_33_IOT) || defined(ARDUINO_SAMD_MKRFox1200) || defined(ARDUINO_SAMD_MKRWAN1300) || defined(ARDUINO_SAMD_MKRWAN1310) \
@@ -140,7 +146,7 @@ void ESP8266_AT_Drv::wifiDriverReInit(void)
 
   for (int i = 0; i < 5; i++)
   {
-    if (sendCmd("AT") == TAG_OK)
+    if (sendCmd(F("AT")) == TAG_OK)
     {
       initOK = true;
       break;
@@ -209,7 +215,7 @@ void ESP8266_AT_Drv::reset()
   AT_LOGDEBUG(F("> reset"));
 
   AT_LOGINFO(F("AT+RST"));
-  sendCmd("AT+RST");
+  sendCmd(F("AT+RST"));
   
   delay(3000);
   espEmptyBuf(false);  // empty dirty characters from the buffer
@@ -223,29 +229,29 @@ void ESP8266_AT_Drv::reset()
   {
     AT_LOGERROR(F("Using ESP32-AT Command"));
     AT_LOGINFO(F("AT+CWMODE=1"));
-    sendCmd("AT+CWMODE=1"); 
+    sendCmd(F("AT+CWMODE=1")); 
   }
   else
   {
     AT_LOGERROR(F("Use ES8266-AT Command"));
     AT_LOGINFO(F("AT+CWMODE_CUR=1"));
-    sendCmd("AT+CWMODE_CUR=1"); 
+    sendCmd(F("AT+CWMODE_CUR=1")); 
   }
     
   delay(200);
 
   // set multiple connections mode
   AT_LOGINFO(F("AT+CIPMUX=1"));
-  sendCmd("AT+CIPMUX=1"); 
+  sendCmd(F("AT+CIPMUX=1")); 
 
   // Show remote IP and port with "+IPD"
   AT_LOGINFO(F("AT+CIPDINFO=1"));
-  sendCmd("AT+CIPDINFO=1");
+  sendCmd(F("AT+CIPDINFO=1"));
   
   // Disable autoconnect
   // Automatic connection can create problems during initialization phase at next boot
   AT_LOGINFO(F("AT+CWAUTOCONN=0"));
-  sendCmd("AT+CWAUTOCONN=0");
+  sendCmd(F("AT+CWAUTOCONN=0"));
   
   // enable STA DHCP
   if (useESP32_AT)
@@ -257,7 +263,7 @@ void ESP8266_AT_Drv::reset()
     // • <mode>:
     //  ‣ Bit0: Station DHCP, ‣ Bit1: SoftAP DHCP
     AT_LOGINFO(F("AT+CWDHCP=1,1"));
-    sendCmd("AT+CWDHCP=1,1");   
+    sendCmd(F("AT+CWDHCP=1,1"));   
   }
   else
   {
@@ -268,7 +274,7 @@ void ESP8266_AT_Drv::reset()
     // • <en>:
     // ‣ 0: Disables DHCP, ‣ 1: Enables DHCP
     AT_LOGINFO(F("AT+CWDHCP=1,1"));
-    sendCmd("AT+CWDHCP_CUR=1,1");   
+    sendCmd(F("AT+CWDHCP_CUR=1,1"));   
   }
 
   delay(200);
@@ -281,7 +287,7 @@ void ESP8266_AT_Drv::restore()
   AT_LOGDEBUG(F("> restore"));
 
   AT_LOGINFO(F("AT+RESTORE"));
-  sendCmd("AT+RESTORE");
+  sendCmd(F("AT+RESTORE"));
   
   delay(1000);
   espEmptyBuf(false);  // empty dirty characters from the buffer
@@ -301,12 +307,12 @@ bool ESP8266_AT_Drv::wifiConnect(const char* ssid, const char* passphrase)
   if (useESP32_AT)
   {
     AT_LOGINFO2(F("AT+CWJAP="), ssid, passphrase);
-    ret = sendCmd("AT+CWJAP=\"%s\",\"%s\"", 20000, ssid, passphrase);   
+    ret = sendCmd(F("AT+CWJAP=\"%s\",\"%s\""), 20000, ssid, passphrase);   
   }
   else
   {
     AT_LOGINFO2(F("AT+CWJAP_CUR="), ssid, passphrase);
-    ret = sendCmd("AT+CWJAP_CUR=\"%s\",\"%s\"", 20000, ssid, passphrase);  
+    ret = sendCmd(F("AT+CWJAP_CUR=\"%s\",\"%s\""), 20000, ssid, passphrase);  
   }
     
   if (ret == TAG_OK)
@@ -339,12 +345,12 @@ bool ESP8266_AT_Drv::wifiStartAP(const char* ssid, const char* pwd, uint8_t chan
   if (useESP32_AT)
   {
     AT_LOGINFO1(F("AT+CWMODE="), espMode);
-    ret = sendCmd("AT+CWMODE=%d", 10000, espMode);   
+    ret = sendCmd(F("AT+CWMODE=%d"), 10000, espMode);   
   }
   else
   {
     AT_LOGINFO1(F("AT+CWMODE_CUR="), espMode);
-    ret = sendCmd("AT+CWMODE_CUR=%d", 10000, espMode);   
+    ret = sendCmd(F("AT+CWMODE_CUR=%d"), 10000, espMode);   
   }
     
   if (ret != TAG_OK)
@@ -362,13 +368,13 @@ bool ESP8266_AT_Drv::wifiStartAP(const char* ssid, const char* pwd, uint8_t chan
   {
     AT_LOGINFO2(F("AT+CWSAP="), ssid, pwd);
     AT_LOGINFO2(F("AT+CWSAP="), channel, enc);
-    ret = sendCmd("AT+CWSAP=\"%s\",\"%s\",%d,%d", 10000, ssid, pwd, channel, enc);   
+    ret = sendCmd(F("AT+CWSAP=\"%s\",\"%s\",%d,%d"), 10000, ssid, pwd, channel, enc);   
   }
   else
   {
     AT_LOGINFO2(F("AT+CWSAP_CUR="), ssid, pwd);
     AT_LOGINFO2(F("AT+CWSAP_CUR="), channel, enc);
-    ret = sendCmd("AT+CWSAP_CUR=\"%s\",\"%s\",%d,%d", 10000, ssid, pwd, channel, enc);    
+    ret = sendCmd(F("AT+CWSAP_CUR=\"%s\",\"%s\",%d,%d"), 10000, ssid, pwd, channel, enc);    
   }
 
   if (ret != TAG_OK)
@@ -403,12 +409,12 @@ bool ESP8266_AT_Drv::wifiStartAP(const char* ssid, const char* pwd, uint8_t chan
     if (useESP32_AT)
     {
       AT_LOGINFO(F("AT+CWDHCP=1,2"));
-      sendCmd("AT+CWDHCP=1,2");         // enable DHCP for SoftAP mode      
+      sendCmd(F("AT+CWDHCP=1,2"));         // enable DHCP for SoftAP mode      
     }
     else
     {
       AT_LOGINFO(F("AT+CWDHCP_CUR=0,1"));
-      sendCmd("AT+CWDHCP_CUR=0,1");     // enable DHCP for SoftAP mode     
+      sendCmd(F("AT+CWDHCP_CUR=0,1"));     // enable DHCP for SoftAP mode     
     }
   }
   else if (espMode == 3)
@@ -417,12 +423,12 @@ bool ESP8266_AT_Drv::wifiStartAP(const char* ssid, const char* pwd, uint8_t chan
     if (useESP32_AT)
     {
       AT_LOGINFO(F("AT+CWDHCP=1,3"));
-      sendCmd("AT+CWDHCP=1,3");         // enable DHCP for station and SoftAP mode      
+      sendCmd(F("AT+CWDHCP=1,3"));         // enable DHCP for station and SoftAP mode      
     }
     else
     {
       AT_LOGINFO(F("AT+CWDHCP_CUR=2,1"));
-      sendCmd("AT+CWDHCP_CUR=2,1");     // enable DHCP for station and SoftAP mode     
+      sendCmd(F("AT+CWDHCP_CUR=2,1"));     // enable DHCP for station and SoftAP mode     
     }
   }
 
@@ -437,7 +443,7 @@ int8_t ESP8266_AT_Drv::disconnect()
 
   AT_LOGINFO(F("AT+CWQAP"));
   
-  if (sendCmd("AT+CWQAP") == TAG_OK)
+  if (sendCmd(F("AT+CWQAP")) == TAG_OK)
     return WL_DISCONNECTED;
 
   // wait and clear any additional message
@@ -477,21 +483,22 @@ void ESP8266_AT_Drv::config(IPAddress ip)
   {
     //KH, AT+CWDHCP=<operate>,<mode>
     AT_LOGINFO(F("AT+CWDHCP=0,1"));
-    sendCmd("AT+CWDHCP=0,1");    
+    sendCmd(F("AT+CWDHCP=0,1"));    
   }
   else
   {
     // KH, AT+CWDHCP=<<mode>,<en>
     AT_LOGINFO(F("AT+CWDHCP_CUR=1,0"))
-    sendCmd("AT+CWDHCP_CUR=1,0");   
+    sendCmd(F("AT+CWDHCP_CUR=1,0"));   
   }
 
   // it seems we need to wait here...
   delay(500);
 
   char buf[16];
-  //sprintf_P(buf, PSTR("%d.%d.%d.%d"), ip[0], ip[1], ip[2], ip[3]);
-  sprintf(buf, "%d.%d.%d.%d", ip[0], ip[1], ip[2], ip[3]);
+
+  // KH, Restore PROGMEM commands 
+  sprintf_P(buf, PSTR("%d.%d.%d.%d"), ip[0], ip[1], ip[2], ip[3]);
 
   int ret;
   
@@ -499,13 +506,13 @@ void ESP8266_AT_Drv::config(IPAddress ip)
   {
     // Set STA IP address
     AT_LOGINFO1(F("AT+CIPSTA="), buf);
-    ret = sendCmd("AT+CIPSTA=\"%s\"", 2000, buf);    
+    ret = sendCmd(F("AT+CIPSTA=\"%s\""), 2000, buf);    
   }
   else
   {
     // Set STA IP address
     AT_LOGINFO1(F("AT+CIPSTA_CUR="), buf);
-    ret = sendCmd("AT+CIPSTA_CUR=\"%s\"", 2000, buf);   
+    ret = sendCmd(F("AT+CIPSTA_CUR=\"%s\""), 2000, buf);   
   }
    
   delay(500);
@@ -545,31 +552,32 @@ void ESP8266_AT_Drv::configAP(IPAddress ip)
   {
     // SoftAP Mode
     AT_LOGINFO(F("AT+CWMODE=2"));
-    sendCmd("AT+CWMODE=2");
+    sendCmd(F("AT+CWMODE=2"));
     
     //KH, AT+CWDHCP=<operate>,<mode>
     // disable AP and STA DHCP
     AT_LOGINFO(F("AT+CWDHCP=0,3"));
-    sendCmd("AT+CWDHCP=0,3");   
+    sendCmd(F("AT+CWDHCP=0,3"));   
   }
   else
   {
     // SoftAP Mode
     AT_LOGINFO(F("AT+CWMODE_CUR=2"));
-    sendCmd("AT+CWMODE_CUR=2");
+    sendCmd(F("AT+CWMODE_CUR=2"));
       
     // KH, AT+CWDHCP=<<mode>,<en>
     // disable AP and STA DHCP
     AT_LOGINFO(F("AT+CWDHCP=2,0"));
-    sendCmd("AT+CWDHCP_CUR=2,0");   
+    sendCmd(F("AT+CWDHCP_CUR=2,0"));   
   } 
 
   // it seems we need to wait here...
   delay(500);
 
   char buf[16];
-  //sprintf_P(buf, PSTR("%d.%d.%d.%d"), ip[0], ip[1], ip[2], ip[3]);
-  sprintf(buf, "%d.%d.%d.%d", ip[0], ip[1], ip[2], ip[3]);
+
+  // KH, Restore PROGMEM commands
+  sprintf_P(buf, PSTR("%d.%d.%d.%d"), ip[0], ip[1], ip[2], ip[3]);
   
   int ret;
   
@@ -577,13 +585,13 @@ void ESP8266_AT_Drv::configAP(IPAddress ip)
   {
     // Set AP IP address
     AT_LOGINFO1(F("AT+CIPAP="), buf);
-    ret = sendCmd("AT+CIPAP=\"%s\"", 2000, buf);
+    ret = sendCmd(F("AT+CIPAP=\"%s\""), 2000, buf);
   }
   else
   {
     // Set AP IP address
     AT_LOGINFO1(F("AT+CIPAP_CUR="), buf);
-    ret = sendCmd("AT+CIPAP_CUR=\"%s\"", 2000, buf);    
+    ret = sendCmd(F("AT+CIPAP_CUR=\"%s\""), 2000, buf);    
   }
   
   delay(500);
@@ -624,9 +632,11 @@ uint8_t ESP8266_AT_Drv::getConnectionStatus()
 
   char buf[10];
   
+  memset(buf, 0, sizeof(buf));
+  
   AT_LOGINFO(F("AT+CIPSTATUS"));
   
-  if (!sendCmdGet("AT+CIPSTATUS", "STATUS:", "\r\n", buf, sizeof(buf)))
+  if (!sendCmdGet(F("AT+CIPSTATUS"), F("STATUS:"), F("\r\n"), buf, sizeof(buf)))
     return WL_NO_SHIELD;
 
   // 4: client disconnected
@@ -650,10 +660,12 @@ uint8_t ESP8266_AT_Drv::getClientState(uint8_t sock)
 
   char findBuf[20];
   
-  //sprintf_P(findBuf, PSTR("+CIPSTATUS:%d,"), sock);
-  sprintf(findBuf, "+CIPSTATUS:%d,", sock);
+  // KH, Restore PROGMEM commands
+  sprintf_P(findBuf, PSTR("+CIPSTATUS:%d,"), sock);
 
   char buf[10];
+  
+  memset(buf, 0, sizeof(buf));
   
   //AT_LOGINFO1(F("getClientState: AT+CIPSTATUS"), sock);
   if (sendCmdGet("AT+CIPSTATUS", findBuf, ",", buf, sizeof(buf)))
@@ -675,9 +687,11 @@ uint8_t* ESP8266_AT_Drv::getMacAddress()
 
   char buf[20];
   
+  memset(buf, 0, sizeof(buf));
+  
   AT_LOGINFO(F("AT+CIFSR"));
   
-  if (sendCmdGet("AT+CIFSR", ":STAMAC,\"", "\"", buf, sizeof(buf)))
+  if (sendCmdGet(F("AT+CIFSR"), F(":STAMAC,\""), F("\""), buf, sizeof(buf)))
   {
     char* token;
 
@@ -703,11 +717,12 @@ void ESP8266_AT_Drv::getIpAddress(IPAddress& ip)
   AT_LOGDEBUG(F("> getIpAddress"));
 
   char buf[20];
-  memset(buf, '\0', sizeof(buf));
+  
+  memset(buf, 0, sizeof(buf));
   
   AT_LOGINFO(F("AT+CIFSR"));
   
-  if (sendCmdGet("AT+CIFSR", ":STAIP,\"", "\"", buf, sizeof(buf)))
+  if (sendCmdGet(F("AT+CIFSR"), F(":STAIP,\""), F("\""), buf, sizeof(buf)))
   {
     char* token;
 
@@ -729,7 +744,8 @@ void ESP8266_AT_Drv::getIpAddressAP(IPAddress& ip)
   AT_LOGDEBUG(F("> getIpAddressAP"));
 
   char buf[20];
-  memset(buf, '\0', sizeof(buf));
+  
+  memset(buf, 0, sizeof(buf));
   
   bool ret;
   
@@ -737,17 +753,15 @@ void ESP8266_AT_Drv::getIpAddressAP(IPAddress& ip)
   {
     // Get AP IP address
     AT_LOGINFO(F("AT+CIPAP?"));
-    ret = sendCmdGet("AT+CIPAP?", "+CIPAP:ip:\"", "\"", buf, sizeof(buf));   
+    ret = sendCmdGet(F("AT+CIPAP?"), F("+CIPAP:ip:\""), F("\""), buf, sizeof(buf));   
   }
   else
   {
     // Get AP IP address
-    // _CUR not working here ???
     AT_LOGINFO(F("AT+CIPAP?"));
-    //ret = sendCmdGet("AT+CIPAP_CUR?", "+CIPAP:ip:\"", "\"", buf, sizeof(buf));
+    
     // Send sendCmdGet with _CUR => received also with _CUR
-    //ret = sendCmdGet("AT+CIPAP?", "+CIPAP:ip:\"", "\"", buf, sizeof(buf));  
-    ret = sendCmdGet("AT+CIPAP?", "+CIPAP_CUR:ip:\"", "\"", buf, sizeof(buf)); 
+    ret = sendCmdGet(F("AT+CIPAP_CUR?"), F("+CIPAP_CUR:ip:\""), F("\""), buf, sizeof(buf)); 
   }
   
   if (ret)
@@ -777,15 +791,14 @@ char* ESP8266_AT_Drv::getCurrentSSID()
   {
     // Get AP Info
     AT_LOGINFO(F("AT+CWJAP?"));
-    sendCmdGet("AT+CWJAP?", "+CWJAP:\"", "\"", _ssid, sizeof(_ssid));   
+    sendCmdGet(F("AT+CWJAP?"), F("+CWJAP:\""), F("\""), _ssid, sizeof(_ssid));   
   }
   else
   {
     // Get AP Info
     AT_LOGINFO(F("AT+CWJAP_CUR?"));
     // Send sendCmdGet with _CUR => received also with _CUR
-    //sendCmdGet("AT+CWJAP_CUR?", "+CWJAP:\"", "\"", _ssid, sizeof(_ssid));
-    sendCmdGet("AT+CWJAP_CUR?", "+CWJAP_CUR:\"", "\"", _ssid, sizeof(_ssid));    
+    sendCmdGet(F("AT+CWJAP_CUR?"), F("+CWJAP_CUR:\""), F("\""), _ssid, sizeof(_ssid));    
   }
   
   return _ssid;
@@ -799,19 +812,21 @@ uint8_t* ESP8266_AT_Drv::getCurrentBSSID()
 
   char buf[20];
   
+  memset(buf, 0, sizeof(buf));
+  
   bool ret;
   
   if (useESP32_AT)
   {
     // Get AP Info
     AT_LOGINFO(F("AT+CWJAP?"));
-    ret = sendCmdGet("AT+CWJAP?", ",\"", "\",", buf, sizeof(buf));  
+    ret = sendCmdGet(F("AT+CWJAP?"), F(",\""), F("\","), buf, sizeof(buf));  
   }
   else
   {
     // Get AP Info
     AT_LOGINFO(F("AT+CWJAP_CUR?"));
-    ret = sendCmdGet("AT+CWJAP_CUR?", ",\"", "\",", buf, sizeof(buf));    
+    ret = sendCmdGet(F("AT+CWJAP_CUR?"), F(",\""), F("\","), buf, sizeof(buf));    
   }
   
   if (ret)
@@ -842,17 +857,19 @@ int32_t ESP8266_AT_Drv::getCurrentRSSI()
   int ret = 0;
   char buf[10];
   
+  memset(buf, 0, sizeof(buf));
+  
   if (useESP32_AT)
   {
     // Get AP Info
     AT_LOGINFO(F("AT+CWJAP?"));
-    sendCmdGet("AT+CWJAP?", ",-", "\r\n", buf, sizeof(buf));    
+    sendCmdGet(F("AT+CWJAP?"), F(",-"), F("\r\n"), buf, sizeof(buf));    
   }
   else
   {
     // Get AP Info
     AT_LOGINFO(F("AT+CWJAP_CUR?"));
-    sendCmdGet("AT+CWJAP_CUR?", ",-", "\r\n", buf, sizeof(buf));    
+    sendCmdGet(F("AT+CWJAP_CUR?"), F(",-"), F("\r\n"), buf, sizeof(buf));    
   }
   
   if (isDigit(buf[0])) 
@@ -878,18 +895,19 @@ uint8_t ESP8266_AT_Drv::getScanNetworks()
 
   idx = readUntil(10000, "+CWLAP:(");
   
-  AT_LOGDEBUG3("idx = ", idx, ", NUMESPTAGS = ", NUMESPTAGS);
+  AT_LOGDEBUG3(F("idx = "), idx, F(", NUMESPTAGS = "), NUMESPTAGS);
 
   while (idx == NUMESPTAGS)
   {
     _networkEncr[ssidListNum] = espSerial->parseInt();
     
-    AT_LOGDEBUG3("_networkEncr[", ssidListNum, " ] =", _networkEncr[ssidListNum]);
+    AT_LOGDEBUG3(F("_networkEncr["), ssidListNum, F(" ] ="), _networkEncr[ssidListNum]);
 
     // discard , and " characters
     readUntil(1000, "\"");
 
     idx = readUntil(1000, "\"", false);
+    
     if (idx == NUMESPTAGS)
     {
       memset(_networkSsid[ssidListNum], 0, WL_SSID_MAX_LENGTH );
@@ -901,7 +919,7 @@ uint8_t ESP8266_AT_Drv::getScanNetworks()
 
     _networkRssi[ssidListNum] = espSerial->parseInt();
 
-    AT_LOGDEBUG3("_networkRssi[", ssidListNum, " ] =", _networkRssi[ssidListNum]);
+    AT_LOGDEBUG3(F("_networkRssi["), ssidListNum, F(" ] ="), _networkRssi[ssidListNum]);
 
     idx = readUntil(1000, "+CWLAP:(");
 
@@ -926,21 +944,22 @@ bool ESP8266_AT_Drv::getNetmask(IPAddress& mask)
 
   char buf[20];
   
+  memset(buf, 0, sizeof(buf));
+  
   bool ret;
   
   if (useESP32_AT)
   {
     // Get STA IP Info
     AT_LOGINFO(F("AT+CIPSTA?"));
-    ret = sendCmdGet("AT+CIPSTA?", "+CIPSTA:netmask:\"", "\"", buf, sizeof(buf));   
+    ret = sendCmdGet(F("AT+CIPSTA?"), F("+CIPSTA:netmask:\""), F("\""), buf, sizeof(buf));   
   }
   else
   {
     // Get STA IP Info
     AT_LOGINFO(F("AT+CIPSTA_CUR?"));
     // Send sendCmdGet with _CUR => received also with _CUR
-    //ret = sendCmdGet("AT+CIPSTA_CUR?", "+CIPSTA:netmask:\"", "\"", buf, sizeof(buf));
-    ret = sendCmdGet("AT+CIPSTA_CUR?", "+CIPSTA_CUR:netmask:\"", "\"", buf, sizeof(buf));
+    ret = sendCmdGet(F("AT+CIPSTA_CUR?"), F("+CIPSTA_CUR:netmask:\""), F("\""), buf, sizeof(buf));
   }
   
   if (ret)
@@ -958,13 +977,15 @@ bool ESP8266_AT_Drv::getGateway(IPAddress& gw)
 
   char buf[20];
   
+  memset(buf, 0, sizeof(buf));
+  
   bool ret;
   
   if (useESP32_AT)
   {
     // Get STA IP Info
     AT_LOGINFO(F("AT+CIPSTA?"));
-    ret = sendCmdGet("AT+CIPSTA?", "+CIPSTA:gateway:\"", "\"", buf, sizeof(buf));   
+    ret = sendCmdGet(F("AT+CIPSTA?"), F("+CIPSTA:gateway:\""), F("\""), buf, sizeof(buf));   
   }
   else
   {
@@ -973,15 +994,14 @@ bool ESP8266_AT_Drv::getGateway(IPAddress& gw)
     
     // KH, fix bug, v1.1.0
     // Send sendCmdGet with _CUR => received also with _CUR
-    //ret = sendCmdGet("AT+CIPSTA_CUR?", "+CIPSTA:gateway:\"", "\"", buf, sizeof(buf));
-    ret = sendCmdGet("AT+CIPSTA_CUR?", "+CIPSTA_CUR:gateway:\"", "\"", buf, sizeof(buf)); 
+    ret = sendCmdGet(F("AT+CIPSTA_CUR?"), F("+CIPSTA_CUR:gateway:\""), F("\""), buf, sizeof(buf));
     //////
   }
   
   if (ret)
   {
     gw.fromString (buf);
-    AT_LOGINFO1("Gateway IP = ", buf);
+    AT_LOGINFO1(F("Gateway IP = "), buf);
     return true;
   }
 
@@ -1019,7 +1039,7 @@ char* ESP8266_AT_Drv::getFwVersion()
   fwVersion[0] = 0;
 
   AT_LOGINFO(F("AT+GMR"));
-  sendCmdGet("AT+GMR", "SDK version:", "\r\n", fwVersion, sizeof(fwVersion));
+  sendCmdGet(F("AT+GMR"), F("SDK version:"), F("\r\n"), fwVersion, sizeof(fwVersion));
    
   return fwVersion;
 }
@@ -1030,7 +1050,7 @@ bool ESP8266_AT_Drv::ping(const char *host)
 
   AT_LOGINFO1(F("AT+PING="), host);
 
-  int ret = sendCmd("AT+PING=\"%s\"", 8000, host);
+  int ret = sendCmd(F("AT+PING=\"%s\""), 8000, host);
   
   if (ret == TAG_OK)
     return true;
@@ -1045,7 +1065,7 @@ bool ESP8266_AT_Drv::startServer(uint16_t port, uint8_t sock)
   
   AT_LOGINFO2(F("AT+CIPSERVER="), sock, port);
   
-  int ret = sendCmd("AT+CIPSERVER=%d,%d", 1000, sock, port);
+  int ret = sendCmd(F("AT+CIPSERVER=%d,%d"), 1000, sock, port);
   
   return ret == TAG_OK;
 }
@@ -1070,7 +1090,8 @@ bool ESP8266_AT_Drv::startClient(const char* host, uint16_t port, uint8_t sock, 
   {
     AT_LOGINFO2(F("TCP => AT+CIPSTART="), sock, host);
     AT_LOGINFO1(F("TCP => AT+CIPSTART="), port);
-    ret = sendCmd("AT+CIPSTART=%d,\"TCP\",\"%s\",%u", 5000, sock, host, port);   
+    
+    ret = sendCmd(F("AT+CIPSTART=%d,\"TCP\",\"%s\",%u"), 5000, sock, host, port);   
   }
   else if (protMode == SSL_MODE)
   {
@@ -1079,25 +1100,28 @@ bool ESP8266_AT_Drv::startClient(const char* host, uint16_t port, uint8_t sock, 
     {
       // Set SSL Buffer to 4K, only for ESP8266
       AT_LOGINFO(F("AT+CIPSSLSIZE=4096"));
-      sendCmd("AT+CIPSSLSIZE=4096");     
+      
+      sendCmd(F("AT+CIPSSLSIZE=4096"));     
     }    
     
     AT_LOGINFO2(F("SSL => AT+CIPSTART="), sock, host);
     AT_LOGINFO1(F("SSL => AT+CIPSTART="), port);
-    ret = sendCmd("AT+CIPSTART=%d,\"SSL\",\"%s\",%u", 5000, sock, host, port);   
+    
+    ret = sendCmd(F("AT+CIPSTART=%d,\"SSL\",\"%s\",%u"), 5000, sock, host, port);   
   }
   else if (protMode == UDP_MODE)
   {
     AT_LOGINFO2(F("UDP => AT+CIPSTART="), sock, host);
     AT_LOGINFO1(F("UDP => AT+CIPSTART="), port);
-    ret = sendCmd("AT+CIPSTART=%d,\"UDP\",\"%s\",0,%u,2", 5000, sock, host, port);    
+    ret = sendCmd(F("AT+CIPSTART=%d,\"UDP\",\"%s\",0,%u,2"), 5000, sock, host, port);    
   }
   // KH, add to support MultiCast for v1.1.0
   else if (protMode == UDP_MULTICAST_MODE)
   {
     AT_LOGINFO2(F("UDP => AT+CIPSTART="), sock, host);
     AT_LOGINFO1(F("UDP => AT+CIPSTART="), port);
-    ret = sendCmd("AT+CIPSTART=%d,\"UDP\",\"%s\",0,%u,0", 5000, sock, host, port);    
+    
+    ret = sendCmd(F("AT+CIPSTART=%d,\"UDP\",\"%s\",0,%u,0"), 5000, sock, host, port);    
   }
   //////
   
@@ -1110,7 +1134,8 @@ void ESP8266_AT_Drv::stopClient(uint8_t sock)
   AT_LOGDEBUG1(F("> stopClient"), sock);
 
   AT_LOGINFO1(F("AT+CIPCLOSE="), sock);
-  sendCmd("AT+CIPCLOSE=%d", 4000, sock);
+  
+  sendCmd(F("AT+CIPCLOSE=%d"), 4000, sock);
 }
 
 uint8_t ESP8266_AT_Drv::getServerState(uint8_t sock)
@@ -1130,7 +1155,7 @@ uint16_t ESP8266_AT_Drv::availData(uint8_t connId)
   if (_bufPos > 0)
   {
     // KH
-    //AT_LOGDEBUG1("availData: _bufPos=", _bufPos);
+    //AT_LOGDEBUG1(F("availData: _bufPos="), _bufPos);
     //AT_LOGDEBUG1(_connId, connId);
     
     if (_connId == connId)
@@ -1142,11 +1167,13 @@ uint16_t ESP8266_AT_Drv::availData(uint8_t connId)
   int bytes = espSerial->available();
   
   // KH
-  //AT_LOGDEBUG1("availData: bytes=", bytes);
+  //AT_LOGERROR1(F("availData: bytes="), bytes);
 
   if (bytes)
   {
-    AT_LOGDEBUG1(F("Bytes in the serial buffer: "), bytes);
+    // KH
+    //AT_LOGERROR1(F("Bytes in the serial buffer: "), bytes);
+    
     if (espSerial->find((char *)"+IPD,"))
     {
       // format is : +IPD,<id>,<len>:<data>
@@ -1203,6 +1230,7 @@ bool ESP8266_AT_Drv::getData(uint8_t connId, uint8_t *data, bool peek, bool* con
       }
       
       //AT_LOGDEBUG1(F("Data at location = 0x"), String( (char)*data, HEX));
+      //AT_LOGERROR3(F("Data at location = "), _bufPos + 1, ", data =", (char)*data );
 
       if (_bufPos == 0)
       {
@@ -1213,7 +1241,7 @@ bool ESP8266_AT_Drv::getData(uint8_t connId, uint8_t *data, bool peek, bool* con
 
         if (espSerial->available())
         {
-          //AT_LOGDEBUG(".2");
+          //AT_LOGDEBUG(F(".2"));
           //AT_LOGDEBUG(espSerial->peek());
 
           // 48 = '0'
@@ -1239,13 +1267,13 @@ bool ESP8266_AT_Drv::getData(uint8_t connId, uint8_t *data, bool peek, bool* con
   } while (millis() - _startMillis < 500 /*2000*/);
 
   // timed out, reset the buffer
-  AT_LOGERROR1(F("ESP8266_AT_Drv::getData: TIMEOUT @ bufPos ="), _bufPos);
-  AT_LOGERROR1(F("Data at bad location = 0x"), String( (char)*data, HEX));
+  AT_LOGDEBUG1(F("ESP8266_AT_Drv::getData: TIMEOUT @ bufPos ="), _bufPos);
+  AT_LOGDEBUG1(F("Data at bad location = 0x"), String( (char)*data, HEX));
 
   _bufPos = 0;
   _connId = 0;
   *data = 0;
-
+   
   return false;
 }
 
@@ -1266,6 +1294,7 @@ int ESP8266_AT_Drv::getDataBuf(uint8_t connId, uint8_t *buf, uint16_t bufSize)
   {
     int c = timedRead();
     //AT_LOGDEBUG(c);
+    
     if (c == -1)
       return -1;
 
@@ -1287,8 +1316,9 @@ bool ESP8266_AT_Drv::sendData(uint8_t sock, const uint8_t *data, uint16_t len)
 
   char cmdBuf[20];
   
-  //sprintf_P(cmdBuf, PSTR("AT+CIPSEND=%d,%u"), sock, len);
-  sprintf(cmdBuf, "AT+CIPSEND=%d,%u", sock, len);
+  // KH, Restore PROGMEM commands
+  sprintf_P(cmdBuf, PSTR("AT+CIPSEND=%d,%u"), sock, len);
+  
   espSerial->println(cmdBuf);
 
   int idx = readUntil(1000, (char *)">", false);
@@ -1323,8 +1353,9 @@ bool ESP8266_AT_Drv::sendData(uint8_t sock, const __FlashStringHelper *data, uin
   char cmdBuf[20];
   uint16_t len2 = len + 2 * appendCrLf;
   
-  //sprintf_P(cmdBuf, PSTR("AT+CIPSEND=%d,%u"), sock, len2);
-  sprintf(cmdBuf, "AT+CIPSEND=%d,%u", sock, len2);
+  // KH, Restore PROGMEM commands 
+  sprintf_P(cmdBuf, PSTR("AT+CIPSEND=%d,%u"), sock, len2);
+ 
   espSerial->println(cmdBuf);
 
   int idx = readUntil(1000, (char *)">", false);
@@ -1370,8 +1401,9 @@ bool ESP8266_AT_Drv::sendDataUdp(uint8_t sock, const char* host, uint16_t port, 
 
   char cmdBuf[40];
   
-  //sprintf_P(cmdBuf, PSTR("AT+CIPSEND=%d,%u,\"%s\",%u"), sock, len, host, port);
-  sprintf(cmdBuf, "AT+CIPSEND=%d,%u,\"%s\",%u", sock, len, host, port);
+  // KH, Restore PROGMEM commands
+  sprintf_P(cmdBuf, PSTR("AT+CIPSEND=%d,%u,\"%s\",%u"), sock, len, host, port);
+  
   //AT_LOGDEBUG1(F("> sendDataUdp:"), cmdBuf);
   espSerial->println(cmdBuf);
 
@@ -1541,7 +1573,8 @@ int ESP8266_AT_Drv::sendCmd(const char* cmd, int timeout, ...)
   return idx;
 }
 
-#if !( defined(CORE_TEENSY) || (ESP8266_AT_USE_SAMD) || (ESP8266_AT_USE_STM32) || (ESP8266_AT_USE_SAM_DUE) || (ESP8266_AT_USE_NRF528XX) )
+// KH, Restore PROGMEM commands
+
 ////////////////////////////////////////////////////////////////////////////
 // Utility functions for __FlashStringHelper
 ////////////////////////////////////////////////////////////////////////////
@@ -1674,7 +1707,7 @@ int ESP8266_AT_Drv::sendCmd(const __FlashStringHelper* cmd, int timeout, ...)
   return idx;
 }
 
-#endif
+//////
 
 // Read from serial until one of the tags is found
 // Returns:
@@ -1695,7 +1728,9 @@ int ESP8266_AT_Drv::readUntil(unsigned int timeout, const char* tag, bool findTa
     if (espSerial->available())
     {
       c = (char)espSerial->read();
+      
       AT_LOGDEBUG0(c);
+      
       ringBuf.push(c);
 
       if (tag != NULL)
@@ -1756,6 +1791,8 @@ int ESP8266_AT_Drv::timedRead()
   unsigned int _timeout = 1000;
   int c;
   long _startMillis = millis();
+  
+  //AT_LOGDEBUG(F("ESP8266_AT_Drv::timedRead"));
   
   do
   {

@@ -11,7 +11,7 @@
   @file       Esp8266WebServer.h
   @author     Ivan Grokhotkov
   
-  Version: 1.1.0
+  Version: 1.1.1
   
   Version Modified By   Date      Comments
   ------- -----------  ---------- -----------
@@ -30,6 +30,7 @@
   1.0.11  K Hoang      25/07/2020 Add support to all STM32F/L/H/G/WB/MP1 and Seeeduino SAMD21/SAMD51 boards  
   1.0.12  K Hoang      26/07/2020 Add example and sample Packages_Patches for STM32F/L/H/G/WB/MP boards
   1.1.0   K Hoang      21/09/2020 Add support to UDP Multicast. Fix bugs.
+  1.1.1   K Hoang      26/09/2020 Restore support to PROGMEM-related commands, such as sendContent_P() and send_P()
  *****************************************************************************************************************************/
 
 // Credits of [Miguel Alexandre Wisintainer](https://github.com/tcpipchip) for this simple yet effective method
@@ -64,24 +65,57 @@ const int led = 13;
 
 void handleRoot()
 {
-  server.send(200, "text/plain", "Hello from ESP8266_AT_WebServer!");
+#define BUFFER_SIZE     400
+  
+  digitalWrite(led, 1);
+  char temp[BUFFER_SIZE];
+  int sec = millis() / 1000;
+  int min = sec / 60;
+  int hr = min / 60;
+  int day = hr / 24;
+
+  snprintf(temp, BUFFER_SIZE - 1,
+           "<html>\
+<head>\
+<meta http-equiv='refresh' content='5'/>\
+<title>%s</title>\
+<style>\
+body { background-color: #cccccc; font-family: Arial, Helvetica, Sans-Serif; Color: #000088; }\
+</style>\
+</head>\
+<body>\
+<h1>Hello from %s</h1>\
+<h3>running HelloServer</h3>\
+<h3>using %s</h3>\
+<p>Uptime: %d d %02d:%02d:%02d</p>\
+</body>\
+</html>", BOARD_NAME, BOARD_NAME, SHIELD_TYPE, day, hr, min % 60, sec % 60);
+
+  server.send(200, F("text/html"), temp);
+  digitalWrite(led, 0);
 }
 
 void handleNotFound()
 {
-  String message = "File Not Found\n\n";
-  message += "URI: ";
+  digitalWrite(led, 1);
+  
+  String message = F("File Not Found\n\n");
+  
+  message += F("URI: ");
   message += server.uri();
-  message += "\nMethod: ";
-  message += (server.method() == HTTP_GET) ? "GET" : "POST";
-  message += "\nArguments: ";
+  message += F("\nMethod: ");
+  message += (server.method() == HTTP_GET) ? F("GET") : F("POST");
+  message += F("\nArguments: ");
   message += server.args();
-  message += "\n";
+  message += F("\n");
+  
   for (uint8_t i = 0; i < server.args(); i++)
   {
     message += " " + server.argName(i) + ": " + server.arg(i) + "\n";
   }
-  server.send(404, "text/plain", message);
+  
+  server.send(404, F("text/plain"), message);
+  
   digitalWrite(led, 0);
 }
 
@@ -91,7 +125,8 @@ void setup(void)
   Serial.begin(115200);
   while (!Serial);
 
-  Serial.println("\nStarting HelloServer on " + String(BOARD_NAME));
+  Serial.print("\nStarting HelloServer on " + String(BOARD_NAME));
+  Serial.println(" with " + String(SHIELD_TYPE));
 
   // initialize serial for ESP module
   EspSerial.begin(115200);
@@ -119,14 +154,14 @@ void setup(void)
 
   server.begin();
 
-  Serial.print("WebServer is @ ");
+  Serial.print(F("WebServer is @ "));
   Serial.println(WiFi.localIP());
 
-  server.on("/", handleRoot);
+  server.on(F("/"), handleRoot);
 
-  server.on("/inline", []()
+  server.on(F("/inline"), []()
   {
-    server.send(200, "text/plain", "This works as well");
+    server.send(200, F("text/plain"), F("This works as well"));
   });
 
   server.onNotFound(handleNotFound);

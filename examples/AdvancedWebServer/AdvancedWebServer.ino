@@ -35,8 +35,8 @@
   (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
   SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   
-  Version: 1.1.0
-
+  Version: 1.1.1
+  
   Version Modified By   Date      Comments
   ------- -----------  ---------- -----------
   1.0.0   K Hoang      12/02/2020 Initial coding for Arduino Mega, Teensy, etc
@@ -53,7 +53,8 @@
   1.0.10  K Hoang      22/07/2020 Fix bug not closing client and releasing socket.
   1.0.11  K Hoang      25/07/2020 Add support to all STM32F/L/H/G/WB/MP1 and Seeeduino SAMD21/SAMD51 boards  
   1.0.12  K Hoang      26/07/2020 Add example and sample Packages_Patches for STM32F/L/H/G/WB/MP boards
-  1.1.0   K Hoang      21/09/2020 Add support to UDP Multicast. Fix bugs.   
+  1.1.0   K Hoang      21/09/2020 Add support to UDP Multicast. Fix bugs.
+  1.1.1   K Hoang      26/09/2020 Restore support to PROGMEM-related commands, such as sendContent_P() and send_P() 
  *****************************************************************************************************************************/
 
 // Credits of [Miguel Alexandre Wisintainer](https://github.com/tcpipchip) for this simple yet effective method
@@ -101,64 +102,70 @@ void handleRoot()
            "<html>\
 <head>\
 <meta http-equiv='refresh' content='5'/>\
-<title>ESP-AT %s</title>\
+<title>%s</title>\
 <style>\
 body { background-color: #cccccc; font-family: Arial, Helvetica, Sans-Serif; Color: #000088; }\
 </style>\
 </head>\
 <body>\
-<h1>Hello from ESP-AT</h1>\
+<h1>Hello from %s</h1>\
+<h3>running AdvancedWebServer</h3>\
 <h3>on %s</h3>\
 <p>Uptime: %d d %02d:%02d:%02d</p>\
 <img src=\"/test.svg\" />\
 </body>\
-</html>", BOARD_NAME, BOARD_NAME, day, hr, min % 60, sec % 60);
+</html>", BOARD_NAME, BOARD_NAME, SHIELD_TYPE, day, hr, min % 60, sec % 60);
 
-  server.send(200, "text/html", temp);
+  server.send(200, F("text/html"), temp);
   digitalWrite(led, 0);
 }
 
 void handleNotFound()
 {
   digitalWrite(led, 1);
-  String message = "File Not Found\n\n";
-  message += "URI: ";
+  
+  String message = F("File Not Found\n\n");
+  
+  message += F("URI: ");
   message += server.uri();
-  message += "\nMethod: ";
-  message += (server.method() == HTTP_GET) ? "GET" : "POST";
-  message += "\nArguments: ";
+  message += F("\nMethod: ");
+  message += (server.method() == HTTP_GET) ? F("GET") : F("POST");
+  message += F("\nArguments: ");
   message += server.args();
-  message += "\n";
-
+  message += F("\n");
+  
   for (uint8_t i = 0; i < server.args(); i++)
   {
     message += " " + server.argName(i) + ": " + server.arg(i) + "\n";
   }
-
-  server.send(404, "text/plain", message);
+  
+  server.send(404, F("text/plain"), message);
+  
   digitalWrite(led, 0);
 }
 
 void drawGraph()
 {
   String out;
-  out.reserve(2000);
+  out.reserve(3000);
   char temp[70];
-  out += "<svg xmlns=\"http://www.w3.org/2000/svg\" version=\"1.1\" width=\"310\" height=\"150\">\n";
-  out += "<rect width=\"310\" height=\"150\" fill=\"rgb(250, 230, 210)\" stroke-width=\"1\" stroke=\"rgb(0, 0, 0)\" />\n";
-  out += "<g stroke=\"black\">\n";
+  out += F("<svg xmlns=\"http://www.w3.org/2000/svg\" version=\"1.1\" width=\"310\" height=\"150\">\n");
+  out += F("<rect width=\"310\" height=\"150\" fill=\"rgb(250, 230, 210)\" stroke-width=\"3\" stroke=\"rgb(0, 0, 0)\" />\n");
+  out += F("<g stroke=\"blue\">\n");
+  
   int y = rand() % 130;
 
   for (int x = 10; x < 300; x += 10)
   {
     int y2 = rand() % 130;
-    sprintf(temp, "<line x1=\"%d\" y1=\"%d\" x2=\"%d\" y2=\"%d\" stroke-width=\"1\" />\n", x, 140 - y, x + 10, 140 - y2);
+    sprintf_P(temp, PSTR("<line x1=\"%d\" y1=\"%d\" x2=\"%d\" y2=\"%d\" stroke-width=\"2\" />\n"), x, 140 - y, x + 10, 140 - y2);
     out += temp;
     y = y2;
   }
-  out += "</g>\n</svg>\n";
+  
+  out += F("</g>\n</svg>\n");
 
-  server.send(200, "image/svg+xml", out);
+  server.send(200, F("image/svg+xml"), out);
 }
 
 void setup(void)
@@ -169,7 +176,8 @@ void setup(void)
   Serial.begin(115200);
   while (!Serial);
   
-  Serial.println("\nStarting AdvancedWebServer on " + String(BOARD_NAME));
+  Serial.print("\nStarting AdvancedWebServer on " + String(BOARD_NAME));
+  Serial.println(" with " + String(SHIELD_TYPE));
 
   // initialize serial for ESP module
   EspSerial.begin(115200);
@@ -195,11 +203,11 @@ void setup(void)
     status = WiFi.begin(ssid, pass);
   }
 
-  server.on("/", handleRoot);
-  server.on("/test.svg", drawGraph);
-  server.on("/inline", []()
+  server.on(F("/"), handleRoot);
+  server.on(F("/test.svg"), drawGraph);
+  server.on(F("/inline"), []()
   {
-    server.send(200, "text/plain", "this works as well");
+    server.send(200, F("text/plain"), F("This works as well"));
   });
 
   server.onNotFound(handleNotFound);

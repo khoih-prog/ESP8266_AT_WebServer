@@ -11,7 +11,7 @@
    @file       Esp8266WebServer.h
    @author     Ivan Grokhotkov
 
-   Version: 1.1.0
+   Version: 1.1.1
 
    Version Modified By   Date      Comments
    ------- -----------  ---------- -----------
@@ -30,6 +30,7 @@
     1.0.11  K Hoang      25/07/2020 Add support to all STM32F/L/H/G/WB/MP1 and Seeeduino SAMD21/SAMD51 boards  
     1.0.12  K Hoang      26/07/2020 Add example and sample Packages_Patches for STM32F/L/H/G/WB/MP boards
     1.1.0   K Hoang      21/09/2020 Add support to UDP Multicast. Fix bugs.
+    1.1.1   K Hoang      26/09/2020 Restore support to PROGMEM-related commands, such as sendContent_P() and send_P()
  *****************************************************************************************************************************/
 
 #ifndef ESP8266_AT_Parsing_impl_h
@@ -145,7 +146,7 @@ bool ESP8266_AT_WebServer::_parseRequest(ESP8266_AT_Client& client)
 
   if (addr_start == -1 || addr_end == -1)
   {
-    AT_LOGDEBUG1(F("ESP8266_AT_WebServer::_parseRequest: Invalid request: "), req);
+    AT_LOGDEBUG1(F("_parseRequest: Invalid request: "), req);
     return false;
   }
 
@@ -159,7 +160,7 @@ bool ESP8266_AT_WebServer::_parseRequest(ESP8266_AT_Client& client)
   if (hasSearch != -1)
   {
     searchStr = urlDecode(url.substring(hasSearch + 1));
-    url = url.substring(0, hasSearch);
+    url       = url.substring(0, hasSearch);
   }
 
   _currentUri = url;
@@ -265,6 +266,7 @@ bool ESP8266_AT_WebServer::_parseRequest(ESP8266_AT_Client& client)
 
       headerName  = req.substring(0, headerDiv);
       headerValue = req.substring(headerDiv + 1);
+      
       headerValue.trim();
       _collectHeader(headerName.c_str(), headerValue.c_str());
 
@@ -275,6 +277,7 @@ bool ESP8266_AT_WebServer::_parseRequest(ESP8266_AT_Client& client)
       if (headerName.equalsIgnoreCase("Content-Type"))
       {
         using namespace mime;
+        
         if (headerValue.startsWith(mimeTable[txt].mimeType))
         {
           isForm = false;
@@ -364,7 +367,7 @@ bool ESP8266_AT_WebServer::_parseRequest(ESP8266_AT_Client& client)
       client.readStringUntil('\n');
 
       if (req == "")
-        break;//no moar headers
+        break;//no more headers
 
       int headerDiv = req.indexOf(':');
 
@@ -373,7 +376,7 @@ bool ESP8266_AT_WebServer::_parseRequest(ESP8266_AT_Client& client)
         break;
       }
 
-      headerName = req.substring(0, headerDiv);
+      headerName  = req.substring(0, headerDiv);
       headerValue = req.substring(headerDiv + 2);
       _collectHeader(headerName.c_str(), headerValue.c_str());
 
@@ -436,7 +439,7 @@ bool ESP8266_AT_WebServer::_parseRequest(ESP8266_AT_Client& client)
         break;
       }
 
-      headerName = req.substring(0, headerDiv);
+      headerName  = req.substring(0, headerDiv);
       headerValue = req.substring(headerDiv + 2);
       _collectHeader(headerName.c_str(), headerValue.c_str());
 
@@ -544,8 +547,8 @@ int ESP8266_AT_WebServer::_parseArgumentsPrivate(const String& data, vl::Func<vo
       key_end_pos = data.length();
 
     // handle key/value
-    if ((int)pos < key_end_pos) {
-
+    if ((int)pos < key_end_pos) 
+    {
       RequestArgument& arg = _currentArgs[arg_total];
       handler(arg.key, arg.value, data, equal_index, pos, key_end_pos, next_index);
 
@@ -627,6 +630,7 @@ void ESP8266_AT_WebServer::_parseArguments(String data)
   AT_LOGDEBUG1(F("args count: "), _currentArgCount);
 
   _currentArgs = new RequestArgument[_currentArgCount + 1];
+  
   int pos = 0;
   int iarg;
   
@@ -724,8 +728,8 @@ bool ESP8266_AT_WebServer::_parseForm(ESP8266_AT_Client& client, const String& b
   client.readStringUntil('\n');
   
   //start reading the form
-  if (line == ("--" + boundary)) {
-
+  if (line == ("--" + boundary)) 
+  {
     if (_postArgs)
       delete[] _postArgs;
 
@@ -738,6 +742,7 @@ bool ESP8266_AT_WebServer::_parseForm(ESP8266_AT_Client& client, const String& b
       String argValue;
       String argType;
       String argFilename;
+      
       bool argIsFile = false;
 
       line = client.readStringUntil('\r');
@@ -772,6 +777,7 @@ bool ESP8266_AT_WebServer::_parseForm(ESP8266_AT_Client& client, const String& b
           AT_LOGDEBUG1(F("PostArg Name: "), argName);
 
           using namespace mime;
+          
           argType = mimeTable[txt].mimeType;
           line    = client.readStringUntil('\r');
           client.readStringUntil('\n');
@@ -805,7 +811,7 @@ bool ESP8266_AT_WebServer::_parseForm(ESP8266_AT_Client& client, const String& b
             AT_LOGDEBUG1(F("PostArg Value: "), argValue);
 
             RequestArgument& arg = _postArgs[_postArgsLen++];
-            arg.key = argName;
+            arg.key   = argName;
             arg.value = argValue;
 
             if (line == ("--" + boundary + "--"))
@@ -837,6 +843,7 @@ bool ESP8266_AT_WebServer::_parseForm(ESP8266_AT_Client& client, const String& b
 
             _currentUpload->status  = UPLOAD_FILE_WRITE;
             uint8_t argByte         = _uploadReadByte(client);
+            
 readfile:
             while (argByte != 0x0D)
             {
@@ -948,7 +955,7 @@ readfile:
     for (iarg = 0; iarg < totalArgs; iarg++)
     {
       RequestArgument& arg = _postArgs[_postArgsLen++];
-      arg.key = _currentArgs[iarg].key;
+      arg.key   = _currentArgs[iarg].key;
       arg.value = _currentArgs[iarg].value;
     }
 
@@ -1021,6 +1028,7 @@ bool ESP8266_AT_WebServer::_parseForm(ESP8266_AT_Client& client, String boundary
       String argValue;
       String argType;
       String argFilename;
+      
       bool argIsFile = false;
 
       line = client.readStringUntil('\r');
@@ -1197,6 +1205,7 @@ readfile:
                 _uploadWriteByte(0x0A);
                 _uploadWriteByte((uint8_t)('-'));
                 _uploadWriteByte((uint8_t)('-'));
+                
                 uint32_t i = 0;
 
                 while (i < boundary.length())

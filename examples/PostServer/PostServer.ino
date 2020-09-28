@@ -11,7 +11,7 @@
   @file       Esp8266WebServer.h
   @author     Ivan Grokhotkov
   
-  Version: 1.1.0
+  Version: 1.1.1
   
   Version Modified By   Date      Comments
   ------- -----------  ---------- -----------
@@ -30,6 +30,7 @@
   1.0.11  K Hoang      25/07/2020 Add support to all STM32F/L/H/G/WB/MP1 and Seeeduino SAMD21/SAMD51 boards  
   1.0.12  K Hoang      26/07/2020 Add example and sample Packages_Patches for STM32F/L/H/G/WB/MP boards
   1.1.0   K Hoang      21/09/2020 Add support to UDP Multicast. Fix bugs.
+  1.1.1   K Hoang      26/09/2020 Restore support to PROGMEM-related commands, such as sendContent_P() and send_P()
  *****************************************************************************************************************************/
 
 // Credits of [Miguel Alexandre Wisintainer](https://github.com/tcpipchip) for this simple yet effective method
@@ -63,7 +64,7 @@ ESP8266_AT_WebServer server(80);
 const int led = 13;
 
 const String postForms =
-  "<html>\
+  F("<html>\
 <head>\
 <title>ESP8266_AT_WebServer POST handling</title>\
 <style>\
@@ -82,12 +83,12 @@ body { background-color: #cccccc; font-family: Arial, Helvetica, Sans-Serif; Col
 <input type=\"submit\" value=\"Submit\">\
 </form>\
 </body>\
-</html>";
+</html>");
 
 void handleRoot()
 {
   digitalWrite(led, 1);
-  server.send(200, "text/html", postForms);
+  server.send(200, F("text/html"), postForms);
   digitalWrite(led, 0);
 }
 
@@ -96,12 +97,13 @@ void handlePlain()
   if (server.method() != HTTP_POST)
   {
     digitalWrite(led, 1);
-    server.send(405, "text/plain", "Method Not Allowed");
+    server.send(405, F("text/plain"), F("Method Not Allowed"));
     digitalWrite(led, 0);
-  } else
+  } 
+  else
   {
     digitalWrite(led, 1);
-    server.send(200, "text/plain", "POST body was:\n" + server.arg("plain"));
+    server.send(200, F("text/plain"), "POST body was:\n" + server.arg(F("plain")));
     digitalWrite(led, 0);
   }
 }
@@ -111,18 +113,20 @@ void handleForm()
   if (server.method() != HTTP_POST)
   {
     digitalWrite(led, 1);
-    server.send(405, "text/plain", "Method Not Allowed");
+    server.send(405, F("text/plain"), F("Method Not Allowed"));
     digitalWrite(led, 0);
   }
   else
   {
     digitalWrite(led, 1);
-    String message = "POST form was:\n";
+    String message = F("POST form was:\n");
+    
     for (uint8_t i = 0; i < server.args(); i++)
     {
       message += " " + server.argName(i) + ": " + server.arg(i) + "\n";
     }
-    server.send(200, "text/plain", message);
+    
+    server.send(200, F("text/plain"), message);
     digitalWrite(led, 0);
   }
 }
@@ -130,19 +134,24 @@ void handleForm()
 void handleNotFound()
 {
   digitalWrite(led, 1);
-  String message = "File Not Found\n\n";
-  message += "URI: ";
+  
+  String message = F("File Not Found\n\n");
+  
+  message += F("URI: ");
   message += server.uri();
-  message += "\nMethod: ";
-  message += (server.method() == HTTP_GET) ? "GET" : "POST";
-  message += "\nArguments: ";
+  message += F("\nMethod: ");
+  message += (server.method() == HTTP_GET) ? F("GET") : F("POST");
+  message += F("\nArguments: ");
   message += server.args();
-  message += "\n";
+  message += F("\n");
+  
   for (uint8_t i = 0; i < server.args(); i++)
   {
     message += " " + server.argName(i) + ": " + server.arg(i) + "\n";
   }
-  server.send(404, "text/plain", message);
+  
+  server.send(404, F("text/plain"), message);
+  
   digitalWrite(led, 0);
 }
 
@@ -154,7 +163,8 @@ void setup(void)
   Serial.begin(115200);
   while (!Serial);
 
-  Serial.println("\nStarting POSTServer on " + String(BOARD_NAME));
+  Serial.print("\nStarting POSTServer on " + String(BOARD_NAME));
+  Serial.println(" with " + String(SHIELD_TYPE));
 
   // initialize serial for ESP module
   EspSerial.begin(115200);
@@ -180,11 +190,11 @@ void setup(void)
     status = WiFi.begin(ssid, pass);
   }
 
-  server.on("/", handleRoot);
+  server.on(F("/"), handleRoot);
 
-  server.on("/postplain/", handlePlain);
+  server.on(F("/postplain/"), handlePlain);
 
-  server.on("/postform/", handleForm);
+  server.on(F("/postform/"), handleForm);
 
   server.onNotFound(handleNotFound);
 

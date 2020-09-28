@@ -11,7 +11,7 @@
    @file       Esp8266WebServer.h
    @author     Ivan Grokhotkov
 
-   Version: 1.1.0
+   Version: 1.1.1
 
    Version Modified By   Date      Comments
    ------- -----------  ---------- -----------
@@ -30,6 +30,7 @@
     1.0.11  K Hoang      25/07/2020 Add support to all STM32F/L/H/G/WB/MP1 and Seeeduino SAMD21/SAMD51 boards  
     1.0.12  K Hoang      26/07/2020 Add example and sample Packages_Patches for STM32F/L/H/G/WB/MP boards
     1.1.0   K Hoang      21/09/2020 Add support to UDP Multicast. Fix bugs.
+    1.1.1   K Hoang      26/09/2020 Restore support to PROGMEM-related commands, such as sendContent_P() and send_P()
  *****************************************************************************************************************************/
 
 #ifndef ESP8266_AT_Client_impl_h
@@ -85,8 +86,8 @@ int ESP8266_AT_Client::connectSSL(IPAddress ip, uint16_t port)
 {
   char s[16];
   
-  //sprintf_P(s, PSTR("%d.%d.%d.%d"), ip[0], ip[1], ip[2], ip[3]);
-  sprintf(s, "%d.%d.%d.%d", ip[0], ip[1], ip[2], ip[3]);
+  sprintf_P(s, PSTR("%d.%d.%d.%d"), ip[0], ip[1], ip[2], ip[3]);
+  //sprintf(s, "%d.%d.%d.%d", ip[0], ip[1], ip[2], ip[3]);
   
   return connect(s, port, SSL_MODE);
 }
@@ -100,8 +101,8 @@ int ESP8266_AT_Client::connect(IPAddress ip, uint16_t port)
 {
   char s[16];
   
-  //sprintf_P(s, PSTR("%d.%d.%d.%d"), ip[0], ip[1], ip[2], ip[3]);
-  sprintf(s, "%d.%d.%d.%d", ip[0], ip[1], ip[2], ip[3]);
+  sprintf_P(s, PSTR("%d.%d.%d.%d"), ip[0], ip[1], ip[2], ip[3]);
+  //sprintf(s, "%d.%d.%d.%d", ip[0], ip[1], ip[2], ip[3]);
 
   return connect(s, port, TCP_MODE);
 }

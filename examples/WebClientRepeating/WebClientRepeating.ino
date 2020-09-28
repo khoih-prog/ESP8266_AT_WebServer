@@ -11,7 +11,7 @@
   @file       Esp8266WebServer.h
   @author     Ivan Grokhotkov
   
-  Version: 1.1.0
+  Version: 1.1.1
   
   Version Modified By   Date      Comments
   ------- -----------  ---------- -----------
@@ -30,6 +30,7 @@
   1.0.11  K Hoang      25/07/2020 Add support to all STM32F/L/H/G/WB/MP1 and Seeeduino SAMD21/SAMD51 boards  
   1.0.12  K Hoang      26/07/2020 Add example and sample Packages_Patches for STM32F/L/H/G/WB/MP boards
   1.1.0   K Hoang      21/09/2020 Add support to UDP Multicast. Fix bugs.
+  1.1.1   K Hoang      26/09/2020 Restore support to PROGMEM-related commands, such as sendContent_P() and send_P()
  *****************************************************************************************************************************/
 
 // Credits of [Miguel Alexandre Wisintainer](https://github.com/tcpipchip) for this simple yet effective method
@@ -77,7 +78,7 @@ void printWifiStatus()
 
   // print the received signal strength:
   int32_t rssi = WiFi.RSSI();
-  Serial.print(F(", Signal strength (RSSI):"));
+  Serial.print(F(", Signal strength (RSSI): "));
   Serial.print(rssi);
   Serial.println(F(" dBm"));
 }
@@ -118,7 +119,8 @@ void setup()
   Serial.begin(115200);
   while (!Serial);
 
-  Serial.println("\nStarting WebClientRepeating on " + String(BOARD_NAME));
+  Serial.print("\nStarting WebClientRepeating on " + String(BOARD_NAME));
+  Serial.println(" with " + String(SHIELD_TYPE));
 
   // initialize serial for ESP module
   EspSerial.begin(115200);

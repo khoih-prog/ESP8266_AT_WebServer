@@ -11,7 +11,7 @@
   @file       Esp8266WebServer.h
   @author     Ivan Grokhotkov
   
-  Version: 1.1.0
+  Version: 1.1.1
   
   Version Modified By   Date      Comments
   ------- -----------  ---------- -----------
@@ -30,6 +30,7 @@
   1.0.11  K Hoang      25/07/2020 Add support to all STM32F/L/H/G/WB/MP1 and Seeeduino SAMD21/SAMD51 boards  
   1.0.12  K Hoang      26/07/2020 Add example and sample Packages_Patches for STM32F/L/H/G/WB/MP boards
   1.1.0   K Hoang      21/09/2020 Add support to UDP Multicast. Fix bugs.
+  1.1.1   K Hoang      26/09/2020 Restore support to PROGMEM-related commands, such as sendContent_P() and send_P()
  *****************************************************************************************************************************/
 
 // Credits of [Miguel Alexandre Wisintainer](https://github.com/tcpipchip) for this simple yet effective method
@@ -62,14 +63,18 @@ void printWifiData()
 {
   // print your WiFi shield's IP address
   IPAddress ip = WiFi.localIP();
+  
   Serial.print(F("IP Address: "));
   Serial.println(ip);
 
   // print your MAC address
   byte mac[6];
   WiFi.macAddress(mac);
+  
   char buf[20];
-  sprintf(buf, "%02X:%02X:%02X:%02X:%02X:%02X", mac[5], mac[4], mac[3], mac[2], mac[1], mac[0]);
+  
+  sprintf_P(buf, PSTR("%02X:%02X:%02X:%02X:%02X:%02X"), mac[5], mac[4], mac[3], mac[2], mac[1], mac[0]);
+  
   Serial.print(F("MAC address: "));
   Serial.println(buf);
 }
@@ -83,8 +88,11 @@ void printCurrentNet()
   // print the MAC address of the router you're attached to
   byte bssid[6];
   WiFi.BSSID(bssid);
+  
   char buf[20];
-  sprintf(buf, "%02X:%02X:%02X:%02X:%02X:%02X", bssid[5], bssid[4], bssid[3], bssid[2], bssid[1], bssid[0]);
+  
+  sprintf_P(buf, PSTR("%02X:%02X:%02X:%02X:%02X:%02X"), bssid[5], bssid[4], bssid[3], bssid[2], bssid[1], bssid[0]);
+  
   Serial.print(F("BSSID: "));
   Serial.println(buf);
 
@@ -99,7 +107,8 @@ void setup()
   Serial.begin(115200);
   while (!Serial);
 
-  Serial.println("\nStarting ConnectWPA on " + String(BOARD_NAME));
+  Serial.print("\nStarting ConnectWPA on " + String(BOARD_NAME));
+  Serial.println(" with " + String(SHIELD_TYPE));
 
   // initialize serial for ESP module
   EspSerial.begin(115200);
@@ -121,11 +130,12 @@ void setup()
   {
     Serial.print(F("Connecting to WPA SSID: "));
     Serial.println(ssid);
+    
     // Connect to WPA/WPA2 network
     status = WiFi.begin(ssid, pass);
   }
 
-  Serial.println("You're connected to the network");
+  Serial.println(F("You're connected to the network"));
 }
 
 void loop()

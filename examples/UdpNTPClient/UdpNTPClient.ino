@@ -11,7 +11,7 @@
   @file       Esp8266WebServer.h
   @author     Ivan Grokhotkov
   
-  Version: 1.1.0
+  Version: 1.1.1
   
   Version Modified By   Date      Comments
   ------- -----------  ---------- -----------
@@ -30,6 +30,7 @@
   1.0.11  K Hoang      25/07/2020 Add support to all STM32F/L/H/G/WB/MP1 and Seeeduino SAMD21/SAMD51 boards  
   1.0.12  K Hoang      26/07/2020 Add example and sample Packages_Patches for STM32F/L/H/G/WB/MP boards
   1.1.0   K Hoang      21/09/2020 Add support to UDP Multicast. Fix bugs.
+  1.1.1   K Hoang      26/09/2020 Restore support to PROGMEM-related commands, such as sendContent_P() and send_P()
  *****************************************************************************************************************************/
 
 // Credits of [Miguel Alexandre Wisintainer](https://github.com/tcpipchip) for this simple yet effective method
@@ -102,7 +103,8 @@ void setup()
   Serial.begin(115200);
   while (!Serial);
 
-  Serial.println("\nStarting UdpNTPClient on " + String(BOARD_NAME));
+  Serial.print("\nStarting UdpNTPClient on " + String(BOARD_NAME));
+  Serial.println(" with " + String(SHIELD_TYPE));
 
   // initialize serial for ESP module
   EspSerial.begin(115200);
@@ -142,6 +144,7 @@ void loop()
 
   // wait for a reply for UDP_TIMEOUT miliseconds
   unsigned long startMs = millis();
+  
   while (!Udp.available() && (millis() - startMs) < UDP_TIMEOUT) {}
 
   // if there's data available, read a packet
@@ -151,8 +154,9 @@ void loop()
   {
     Serial.print(F("UDP Packet received, size "));
     Serial.println(packetSize);
+    
     Serial.print(F("From "));
-    IPAddress remoteIp = Udp.remoteIP();
+    IPAddress remoteIp = Udp.remoteIP();    
     Serial.print(remoteIp);
     Serial.print(F(", port "));
     Serial.println(Udp.remotePort());
@@ -185,18 +189,25 @@ void loop()
     Serial.print(F("The UTC time is "));       // UTC is the time at Greenwich Meridian (GMT)
     Serial.print((epoch  % 86400L) / 3600); // print the hour (86400 equals secs per day)
     Serial.print(F(":"));
-    if (((epoch % 3600) / 60) < 10) {
+    
+    if (((epoch % 3600) / 60) < 10) 
+    {
       // In the first 10 minutes of each hour, we'll want a leading '0'
       Serial.print(F("0"));
     }
+    
     Serial.print((epoch  % 3600) / 60); // print the minute (3600 equals secs per minute)
     Serial.print(F(":"));
-    if ((epoch % 60) < 10) {
+    
+    if ((epoch % 60) < 10) 
+    {
       // In the first 10 seconds of each minute, we'll want a leading '0'
       Serial.print(F("0"));
     }
+    
     Serial.println(epoch % 60); // print the second
   }
+  
   // wait ten seconds before asking for the time again
   delay(10000);
 }

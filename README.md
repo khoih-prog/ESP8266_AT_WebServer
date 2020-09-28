@@ -9,68 +9,76 @@
 ---
 ---
 
-### New in v1.1.0
+### New Release v1.1.1
+
+1. Add support to PROGMEM-related commands, such as sendContent_P() and send_P().
+2. Update Platform.ini to support PlatformIO 5.x owner-based dependency declaration.
+3. Clean up code. Use FlashString and related functions extensively in code as well in examples.
+4. Enhance examples.
+
+#### New in v1.1.0
 
 1. Add support to UDP **Multicast**. Now ESP8266/ESP32 AT-command shields can run uPnP libraries to manage **Internet Gateway's port forwarding**.
 2. Fix bugs.
 3. Enhance debug support.
 
-### New in v1.0.12
+#### New in v1.0.12
 
 1. Add sample Packages_Patches for STM32 (Nucleo-144 NUCLEO_F767ZI, Nucleo-64 NUCLEO_L053R8)
 2. Add example for STM32F/L/H/G/WB/MP1 boards.
 3. Add instructions to use EspSerial/Serial1 on some STM32 boards without Serial1 definition (Nucleo-144 NUCLEO_F767ZI, Nucleo-64 NUCLEO_L053R8, etc.)
 
-### New in v1.0.11
+#### New in v1.0.11
 
 1. Add support to all **STM32F/L/H/G/WB/MP1 (Nucleo-144 NUCLEO_F767ZI, Nucleo-64 NUCLEO_L053R8, etc.)**
 2. Add support to **Seeeduino SAMD21/SAMD51 boards (SEEED_WIO_TERMINAL, SEEED_FEMTO_M0, SEEED_XIAO_M0, Wio_Lite_MG126, WIO_GPS_BOARD, SEEEDUINO_ZERO, SEEEDUINO_LORAWAN, SEEED_GROVE_UI_WIRELESS, etc.)**
 
-### New in v1.0.10
+#### New in v1.0.10
 
 1. Fix bug not closing client and releasing socket.
 2. Enhance examples.
 3. Add function to be enable to work with [WebSockets2_Generic Library](https://github.com/khoih-prog/WebSockets2_Generic)
 
-### New Version v1.0.9
+#### New Version v1.0.9
 
 1. Fix bug. 
 2. Add functions (ESP8266_AT_Drv::wifiDriverReInit and ESP8266_AT_Class::reInit). 
 3. Restructure codes. Increase RingBuffer Size.
 4. Add support to WIS600-01S and W600 WiFi shields
 
-### New Version v1.0.8
+#### New Version v1.0.8
 
 1. Fix bug. 
 2. Add features to ESP32-AT. 
 
-### New Version v1.0.7
+#### New Version v1.0.7
 
 1. Add support to **ESP32-AT-command shield**. 
 2. Update deprecated ESP8266-AT commands. 
 3. Restructure examples to separate defines header files.
 
-### New Version v1.0.6
+#### New Version v1.0.6
 
 1. Add support to **nRF52** boards, such as **AdaFruit Feather nRF52832, nRF52840 Express, BlueFruit Sense, Itsy-Bitsy nRF52840 Express, Metro nRF52840 Express, NINA_B302_ublox, NINA_B112_ublox, etc.** 
 
-### New Version v1.0.5
+#### New Version v1.0.5
 
 1. Add support to **SAM51 (Itsy-Bitsy M4, Metro M4, Grand Central M4, Feather M4 Express, etc.) and SAM DUE**.
 
-### New Version v1.0.4
+#### New Version v1.0.4
 
 1. Sync with ESP8266WebServer library of ESP8266 core v2.6.3
 2. Fix bug.
 
-### New Version v1.0.3
+#### New Version v1.0.3
 
 1. Add support to STM32 (STM32F0, F1, F2, F3, F4, F7, etc) boards
 
-### New Version v1.0.2
+#### New Version v1.0.2
 
 1. Add support to SAMD (ZERO, MKR, **NANO_33_IOT**, M0, M0 Pro, AdaFruit CIRCUITPLAYGROUND_EXPRESS, etc.) boards
 
+---
 ---
 
 This is simple yet complete WebServer library for `AVR, Teensy, SAM DUE, SAMD, STM32, etc.` boards running `ESP8266/ESP32 AT-command` shields. The functions are similar and compatible to ESP8266/ESP32 WebServer libraries to make life much easier to port sketches from ESP8266/ESP32.
@@ -110,6 +118,7 @@ The ESP8266_AT_Web_Server class found in `ESP8266_AT_Web_Server.h` header, is a 
 12. [`AT version_2.1.0.0_dev`](AT_Firmwares/AT_version_2.1.0.0_dev.zip) for ESP32-AT shields.
 13. `AT version_1.1.4` for WIS600-01S and W600-AT WiFi shields.
 
+---
 ---
 
 ### Important Notes about AT Firmwares
@@ -176,6 +185,7 @@ The ESP8266_AT_Web_Server class found in `ESP8266_AT_Web_Server.h` header, is a 
 5. Compatible AT-Firmare version will be updated. Check for all supported AT Firmwares and download them from [AT_Firmwares](https://github.com/khoih-prog/ESP8266_AT_WebServer/tree/master/AT_Firmwares).
 6. Support to ESP32-AT-command shields has been added to permit using new library [ESP_AT_Lib](https://github.com/khoih-prog/ESP_AT_Lib) to replace [Blynk's BlynkESP8266_Lib](https://github.com/blynkkk/blynk-library/releases/Blynk_Release_v0.6.1.zip). The same [ESP_AT_Lib](https://github.com/khoih-prog/ESP_AT_Lib) can also be use for ESP8266-AT shields.
 
+---
 ---
 
 ## Installation
@@ -458,6 +468,7 @@ Example:
 ```
 
 ---
+---
 
 ### Examples
 
@@ -534,41 +545,45 @@ void handleRoot()
            "<html>\
 <head>\
 <meta http-equiv='refresh' content='5'/>\
-<title>ESP-AT %s</title>\
+<title>%s</title>\
 <style>\
 body { background-color: #cccccc; font-family: Arial, Helvetica, Sans-Serif; Color: #000088; }\
 </style>\
 </head>\
 <body>\
-<h1>Hello from ESP-AT</h1>\
+<h1>Hello from %s</h1>\
+<h3>running AdvancedWebServer</h3>\
 <h3>on %s</h3>\
 <p>Uptime: %d d %02d:%02d:%02d</p>\
 <img src=\"/test.svg\" />\
 </body>\
-</html>", BOARD_NAME, BOARD_NAME, day, hr, min % 60, sec % 60);
+</html>", BOARD_NAME, BOARD_NAME, SHIELD_TYPE, day, hr, min % 60, sec % 60);
 
-  server.send(200, "text/html", temp);
+  server.send(200, F("text/html"), temp);
   digitalWrite(led, 0);
 }
 
 void handleNotFound()
 {
   digitalWrite(led, 1);
-  String message = "File Not Found\n\n";
-  message += "URI: ";
+  
+  String message = F("File Not Found\n\n");
+  
+  message += F("URI: ");
   message += server.uri();
-  message += "\nMethod: ";
-  message += (server.method() == HTTP_GET) ? "GET" : "POST";
-  message += "\nArguments: ";
+  message += F("\nMethod: ");
+  message += (server.method() == HTTP_GET) ? F("GET") : F("POST");
+  message += F("\nArguments: ");
   message += server.args();
-  message += "\n";
-
+  message += F("\n");
+  
   for (uint8_t i = 0; i < server.args(); i++)
   {
     message += " " + server.argName(i) + ": " + server.arg(i) + "\n";
   }
-
-  server.send(404, "text/plain", message);
+  
+  server.send(404, F("text/plain"), message);
+  
   digitalWrite(led, 0);
 }
 
@@ -577,21 +592,23 @@ void drawGraph()
   String out;
   out.reserve(3000);
   char temp[70];
-  out += "<svg xmlns=\"http://www.w3.org/2000/svg\" version=\"1.1\" width=\"310\" height=\"150\">\n";
-  out += "<rect width=\"310\" height=\"150\" fill=\"rgb(250, 230, 210)\" stroke-width=\"1\" stroke=\"rgb(0, 0, 0)\" />\n";
-  out += "<g stroke=\"black\">\n";
+  out += F("<svg xmlns=\"http://www.w3.org/2000/svg\" version=\"1.1\" width=\"310\" height=\"150\">\n");
+  out += F("<rect width=\"310\" height=\"150\" fill=\"rgb(250, 230, 210)\" stroke-width=\"3\" stroke=\"rgb(0, 0, 0)\" />\n");
+  out += F("<g stroke=\"blue\">\n");
+  
   int y = rand() % 130;
 
   for (int x = 10; x < 300; x += 10)
   {
     int y2 = rand() % 130;
-    sprintf(temp, "<line x1=\"%d\" y1=\"%d\" x2=\"%d\" y2=\"%d\" stroke-width=\"1\" />\n", x, 140 - y, x + 10, 140 - y2);
+    sprintf_P(temp, PSTR("<line x1=\"%d\" y1=\"%d\" x2=\"%d\" y2=\"%d\" stroke-width=\"2\" />\n"), x, 140 - y, x + 10, 140 - y2);
     out += temp;
     y = y2;
   }
-  out += "</g>\n</svg>\n";
+  
+  out += F("</g>\n</svg>\n");
 
-  server.send(200, "image/svg+xml", out);
+  server.send(200, F("image/svg+xml"), out);
 }
 
 void setup(void)
@@ -602,7 +619,8 @@ void setup(void)
   Serial.begin(115200);
   while (!Serial);
   
-  Serial.println("\nStarting AdvancedWebServer on " + String(BOARD_NAME));
+  Serial.print("\nStarting AdvancedWebServer on " + String(BOARD_NAME));
+  Serial.println(" with " + String(SHIELD_TYPE));
 
   // initialize serial for ESP module
   EspSerial.begin(115200);
@@ -628,11 +646,11 @@ void setup(void)
     status = WiFi.begin(ssid, pass);
   }
 
-  server.on("/", handleRoot);
-  server.on("/test.svg", drawGraph);
-  server.on("/inline", []()
+  server.on(F("/"), handleRoot);
+  server.on(F("/test.svg"), drawGraph);
+  server.on(F("/inline"), []()
   {
-    server.send(200, "text/plain", "this works as well");
+    server.send(200, F("text/plain"), F("This works as well"));
   });
 
   server.onNotFound(handleNotFound);
@@ -663,207 +681,216 @@ void loop(void)
 // Uncomment to use ESP32-AT commands
 //#define USE_ESP32_AT      true
 
+#if USE_ESP32_AT
+  #warning Using ESP32-AT WiFi and ESP8266_AT_WebServer Library
+  #define SHIELD_TYPE           "ESP32-AT & ESP8266_AT_WebServer Library"
+#else
+  #warning Using ESP8266-AT WiFi with ESP8266_AT_WebServer Library
+  #define SHIELD_TYPE           "ESP8266-AT & ESP8266_AT_WebServer Library" 
+#endif
+
 #if    ( defined(ARDUINO_SAMD_ZERO) || defined(ARDUINO_SAMD_MKR1000) || defined(ARDUINO_SAMD_MKRWIFI1010) \
       || defined(ARDUINO_SAMD_NANO_33_IOT) || defined(ARDUINO_SAMD_MKRFox1200) || defined(ARDUINO_SAMD_MKRWAN1300) || defined(ARDUINO_SAMD_MKRWAN1310) \
       || defined(ARDUINO_SAMD_MKRGSM1400) || defined(ARDUINO_SAMD_MKRNB1500) || defined(ARDUINO_SAMD_MKRVIDOR4000) || defined(__SAMD21G18A__) \
       || defined(ARDUINO_SAMD_CIRCUITPLAYGROUND_EXPRESS) || defined(__SAMD21E18A__) || defined(__SAMD51__) || defined(__SAMD51J20A__) || defined(__SAMD51J19A__) \
       || defined(__SAMD51G19A__) || defined(__SAMD51P19A__) || defined(__SAMD21G18A__) )
-#if defined(ESP8266_AT_USE_SAMD)
-#undef ESP8266_AT_USE_SAMD
-#endif
-#define ESP8266_AT_USE_SAMD      true
+  #if defined(ESP8266_AT_USE_SAMD)
+    #undef ESP8266_AT_USE_SAMD
+  #endif
+  #define ESP8266_AT_USE_SAMD      true
 #endif
 
 #if ( defined(NRF52840_FEATHER) || defined(NRF52832_FEATHER) || defined(NRF52_SERIES) || defined(ARDUINO_NRF52_ADAFRUIT) || \
       defined(NRF52840_FEATHER_SENSE) || defined(NRF52840_ITSYBITSY) || defined(NRF52840_CIRCUITPLAY) || defined(NRF52840_CLUE) || \
       defined(NRF52840_METRO) || defined(NRF52840_PCA10056) || defined(PARTICLE_XENON) || defined(NINA_B302_ublox) || defined(NINA_B112_ublox) )
-#if defined(ESP8266_AT_USE_NRF528XX)
-#undef ESP8266_AT_USE_NRF528XX
-#endif
-#define ESP8266_AT_USE_NRF528XX      true
+  #if defined(ESP8266_AT_USE_NRF528XX)
+    #undef ESP8266_AT_USE_NRF528XX
+  #endif
+  #define ESP8266_AT_USE_NRF528XX      true
 #endif
 
 #if ( defined(ARDUINO_SAM_DUE) || defined(__SAM3X8E__) )
-#if defined(ESP8266_AT_USE_SAM_DUE)
-#undef ESP8266_AT_USE_SAM_DUE
-#endif
-#define ESP8266_AT_USE_SAM_DUE      true
+  #if defined(ESP8266_AT_USE_SAM_DUE)
+    #undef ESP8266_AT_USE_SAM_DUE
+  #endif
+  #define ESP8266_AT_USE_SAM_DUE      true
 #endif
 
 #if ( defined(STM32F0) || defined(STM32F1) || defined(STM32F2) || defined(STM32F3)  ||defined(STM32F4) || defined(STM32F7) || \
        defined(STM32L0) || defined(STM32L1) || defined(STM32L4) || defined(STM32H7)  ||defined(STM32G0) || defined(STM32G4) || \
        defined(STM32WB) || defined(STM32MP1) )
-#if defined(ESP8266_AT_USE_STM32)
-#undef ESP8266_AT_USE_STM32
-#endif
-#define ESP8266_AT_USE_STM32      true
+  #if defined(ESP8266_AT_USE_STM32)
+    #undef ESP8266_AT_USE_STM32
+  #endif
+  #define ESP8266_AT_USE_STM32      true
 #endif
 
 #ifdef CORE_TEENSY
-// For Teensy 4.1/4.0
-#define EspSerial Serial2   //Serial2, Pin RX2 : 7, TX2 : 8
-#if defined(__IMXRT1062__)
-// For Teensy 4.1/4.0
-#define BOARD_TYPE      "TEENSY 4.1/4.0"
-#elif defined(__MK66FX1M0__)
-#define BOARD_TYPE "Teensy 3.6"
-#elif defined(__MK64FX512__)
-#define BOARD_TYPE "Teensy 3.5"
-#elif defined(__MKL26Z64__)
-#define BOARD_TYPE "Teensy LC"
-#elif defined(__MK20DX256__)
-#define BOARD_TYPE "Teensy 3.2" // and Teensy 3.1 (obsolete)
-#elif defined(__MK20DX128__)
-#define BOARD_TYPE "Teensy 3.0"
-#elif defined(__AVR_AT90USB1286__)
-#error Teensy 2.0++ not supported yet
-#elif defined(__AVR_ATmega32U4__)
-#error Teensy 2.0 not supported yet
-#else
-// For Other Boards
-#define BOARD_TYPE      "Unknown Teensy Board"
-#endif
+  // For Teensy 4.1/4.0
+  #define EspSerial Serial2   //Serial2, Pin RX2 : 7, TX2 : 8
+  
+  #if defined(__IMXRT1062__)
+    // For Teensy 4.1/4.0
+    #define BOARD_TYPE      "TEENSY 4.1/4.0"
+  #elif defined(__MK66FX1M0__)
+    #define BOARD_TYPE "Teensy 3.6"
+  #elif defined(__MK64FX512__)
+    #define BOARD_TYPE "Teensy 3.5"
+  #elif defined(__MKL26Z64__)
+    #define BOARD_TYPE "Teensy LC"
+  #elif defined(__MK20DX256__)
+    #define BOARD_TYPE "Teensy 3.2" // and Teensy 3.1 (obsolete)
+  #elif defined(__MK20DX128__)
+    #define BOARD_TYPE "Teensy 3.0"
+  #elif defined(__AVR_AT90USB1286__)
+    #error Teensy 2.0++ not supported yet
+  #elif defined(__AVR_ATmega32U4__)
+    #error Teensy 2.0 not supported yet
+  #else
+    // For Other Boards
+    #define BOARD_TYPE      "Unknown Teensy Board"
+  #endif
 
 #elif defined(ESP8266_AT_USE_SAMD)
-// For SAMD
-#define EspSerial Serial1
-
-#if defined(ARDUINO_SAMD_ZERO)
-#define BOARD_TYPE      "SAMD Zero"
-#elif defined(ARDUINO_SAMD_MKR1000)
-#define BOARD_TYPE      "SAMD MKR1000"
-#elif defined(ARDUINO_SAMD_MKRWIFI1010)
-#define BOARD_TYPE      "SAMD MKRWIFI1010"
-#elif defined(ARDUINO_SAMD_NANO_33_IOT)
-#define BOARD_TYPE      "SAMD NANO_33_IOT"
-#elif defined(ARDUINO_SAMD_MKRFox1200)
-#define BOARD_TYPE      "SAMD MKRFox1200"
-#elif ( defined(ARDUINO_SAMD_MKRWAN1300) || defined(ARDUINO_SAMD_MKRWAN1310) )
-#define BOARD_TYPE      "SAMD MKRWAN13X0"
-#elif defined(ARDUINO_SAMD_MKRGSM1400)
-#define BOARD_TYPE      "SAMD MKRGSM1400"
-#elif defined(ARDUINO_SAMD_MKRNB1500)
-#define BOARD_TYPE      "SAMD MKRNB1500"
-#elif defined(ARDUINO_SAMD_MKRVIDOR4000)
-#define BOARD_TYPE      "SAMD MKRVIDOR4000"
-#elif defined(ARDUINO_SAMD_CIRCUITPLAYGROUND_EXPRESS)
-#define BOARD_TYPE      "SAMD ARDUINO_SAMD_CIRCUITPLAYGROUND_EXPRESS"
-#elif defined(ADAFRUIT_FEATHER_M0_EXPRESS)
-#define BOARD_TYPE      "SAMD21 ADAFRUIT_FEATHER_M0_EXPRESS"
-#elif defined(ADAFRUIT_METRO_M0_EXPRESS)
-#define BOARD_TYPE      "SAMD21 ADAFRUIT_METRO_M0_EXPRESS"
-#elif defined(ADAFRUIT_CIRCUITPLAYGROUND_M0)
-#define BOARD_TYPE      "SAMD21 ADAFRUIT_CIRCUITPLAYGROUND_M0"
-#elif defined(ADAFRUIT_GEMMA_M0)
-#define BOARD_TYPE      "SAMD21 ADAFRUIT_GEMMA_M0"
-#elif defined(ADAFRUIT_TRINKET_M0)
-#define BOARD_TYPE      "SAMD21 ADAFRUIT_TRINKET_M0"
-#elif defined(ADAFRUIT_ITSYBITSY_M0)
-#define BOARD_TYPE      "SAMD21 ADAFRUIT_ITSYBITSY_M0"
-#elif defined(ARDUINO_SAMD_HALLOWING_M0)
-#define BOARD_TYPE      "SAMD21 ARDUINO_SAMD_HALLOWING_M0"
-#elif defined(ADAFRUIT_METRO_M4_EXPRESS)
-#define BOARD_TYPE      "SAMD51 ADAFRUIT_METRO_M4_EXPRESS"
-#elif defined(ADAFRUIT_GRAND_CENTRAL_M4)
-#define BOARD_TYPE      "SAMD51 ADAFRUIT_GRAND_CENTRAL_M4"
-#elif defined(ADAFRUIT_FEATHER_M4_EXPRESS)
-#define BOARD_TYPE      "SAMD51 ADAFRUIT_FEATHER_M4_EXPRESS"
-#elif defined(ADAFRUIT_ITSYBITSY_M4_EXPRESS)
-#define BOARD_TYPE      "SAMD51 ADAFRUIT_ITSYBITSY_M4_EXPRESS"
-#elif defined(ADAFRUIT_TRELLIS_M4_EXPRESS)
-#define BOARD_TYPE      "SAMD51 ADAFRUIT_TRELLIS_M4_EXPRESS"
-#elif defined(ADAFRUIT_PYPORTAL)
-#define BOARD_TYPE      "SAMD51 ADAFRUIT_PYPORTAL"
-#elif defined(ADAFRUIT_PYPORTAL_M4_TITANO)
-#define BOARD_TYPE      "SAMD51 ADAFRUIT_PYPORTAL_M4_TITANO"
-#elif defined(ADAFRUIT_PYBADGE_M4_EXPRESS)
-#define BOARD_TYPE      "SAMD51 ADAFRUIT_PYBADGE_M4_EXPRESS"
-#elif defined(ADAFRUIT_METRO_M4_AIRLIFT_LITE)
-#define BOARD_TYPE      "SAMD51 ADAFRUIT_METRO_M4_AIRLIFT_LITE"
-#elif defined(ADAFRUIT_PYGAMER_M4_EXPRESS)
-#define BOARD_TYPE      "SAMD51 ADAFRUIT_PYGAMER_M4_EXPRESS"
-#elif defined(ADAFRUIT_PYGAMER_ADVANCE_M4_EXPRESS)
-#define BOARD_TYPE      "SAMD51 ADAFRUIT_PYGAMER_ADVANCE_M4_EXPRESS"
-#elif defined(ADAFRUIT_PYBADGE_AIRLIFT_M4)
-#define BOARD_TYPE      "SAMD51 ADAFRUIT_PYBADGE_AIRLIFT_M4"
-#elif defined(ADAFRUIT_MONSTER_M4SK_EXPRESS)
-#define BOARD_TYPE      "SAMD51 ADAFRUIT_MONSTER_M4SK_EXPRESS"
-#elif defined(ADAFRUIT_HALLOWING_M4_EXPRESS)
-#define BOARD_TYPE      "SAMD51 ADAFRUIT_HALLOWING_M4_EXPRESS"
-#elif defined(SEEED_WIO_TERMINAL)
-#define BOARD_TYPE      "SAMD SEEED_WIO_TERMINAL"
-#elif defined(SEEED_FEMTO_M0)
-#define BOARD_TYPE      "SAMD SEEED_FEMTO_M0"
-#elif defined(SEEED_XIAO_M0)
-#define BOARD_TYPE      "SAMD SEEED_XIAO_M0"
-#elif defined(Wio_Lite_MG126)
-#define BOARD_TYPE      "SAMD SEEED Wio_Lite_MG126"
-#elif defined(WIO_GPS_BOARD)
-#define BOARD_TYPE      "SAMD SEEED WIO_GPS_BOARD"
-#elif defined(SEEEDUINO_ZERO)
-#define BOARD_TYPE      "SAMD SEEEDUINO_ZERO"
-#elif defined(SEEEDUINO_LORAWAN)
-#define BOARD_TYPE      "SAMD SEEEDUINO_LORAWAN"
-#elif defined(SEEED_GROVE_UI_WIRELESS)
-#define BOARD_TYPE      "SAMD SEEED_GROVE_UI_WIRELESS"
-#elif defined(__SAMD21E18A__)
-#define BOARD_TYPE      "SAMD21E18A"
-#elif defined(__SAMD21G18A__)
-#define BOARD_TYPE      "SAMD21G18A"
-#elif defined(__SAMD51G19A__)
-#define BOARD_TYPE      "SAMD51G19A"
-#elif defined(__SAMD51J19A__)
-#define BOARD_TYPE      "SAMD51J19A"
-#elif defined(__SAMD51J20A__)
-#define BOARD_TYPE      "SAMD51J20A"
-#elif defined(__SAM3X8E__)
-#define BOARD_TYPE      "SAM3X8E"
-#elif defined(__CPU_ARC__)
-#define BOARD_TYPE      "CPU_ARC"
-#elif defined(__SAMD51__)
-#define BOARD_TYPE      "SAMD51"
-#else
-#define BOARD_TYPE      "SAMD Unknown"
-#endif
+  // For SAMD
+  #define EspSerial Serial1
+  
+  #if defined(ARDUINO_SAMD_ZERO)
+    #define BOARD_TYPE      "SAMD Zero"
+  #elif defined(ARDUINO_SAMD_MKR1000)
+    #define BOARD_TYPE      "SAMD MKR1000"
+  #elif defined(ARDUINO_SAMD_MKRWIFI1010)
+    #define BOARD_TYPE      "SAMD MKRWIFI1010"
+  #elif defined(ARDUINO_SAMD_NANO_33_IOT)
+    #define BOARD_TYPE      "SAMD NANO_33_IOT"
+  #elif defined(ARDUINO_SAMD_MKRFox1200)
+    #define BOARD_TYPE      "SAMD MKRFox1200"
+  #elif ( defined(ARDUINO_SAMD_MKRWAN1300) || defined(ARDUINO_SAMD_MKRWAN1310) )
+    #define BOARD_TYPE      "SAMD MKRWAN13X0"
+  #elif defined(ARDUINO_SAMD_MKRGSM1400)
+    #define BOARD_TYPE      "SAMD MKRGSM1400"
+  #elif defined(ARDUINO_SAMD_MKRNB1500)
+    #define BOARD_TYPE      "SAMD MKRNB1500"
+  #elif defined(ARDUINO_SAMD_MKRVIDOR4000)
+    #define BOARD_TYPE      "SAMD MKRVIDOR4000"
+  #elif defined(ARDUINO_SAMD_CIRCUITPLAYGROUND_EXPRESS)
+    #define BOARD_TYPE      "SAMD ARDUINO_SAMD_CIRCUITPLAYGROUND_EXPRESS"
+  #elif defined(ADAFRUIT_FEATHER_M0_EXPRESS)
+    #define BOARD_TYPE      "SAMD21 ADAFRUIT_FEATHER_M0_EXPRESS"
+  #elif defined(ADAFRUIT_METRO_M0_EXPRESS)
+    #define BOARD_TYPE      "SAMD21 ADAFRUIT_METRO_M0_EXPRESS"
+  #elif defined(ADAFRUIT_CIRCUITPLAYGROUND_M0)
+    #define BOARD_TYPE      "SAMD21 ADAFRUIT_CIRCUITPLAYGROUND_M0"
+  #elif defined(ADAFRUIT_GEMMA_M0)
+    #define BOARD_TYPE      "SAMD21 ADAFRUIT_GEMMA_M0"
+  #elif defined(ADAFRUIT_TRINKET_M0)
+    #define BOARD_TYPE      "SAMD21 ADAFRUIT_TRINKET_M0"
+  #elif defined(ADAFRUIT_ITSYBITSY_M0)
+    #define BOARD_TYPE      "SAMD21 ADAFRUIT_ITSYBITSY_M0"
+  #elif defined(ARDUINO_SAMD_HALLOWING_M0)
+    #define BOARD_TYPE      "SAMD21 ARDUINO_SAMD_HALLOWING_M0"
+  #elif defined(ADAFRUIT_METRO_M4_EXPRESS)
+    #define BOARD_TYPE      "SAMD51 ADAFRUIT_METRO_M4_EXPRESS"
+  #elif defined(ADAFRUIT_GRAND_CENTRAL_M4)
+    #define BOARD_TYPE      "SAMD51 ADAFRUIT_GRAND_CENTRAL_M4"
+  #elif defined(ADAFRUIT_FEATHER_M4_EXPRESS)
+    #define BOARD_TYPE      "SAMD51 ADAFRUIT_FEATHER_M4_EXPRESS"
+  #elif defined(ADAFRUIT_ITSYBITSY_M4_EXPRESS)
+    #define BOARD_TYPE      "SAMD51 ADAFRUIT_ITSYBITSY_M4_EXPRESS"
+  #elif defined(ADAFRUIT_TRELLIS_M4_EXPRESS)
+    #define BOARD_TYPE      "SAMD51 ADAFRUIT_TRELLIS_M4_EXPRESS"
+  #elif defined(ADAFRUIT_PYPORTAL)
+    #define BOARD_TYPE      "SAMD51 ADAFRUIT_PYPORTAL"
+  #elif defined(ADAFRUIT_PYPORTAL_M4_TITANO)
+    #define BOARD_TYPE      "SAMD51 ADAFRUIT_PYPORTAL_M4_TITANO"
+  #elif defined(ADAFRUIT_PYBADGE_M4_EXPRESS)
+    #define BOARD_TYPE      "SAMD51 ADAFRUIT_PYBADGE_M4_EXPRESS"
+  #elif defined(ADAFRUIT_METRO_M4_AIRLIFT_LITE)
+    #define BOARD_TYPE      "SAMD51 ADAFRUIT_METRO_M4_AIRLIFT_LITE"
+  #elif defined(ADAFRUIT_PYGAMER_M4_EXPRESS)
+    #define BOARD_TYPE      "SAMD51 ADAFRUIT_PYGAMER_M4_EXPRESS"
+  #elif defined(ADAFRUIT_PYGAMER_ADVANCE_M4_EXPRESS)
+    #define BOARD_TYPE      "SAMD51 ADAFRUIT_PYGAMER_ADVANCE_M4_EXPRESS"
+  #elif defined(ADAFRUIT_PYBADGE_AIRLIFT_M4)
+    #define BOARD_TYPE      "SAMD51 ADAFRUIT_PYBADGE_AIRLIFT_M4"
+  #elif defined(ADAFRUIT_MONSTER_M4SK_EXPRESS)
+    #define BOARD_TYPE      "SAMD51 ADAFRUIT_MONSTER_M4SK_EXPRESS"
+  #elif defined(ADAFRUIT_HALLOWING_M4_EXPRESS)
+    #define BOARD_TYPE      "SAMD51 ADAFRUIT_HALLOWING_M4_EXPRESS"
+  #elif defined(SEEED_WIO_TERMINAL)
+    #define BOARD_TYPE      "SAMD SEEED_WIO_TERMINAL"
+  #elif defined(SEEED_FEMTO_M0)
+    #define BOARD_TYPE      "SAMD SEEED_FEMTO_M0"
+  #elif defined(SEEED_XIAO_M0)
+    #define BOARD_TYPE      "SAMD SEEED_XIAO_M0"
+  #elif defined(Wio_Lite_MG126)
+    #define BOARD_TYPE      "SAMD SEEED Wio_Lite_MG126"
+  #elif defined(WIO_GPS_BOARD)
+    #define BOARD_TYPE      "SAMD SEEED WIO_GPS_BOARD"
+  #elif defined(SEEEDUINO_ZERO)
+    #define BOARD_TYPE      "SAMD SEEEDUINO_ZERO"
+  #elif defined(SEEEDUINO_LORAWAN)
+    #define BOARD_TYPE      "SAMD SEEEDUINO_LORAWAN"
+  #elif defined(SEEED_GROVE_UI_WIRELESS)
+    #define BOARD_TYPE      "SAMD SEEED_GROVE_UI_WIRELESS"
+  #elif defined(__SAMD21E18A__)
+    #define BOARD_TYPE      "SAMD21E18A"
+  #elif defined(__SAMD21G18A__)
+    #define BOARD_TYPE      "SAMD21G18A"
+  #elif defined(__SAMD51G19A__)
+    #define BOARD_TYPE      "SAMD51G19A"
+  #elif defined(__SAMD51J19A__)
+    #define BOARD_TYPE      "SAMD51J19A"
+  #elif defined(__SAMD51J20A__)
+    #define BOARD_TYPE      "SAMD51J20A"
+  #elif defined(__SAM3X8E__)
+    #define BOARD_TYPE      "SAM3X8E"
+  #elif defined(__CPU_ARC__)
+    #define BOARD_TYPE      "CPU_ARC"
+  #elif defined(__SAMD51__)
+    #define BOARD_TYPE      "SAMD51"
+  #else
+    #define BOARD_TYPE      "SAMD Unknown"
+  #endif
 
 #elif (ESP8266_AT_USE_NRF528XX)
 
-#if defined(NRF52840_FEATHER)
-#define BOARD_TYPE      "NRF52840_FEATHER_EXPRESS"
-#elif defined(NRF52832_FEATHER)
-#define BOARD_TYPE      "NRF52832_FEATHER"
-#elif defined(NRF52840_FEATHER_SENSE)
-#define BOARD_TYPE      "NRF52840_FEATHER_SENSE"
-#elif defined(NRF52840_ITSYBITSY)
-#define BOARD_TYPE      "NRF52840_ITSYBITSY_EXPRESS"
-#elif defined(NRF52840_CIRCUITPLAY)
-#define BOARD_TYPE      "NRF52840_CIRCUIT_PLAYGROUND"
-#elif defined(NRF52840_CLUE)
-#define BOARD_TYPE      "NRF52840_CLUE"
-#elif defined(NRF52840_METRO)
-#define BOARD_TYPE      "NRF52840_METRO_EXPRESS"
-#elif defined(NRF52840_PCA10056)
-#define BOARD_TYPE      "NORDIC_NRF52840DK"
-#elif defined(NINA_B302_ublox)
-#define BOARD_TYPE      "NINA_B302_ublox"
-#elif defined(NINA_B112_ublox)
-#define BOARD_TYPE      "NINA_B112_ublox"
-#elif defined(PARTICLE_XENON)
-#define BOARD_TYPE      "PARTICLE_XENON"
-#elif defined(MDBT50Q_RX)
-#define BOARD_TYPE      "RAYTAC_MDBT50Q_RX"
-#elif defined(ARDUINO_NRF52_ADAFRUIT)
-#define BOARD_TYPE      "ARDUINO_NRF52_ADAFRUIT"
-#else
-#define BOARD_TYPE      "nRF52 Unknown"
-#endif
+  #if defined(NRF52840_FEATHER)
+    #define BOARD_TYPE      "NRF52840_FEATHER_EXPRESS"
+  #elif defined(NRF52832_FEATHER)
+    #define BOARD_TYPE      "NRF52832_FEATHER"
+  #elif defined(NRF52840_FEATHER_SENSE)
+    #define BOARD_TYPE      "NRF52840_FEATHER_SENSE"
+  #elif defined(NRF52840_ITSYBITSY)
+    #define BOARD_TYPE      "NRF52840_ITSYBITSY_EXPRESS"
+  #elif defined(NRF52840_CIRCUITPLAY)
+    #define BOARD_TYPE      "NRF52840_CIRCUIT_PLAYGROUND"
+  #elif defined(NRF52840_CLUE)
+    #define BOARD_TYPE      "NRF52840_CLUE"
+  #elif defined(NRF52840_METRO)
+    #define BOARD_TYPE      "NRF52840_METRO_EXPRESS"
+  #elif defined(NRF52840_PCA10056)
+    #define BOARD_TYPE      "NORDIC_NRF52840DK"
+  #elif defined(NINA_B302_ublox)
+    #define BOARD_TYPE      "NINA_B302_ublox"
+  #elif defined(NINA_B112_ublox)
+    #define BOARD_TYPE      "NINA_B112_ublox"
+  #elif defined(PARTICLE_XENON)
+    #define BOARD_TYPE      "PARTICLE_XENON"
+  #elif defined(MDBT50Q_RX)
+    #define BOARD_TYPE      "RAYTAC_MDBT50Q_RX"
+  #elif defined(ARDUINO_NRF52_ADAFRUIT)
+    #define BOARD_TYPE      "ARDUINO_NRF52_ADAFRUIT"
+  #else
+    #define BOARD_TYPE      "nRF52 Unknown"
+  #endif
 
 #define EspSerial Serial1
 
 #elif defined(ESP8266_AT_USE_SAM_DUE)
-// For SAM DUE
-#define EspSerial Serial1
-#define BOARD_TYPE      "SAM DUE"
+  // For SAM DUE
+  #define EspSerial Serial1
+  #define BOARD_TYPE      "SAM DUE"
 
 #elif defined(ESP8266_AT_USE_STM32)
   // For STM32
@@ -937,9 +964,9 @@ void loop(void)
   #endif
 
 #else
-// For Mega
-#define EspSerial Serial3
-#define BOARD_TYPE      "AVR Mega"
+  // For Mega
+  define EspSerial Serial3
+  #define BOARD_TYPE      "AVR Mega"
 #endif
 
 #ifndef BOARD_NAME
@@ -1103,7 +1130,16 @@ This is the screen shot when running example [AdvancedWebServer_STM32](https://g
     <img src="https://github.com/khoih-prog/ESP8266_AT_WebServer/blob/master/pics/AdvancedWebServer_STM32.png">
 </p>
 
-#### 2. Seeeduino SEEED_XIAO_M0
+#### 3. nRF52 Itsy-Bitsy nRF52840
+
+This is the screen shot when running example [AdvancedWebServer](https://github.com/khoih-prog/ESP8266_AT_WebServer/tree/master/examples/AdvancedWebServer) on **Adadruit nRF52840 Itsy-Bitsy** board using this [ESP8266_AT_WebServer Library](https://github.com/khoih-prog/ESP8266_AT_WebServer)
+
+<p align="center">
+    <img src="https://github.com/khoih-prog/ESP8266_AT_WebServer/blob/master/pics/AdvancedWebServer_nRF52840.png">
+</p>
+
+
+#### 4. Seeeduino SEEED_XIAO_M0
 
 This is the screen shot when running an example using UDP Multicast on **Seeeduino SEEED_XIAO_M0** board using this [ESP8266_AT_WebServer Library](https://github.com/khoih-prog/ESP8266_AT_WebServer). The UDP MUlticast is used to manage Internet Gateway's Port Forwarding so that we can access from WAN, port 5990, the WebServer running in LAN, port 5990.
 
@@ -1114,12 +1150,18 @@ This is the screen shot when running an example using UDP Multicast on **Seeedui
 ---
 ---
 
-### New in v1.1.0
+### New Release v1.1.1
+
+1. Add support to PROGMEM-related commands, such as sendContent_P() and send_P().
+2. Update Platform.ini to support PlatformIO 5.x owner-based dependency declaration.
+3. Clean up code. Use FlashString and related functions extensively in code as well in examples.
+4. Enhance examples.
+
+#### New in v1.1.0
 
 1. Add support to UDP **Multicast**. Now ESP8266/ESP32 AT-command shields can run uPnP libraries to manage **Internet Gateway's port forwarding**.
 2. Fix bugs.
 3. Enhance debug support.
-
 
 #### New in v1.0.12
 
@@ -1132,14 +1174,13 @@ This is the screen shot when running an example using UDP Multicast on **Seeedui
 1. Add support to all **STM32F/L/H/G/WB/MP1 (Nucleo-144 NUCLEO_F767ZI, Nucleo-64 NUCLEO_L053R8, etc.)**
 2. Add support to **Seeeduino SAMD21/SAMD51 boards (SEEED_WIO_TERMINAL, SEEED_FEMTO_M0, SEEED_XIAO_M0, Wio_Lite_MG126, WIO_GPS_BOARD, SEEEDUINO_ZERO, SEEEDUINO_LORAWAN, SEEED_GROVE_UI_WIRELESS, etc.)**
 
-
 #### New in v1.0.10
 
 1. Fix bug not closing client and releasing socket.
 2. Enhance examples.
 3. Add function to be enable to work with [WebSockets2_Generic Library](https://github.com/khoih-prog/WebSockets2_Generic)
 
-### New Version v1.0.9
+#### New Version v1.0.9
 
 1. Fix bug. 
 2. Add functions (ESP8266_AT_Drv::wifiDriverReInit and ESP8266_AT_Class::reInit). 
@@ -1153,7 +1194,7 @@ This is the screen shot when running an example using UDP Multicast on **Seeedui
 
 #### New Version v1.0.7
 
-1. Add support to ESP32-AT-command shield. 
+1. Add support to **ESP32-AT-command shield**. 
 2. Update deprecated ESP8266-AT commands. 
 3. Restructure examples to separate defines header files.
 
@@ -1161,9 +1202,9 @@ This is the screen shot when running an example using UDP Multicast on **Seeedui
 
 1. Add support to **nRF52** boards, such as **AdaFruit Feather nRF52832, nRF52840 Express, BlueFruit Sense, Itsy-Bitsy nRF52840 Express, Metro nRF52840 Express, NINA_B302_ublox, NINA_B112_ublox, etc.** 
 
-### New Version v1.0.5
+#### New Version v1.0.5
 
-1. Add support to **SAM51 (Itsy-Bitsy M4, Metro M4, Grand Central M4, Feather M4 Express, etc.)and SAM DUE**.
+1. Add support to **SAM51 (Itsy-Bitsy M4, Metro M4, Grand Central M4, Feather M4 Express, etc.) and SAM DUE**.
 
 #### New Version v1.0.4
 
@@ -1174,9 +1215,9 @@ This is the screen shot when running an example using UDP Multicast on **Seeedui
 
 1. Add support to STM32 (STM32F0, F1, F2, F3, F4, F7, etc) boards
 
-#### Version v1.0.2
+#### New Version v1.0.2
 
-1. Add support to SAMD (ZERO, MKR, **NANO_33_IOT**, M0, Mo Pro, AdaFruit CIRCUITPLAYGROUND_EXPRESS, etc.) boards
+1. Add support to SAMD (ZERO, MKR, **NANO_33_IOT**, M0, M0 Pro, AdaFruit CIRCUITPLAYGROUND_EXPRESS, etc.) boards
 
 #### Version v1.0.1
 
@@ -1216,6 +1257,7 @@ The library supports:
  8. Add support to all **STM32F/L/H/G/WB/MP1**
  9. Add support to **Seeeduino SAMD21/SAMD51 boards (SEEED_WIO_TERMINAL, SEEED_FEMTO_M0, SEEED_XIAO_M0, Wio_Lite_MG126, WIO_GPS_BOARD, SEEEDUINO_ZERO, SEEEDUINO_LORAWAN, SEEED_GROVE_UI_WIRELESS, etc.)**
 10. Add UDP Multicast feature.
+11. Add PROGMEM and FlashString related commands such as sendContent_P() and send_P(), and use in examples.
  
 ---
  

@@ -11,7 +11,7 @@
    @file       Esp8266WebServer.h
    @author     Ivan Grokhotkov
 
-   Version: 1.1.0
+   Version: 1.1.1
 
    Version Modified By   Date      Comments
    ------- -----------  ---------- -----------
@@ -29,7 +29,8 @@
     1.0.10  K Hoang      22/07/2020 Fix bug not closing client and releasing socket.
     1.0.11  K Hoang      25/07/2020 Add support to all STM32F/L/H/G/WB/MP1 and Seeeduino SAMD21/SAMD51 boards  
     1.0.12  K Hoang      26/07/2020 Add example and sample Packages_Patches for STM32F/L/H/G/WB/MP boards
-    1.1.0   K Hoang      21/09/2020 Add support to UDP Multicast. Fix bugs.           
+    1.1.0   K Hoang      21/09/2020 Add support to UDP Multicast. Fix bugs.
+    1.1.1   K Hoang      26/09/2020 Restore support to PROGMEM-related commands, such as sendContent_P() and send_P()      
  *****************************************************************************************************************************/
 
 #ifndef ESP8266_AT_WebServer_h
@@ -108,6 +109,31 @@
 #include <ESP8266_AT.h>
 #include "utility/mimetable.h"
 
+// KH, For PROGMEM commands
+// ESP32/ESP8266 includes <pgmspace.h> by default, and memccpy_P was already defined there
+#if !(ESP32 || ESP8266)
+  #include <avr/pgmspace.h>
+  #define memccpy_P(dest, src, c, n) memccpy((dest), (src), (c), (n))
+#endif
+
+// Permit redefinition of SENDCONTENT_P_BUFFER_SZ in sketch, default is 4K, minimum is 256 bytes
+#ifndef SENDCONTENT_P_BUFFER_SZ
+  #define SENDCONTENT_P_BUFFER_SZ     4096
+  #warning SENDCONTENT_P_BUFFER_SZ using default 4 Kbytes
+#else
+  #if (SENDCONTENT_P_BUFFER_SZ < 256)
+    #undef SENDCONTENT_P_BUFFER_SZ
+    #define SENDCONTENT_P_BUFFER_SZ   256
+    #warning SENDCONTENT_P_BUFFER_SZ reset to min 256 bytes
+  #endif
+#endif
+
+#ifndef PGM_VOID_P
+  #define PGM_VOID_P const void *
+#endif
+
+//////
+
 enum HTTPMethod 
 { 
   HTTP_ANY, 
@@ -143,7 +169,10 @@ enum HTTPAuthMethod
 
 #define HTTP_DOWNLOAD_UNIT_SIZE 1460
 
-#define HTTP_UPLOAD_BUFLEN      2048
+// Permit user to increase HTTP_UPLOAD_BUFLEN larger than default 2K
+#if !defined(HTTP_UPLOAD_BUFLEN)
+  #define HTTP_UPLOAD_BUFLEN 2048
+#endif
 
 #define HTTP_MAX_DATA_WAIT      5000 //ms to wait for the client to send the request
 #define HTTP_MAX_POST_WAIT      5000 //ms to wait for POST data to arrive
@@ -222,19 +251,19 @@ class ESP8266_AT_WebServer
     }
     #endif
     
-    String arg(String name);        // get request argument value by name
-    String arg(int i);              // get request argument value by number
-    String argName(int i);          // get request argument name by number
-    int args();                     // get arguments count
-    bool hasArg(String name);       // check if argument exists
+    String arg(String name);            // get request argument value by name
+    String arg(int i);                  // get request argument value by number
+    String argName(int i);              // get request argument name by number
+    int args();                         // get arguments count
+    bool hasArg(String name);           // check if argument exists
     void collectHeaders(const char* headerKeys[], const size_t headerKeysCount); // set the request headers to collect
-    String header(String name);      // get request header value by name
-    String header(int i);              // get request header value by number
-    String headerName(int i);          // get request header name by number
-    int headers();                     // get header count
-    bool hasHeader(String name);       // check if header exists
+    String header(String name);         // get request header value by name
+    String header(int i);               // get request header value by number
+    String headerName(int i);           // get request header name by number
+    int headers();                      // get header count
+    bool hasHeader(String name);        // check if header exists
 
-    String hostHeader();            // get request host header if available or empty String if not
+    String hostHeader();                // get request host header if available or empty String if not
 
     // send response to the client
     // code - HTTP response code, can be 200 or 404
@@ -246,20 +275,21 @@ class ESP8266_AT_WebServer
     //KH
     void send(int code, char*  content_type, const String& content, size_t contentLength);
 
-#if !( defined(CORE_TEENSY) || (ESP8266_AT_USE_SAMD) || (ESP8266_AT_USE_STM32) || (ESP8266_AT_USE_SAM_DUE) || (ESP8266_AT_USE_NRF528XX) )
-    void send_P(int code, PGM_P content_type, PGM_P content);
-    void send_P(int code, PGM_P content_type, PGM_P content, size_t contentLength);
-    void sendContent_P(PGM_P content);
-    void sendContent_P(PGM_P content, size_t size);
-#endif
-
     void setContentLength(size_t contentLength);
     void sendHeader(const String& name, const String& value, bool first = false);
     void sendContent(const String& content);
     void sendContent(const String& content, size_t size);
+
+    // KH, Restore PROGMEM commands
+    void send_P(int code, PGM_P content_type, PGM_P content);
+    void send_P(int code, PGM_P content_type, PGM_P content, size_t contentLength);
     
+    void sendContent_P(PGM_P content);
+    void sendContent_P(PGM_P content, size_t size);  
+    //////
 
     static String urlDecode(const String& text);
+
 
     template<typename T> size_t streamFile(T &file, const String& contentType) 
     {

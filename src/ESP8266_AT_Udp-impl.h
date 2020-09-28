@@ -11,7 +11,7 @@
    @file       Esp8266WebServer.h
    @author     Ivan Grokhotkov
 
-   Version: 1.1.0
+   Version: 1.1.1
 
    Version Modified By   Date      Comments
    ------- -----------  ---------- -----------
@@ -30,6 +30,7 @@
     1.0.11  K Hoang      25/07/2020 Add support to all STM32F/L/H/G/WB/MP1 and Seeeduino SAMD21/SAMD51 boards  
     1.0.12  K Hoang      26/07/2020 Add example and sample Packages_Patches for STM32F/L/H/G/WB/MP boards
     1.1.0   K Hoang      21/09/2020 Add support to UDP Multicast. Fix bugs.
+    1.1.1   K Hoang      26/09/2020 Restore support to PROGMEM-related commands, such as sendContent_P() and send_P()
  *****************************************************************************************************************************/
 
 #ifndef ESP8266_AT_UDP_impl_h
@@ -76,7 +77,13 @@ uint8_t ESP8266_AT_UDP::beginMulticast(IPAddress ip, uint16_t port)
   if (sock != NO_SOCKET_AVAIL)
   {
     char s[18];
+    
+// KH, Restore PROGMEM commands, except nRF52 and STM32, not reliable
+//#if !(ESP8266_AT_USE_NRF528XX || ESP8266_AT_USE_STM32)    
     sprintf_P(s, PSTR("%d.%d.%d.%d"), ip[0], ip[1], ip[2], ip[3]);
+//#else
+    //sprintf(s, "%d.%d.%d.%d", ip[0], ip[1], ip[2], ip[3]);
+//#endif
     
     ESP8266_AT_Drv::startClient(s, port, sock, UDP_MULTICAST_MODE);
 
@@ -152,7 +159,13 @@ int ESP8266_AT_UDP::beginPacket(const char *host, uint16_t port)
 int ESP8266_AT_UDP::beginPacket(IPAddress ip, uint16_t port)
 {
   char s[18];
+
+// KH, Restore PROGMEM commands, except nRF52 and STM32, not reliable
+//#if !(ESP8266_AT_USE_NRF528XX || ESP8266_AT_USE_STM32)      
   sprintf_P(s, PSTR("%d.%d.%d.%d"), ip[0], ip[1], ip[2], ip[3]);
+//#else  
+  //sprintf(s, "%d.%d.%d.%d", ip[0], ip[1], ip[2], ip[3]);
+//#endif
 
   return beginPacket(s, port);
 }

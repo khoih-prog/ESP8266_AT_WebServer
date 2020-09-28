@@ -14,7 +14,7 @@
    @file       Esp8266WebServer.h
    @author     Ivan Grokhotkov
 
-   Version: 1.1.0
+   Version: 1.1.1
 
    Version Modified By   Date      Comments
    ------- -----------  ---------- -----------
@@ -33,6 +33,7 @@
     1.0.11  K Hoang      25/07/2020 Add support to all STM32F/L/H/G/WB/MP1 and Seeeduino SAMD21/SAMD51 boards  
     1.0.12  K Hoang      26/07/2020 Add example and sample Packages_Patches for STM32F/L/H/G/WB/MP boards
     1.1.0   K Hoang      21/09/2020 Add support to UDP Multicast. Fix bugs.
+    1.1.1   K Hoang      26/09/2020 Restore support to PROGMEM-related commands, such as sendContent_P() and send_P()
  *****************************************************************************************************************************/
 
 #ifndef BASE64_CENCODE_H
@@ -44,11 +45,13 @@
 extern "C" {
 #endif
 
-typedef enum {
+typedef enum 
+{
   step_A, step_B, step_C
 } base64_encodestep;
 
-typedef struct {
+typedef struct 
+{
   base64_encodestep step;
   char result;
   int stepcount;

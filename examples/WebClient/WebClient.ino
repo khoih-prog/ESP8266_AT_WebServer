@@ -11,7 +11,7 @@
   @file       Esp8266WebServer.h
   @author     Ivan Grokhotkov
   
-  Version: 1.1.0
+  Version: 1.1.1
   
   Version Modified By   Date      Comments
   ------- -----------  ---------- -----------
@@ -30,6 +30,7 @@
   1.0.11  K Hoang      25/07/2020 Add support to all STM32F/L/H/G/WB/MP1 and Seeeduino SAMD21/SAMD51 boards  
   1.0.12  K Hoang      26/07/2020 Add example and sample Packages_Patches for STM32F/L/H/G/WB/MP boards
   1.1.0   K Hoang      21/09/2020 Add support to UDP Multicast. Fix bugs.
+  1.1.1   K Hoang      26/09/2020 Restore support to PROGMEM-related commands, such as sendContent_P() and send_P()
  *****************************************************************************************************************************/
 
 // Credits of [Miguel Alexandre Wisintainer](https://github.com/tcpipchip) for this simple yet effective method
@@ -69,11 +70,41 @@ void printWifiStatus()
   Serial.print(F("You're connected to the network, IP = "));
   Serial.println(WiFi.localIP());
 
+  Serial.print(F("SSID: "));
+  Serial.print(WiFi.SSID());
+
   // print the received signal strength:
   int32_t rssi = WiFi.RSSI();
-  Serial.print(F(", Signal strength (RSSI):"));
+  Serial.print(F(", Signal strength (RSSI): "));
   Serial.print(rssi);
   Serial.println(F(" dBm"));
+}
+
+// this method makes a HTTP connection to the server
+void httpRequest()
+{
+  Serial.println();
+
+  // close any connection before send a new request
+  // this will free the socket on the WiFi shield
+  client.stop();
+
+  // if there's a successful connection
+  if (client.connect(server, 80))
+  {
+    Serial.println(F("Connecting..."));
+
+    // send the HTTP PUT request
+    client.println(F("GET /asciilogo.txt HTTP/1.1"));
+    client.println(F("Host: arduino.cc"));
+    client.println(F("Connection: close"));
+    client.println();
+  }
+  else
+  {
+    // if you couldn't make a connection
+    Serial.println(F("Connection failed"));
+  }
 }
 
 void setup()
@@ -82,7 +113,8 @@ void setup()
   Serial.begin(115200);
   while (!Serial);
 
-  Serial.println("\nStarting WebClient on " + String(BOARD_NAME));
+  Serial.print("\nStarting WebClient on " + String(BOARD_NAME));
+  Serial.println(" with " + String(SHIELD_TYPE));
 
   // initialize serial for ESP module
   EspSerial.begin(115200);
@@ -114,16 +146,7 @@ void setup()
   Serial.println();
   Serial.println(F("Starting connection to server..."));
 
-  // if you get a connection, report back via serial
-  if (client.connect(server, 80))
-  {
-    Serial.println(F("Connected to server"));
-    // Make a HTTP request
-    client.println(F("GET /asciilogo.txt HTTP/1.1"));
-    client.println(F("Host: arduino.cc"));
-    client.println(F("Connection: close"));
-    client.println();
-  }
+  httpRequest();
 }
 
 void printoutData(void)
@@ -135,20 +158,11 @@ void printoutData(void)
     char c = client.read();
     Serial.write(c);
   }
+
+  Serial.flush();
 }
 
 void loop()
 {
   printoutData();
-
-  // if the server's disconnected, stop the client
-  if (!client.connected())
-  {
-    Serial.println();
-    Serial.println(F("Disconnecting from server..."));
-    client.stop();
-
-    // do nothing forevermore
-    while (true);
-  }
 }

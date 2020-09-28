@@ -11,7 +11,7 @@
   @file       Esp8266WebServer.h
   @author     Ivan Grokhotkov
   
-  Version: 1.1.0
+  Version: 1.1.1
   
   Version Modified By   Date      Comments
   ------- -----------  ---------- -----------
@@ -30,6 +30,7 @@
   1.0.11  K Hoang      25/07/2020 Add support to all STM32F/L/H/G/WB/MP1 and Seeeduino SAMD21/SAMD51 boards  
   1.0.12  K Hoang      26/07/2020 Add example and sample Packages_Patches for STM32F/L/H/G/WB/MP boards
   1.1.0   K Hoang      21/09/2020 Add support to UDP Multicast. Fix bugs.
+  1.1.1   K Hoang      26/09/2020 Restore support to PROGMEM-related commands, such as sendContent_P() and send_P()
  *****************************************************************************************************************************/
 
 // Credits of [Miguel Alexandre Wisintainer](https://github.com/tcpipchip) for this simple yet effective method
@@ -58,7 +59,7 @@
 int status = WL_IDLE_STATUS;      // the Wifi radio's status
 int reqCount = 0;                // number of requests received
 
-ESP8266_AT_Server server(80);
+ESP8266_AT_WebServer server(80);
 
 void printWifiStatus()
 {
@@ -69,9 +70,64 @@ void printWifiStatus()
 
   // print the received signal strength:
   int32_t rssi = WiFi.RSSI();
-  Serial.print(F(", Signal strength (RSSI):"));
+  Serial.print(F("Signal strength (RSSI): "));
   Serial.print(rssi);
   Serial.println(F(" dBm"));
+}
+
+void handleRoot()
+{
+#define BUFFER_SIZE     400
+  
+  char temp[BUFFER_SIZE];
+  
+  memset(temp, 0, sizeof(temp));
+  
+  int sec = millis() / 1000;
+  int min = sec / 60;
+  int hr = min / 60;
+  int day = hr / 24;
+
+  snprintf(temp, BUFFER_SIZE - 1,
+           "<html>\
+<head>\
+<meta http-equiv='refresh' content='5'/>\
+<title>%s</title>\
+<style>\
+body { background-color: #cccccc; font-family: Arial, Helvetica, Sans-Serif; Color: #000088; }\
+</style>\
+</head>\
+<body>\
+<h1>Hello from %s</h1>\
+<h2>running WebServer</h2>\
+<h3>on %s</h3>\
+<h3>Uptime: %d d %02d:%02d:%02d</h3>\
+<p>Requests received: %d</p>\
+<p>Analog input A0: %d</p>\
+</body>\
+</html>", BOARD_NAME, BOARD_NAME, SHIELD_TYPE, day, hr, min % 60, sec % 60, ++reqCount, analogRead(0));
+
+  server.send(200, F("text/html"), temp);
+}
+
+void handleNotFound()
+{ 
+  String message = F("File Not Found\n\n");
+  
+  message += F("URI: ");
+  message += server.uri();
+  message += F("\nMethod: ");
+  message += (server.method() == HTTP_GET) ? F("GET") : F("POST");
+  message += F("\nArguments: ");
+  message += server.args();
+  message += F("\n");
+  
+  for (uint8_t i = 0; i < server.args(); i++)
+  {
+    message += " " + server.argName(i) + ": " + server.arg(i) + "\n";
+  }
+  
+  server.send(404, F("text/plain"), message);
 }
 
 void setup()
@@ -80,7 +136,8 @@ void setup()
   Serial.begin(115200);
   while (!Serial);
 
-  Serial.println("\nStarting WebServer on " + String(BOARD_NAME));
+  Serial.print("\nStarting WebServer on " + String(BOARD_NAME));
+  Serial.println(" with " + String(SHIELD_TYPE));
 
   // initialize serial for ESP module
   EspSerial.begin(115200);
@@ -108,73 +165,31 @@ void setup()
 
   printWifiStatus();
 
+  server.on(F("/"), handleRoot);
+  
+  server.on(F("/inline"), []()
+  {
+    server.send(200, F("text/plain"), F("This works as well"));
+  });
+
+  server.onNotFound(handleNotFound);
+
   // start the web server on port 80
   server.begin();
+
+  // print your WiFi shield's IP address:
+  IPAddress ip = WiFi.localIP();
+  
+  Serial.print(F("WebServer started @ "));
+  Serial.println(ip);
+  
+  // print where to go in a browser:
+  Serial.print(F("To see this page in action, open a browser to http://"));
+  Serial.println(ip);
 }
 
 
 void loop()
 {
-  // listen for incoming clients
-  ESP8266_AT_Client client = server.available();
-
-  if (client)
-  {
-    Serial.println(F("New client"));
-    // an http request ends with a blank line
-    bool currentLineIsBlank = true;
-
-    while (client.connected())
-    {
-      if (client.available())
-      {
-        char c = client.read();
-        Serial.write(c);
-        // if you've gotten to the end of the line (received a newline
-        // character) and the line is blank, the http request has ended,
-        // so you can send a reply
-        if (c == '\n' && currentLineIsBlank)
-        {
-          Serial.println(F("Sending response"));
-
-          // send a standard http response header
-          // use \r\n instead of many println statements to speedup data send
-          client.print(
-            "HTTP/1.1 200 OK\r\n"
-            "Content-Type: text/html\r\n"
-            "Connection: close\r\n"  // the connection will be closed after completion of the response
-            "Refresh: 20\r\n"        // refresh the page automatically every 20 sec
-            "\r\n");
-          client.print("<!DOCTYPE HTML>\r\n");
-          client.print("<html>\r\n");
-          client.print(String("<h1>Hello World from ") + BOARD_NAME + "!</h1>\r\n");
-          client.print("Requests received: ");
-          client.print(++reqCount);
-          client.print("<br>\r\n");
-          client.print("Analog input A0: ");
-          client.print(analogRead(0));
-          client.print("<br>\r\n");
-          client.print("</html>\r\n");
-          break;
-        }
-
-        if (c == '\n')
-        {
-          // you're starting a new line
-          currentLineIsBlank = true;
-        }
-        else if (c != '\r')
-        {
-          // you've gotten a character on the current line
-          currentLineIsBlank = false;
-        }
-      }
-    }
-    // give the web browser time to receive the data
-    delay(10);
-
-    // close the connection:
-    client.stop();
-    Serial.println(F("Client disconnected"));
-  }
+  server.handleClient();
 }

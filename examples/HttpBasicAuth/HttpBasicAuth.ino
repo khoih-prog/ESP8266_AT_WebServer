@@ -11,7 +11,7 @@
   @file       Esp8266WebServer.h
   @author     Ivan Grokhotkov
   
-  Version: 1.1.0
+  Version: 1.1.1
   
   Version Modified By   Date      Comments
   ------- -----------  ---------- -----------
@@ -30,6 +30,7 @@
   1.0.11  K Hoang      25/07/2020 Add support to all STM32F/L/H/G/WB/MP1 and Seeeduino SAMD21/SAMD51 boards  
   1.0.12  K Hoang      26/07/2020 Add example and sample Packages_Patches for STM32F/L/H/G/WB/MP boards
   1.1.0   K Hoang      21/09/2020 Add support to UDP Multicast. Fix bugs.
+  1.1.1   K Hoang      26/09/2020 Restore support to PROGMEM-related commands, such as sendContent_P() and send_P()
  *****************************************************************************************************************************/
 
 // Credits of [Miguel Alexandre Wisintainer](https://github.com/tcpipchip) for this simple yet effective method
@@ -61,14 +62,20 @@ int reqCount = 0;                // number of requests received
 ESP8266_AT_WebServer server(80);
 
 const char* www_username = "admin";
-const char* www_password = "esp8266";
+
+#if USE_ESP32_AT
+  const char* www_password = "esp32at";
+#else
+  const char* www_password = "esp8266at";
+#endif
 
 void setup()
 {
   Serial.begin(115200);
   while (!Serial);
 
-  Serial.println("\nStarting HTTPBasicAuth on " + String(BOARD_NAME));
+  Serial.print("\nStarting HTTPBasicAuth on " + String(BOARD_NAME));
+  Serial.println(" with " + String(SHIELD_TYPE));
 
   // initialize serial for ESP module
   EspSerial.begin(115200);
@@ -94,13 +101,13 @@ void setup()
     status = WiFi.begin(ssid, pass);
   }
 
-  server.on("/", []()
+  server.on(F("/"), []()
   {
     if (!server.authenticate(www_username, www_password))
     {
       return server.requestAuthentication();
     }
-    server.send(200, "text/plain", "Login OK");
+    server.send(200, F("text/plain"), F("Login OK"));
   });
 
   server.begin();
@@ -108,6 +115,8 @@ void setup()
   Serial.print(F("Open http://"));
   Serial.print(WiFi.localIP());
   Serial.println(F("/ in your browser to see it working"));
+  Serial.print(F("To log in, please use username = "));
+  Serial.println(String(www_username) + " and password = " + www_password);
 }
 
 void loop()
