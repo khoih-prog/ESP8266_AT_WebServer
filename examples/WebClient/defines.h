@@ -328,7 +328,7 @@
 
 #else
   // For Mega
-  define EspSerial Serial3
+  #define EspSerial Serial3
   #define BOARD_TYPE      "AVR Mega"
 #endif
 
