@@ -11,7 +11,7 @@
    @file       Esp8266WebServer.h
    @author     Ivan Grokhotkov
 
-   Version: 1.1.1
+   Version: 1.1.2
 
    Version Modified By   Date      Comments
    ------- -----------  ---------- -----------
@@ -30,13 +30,20 @@
     1.0.11  K Hoang      25/07/2020 Add support to all STM32F/L/H/G/WB/MP1 and Seeeduino SAMD21/SAMD51 boards  
     1.0.12  K Hoang      26/07/2020 Add example and sample Packages_Patches for STM32F/L/H/G/WB/MP boards
     1.1.0   K Hoang      21/09/2020 Add support to UDP Multicast. Fix bugs.
-    1.1.1   K Hoang      26/09/2020 Restore support to PROGMEM-related commands, such as sendContent_P() and send_P()      
+    1.1.1   K Hoang      26/09/2020 Restore support to PROGMEM-related commands, such as sendContent_P() and send_P()
+    1.1.2   K Hoang      28/12/2020 Suppress all possible compiler warnings   
  *****************************************************************************************************************************/
 
 #ifndef ESP8266_AT_WebServer_h
 #define ESP8266_AT_WebServer_h
 
-#define USE_NEW_WEBSERVER_VERSION     true
+#define ESP8266_AT_WEBSERVER_VERSION      "ESP8266_AT_WebServer v1.1.2"
+
+#define USE_NEW_WEBSERVER_VERSION         true
+
+#ifndef ESP_AT_UNUSED
+  #define ESP_AT_UNUSED(x) (void)(x)
+#endif
 
 #ifndef USE_ESP32_AT
   // Use ESP8266-AT commands only, some ESP32-AT commands not support _CUR and _DEF options

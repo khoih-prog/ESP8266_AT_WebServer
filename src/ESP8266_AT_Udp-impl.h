@@ -11,7 +11,7 @@
    @file       Esp8266WebServer.h
    @author     Ivan Grokhotkov
 
-   Version: 1.1.1
+   Version: 1.1.2
 
    Version Modified By   Date      Comments
    ------- -----------  ---------- -----------
@@ -31,6 +31,7 @@
     1.0.12  K Hoang      26/07/2020 Add example and sample Packages_Patches for STM32F/L/H/G/WB/MP boards
     1.1.0   K Hoang      21/09/2020 Add support to UDP Multicast. Fix bugs.
     1.1.1   K Hoang      26/09/2020 Restore support to PROGMEM-related commands, such as sendContent_P() and send_P()
+    1.1.2   K Hoang      28/12/2020 Suppress all possible compiler warnings
  *****************************************************************************************************************************/
 
 #ifndef ESP8266_AT_UDP_impl_h
@@ -70,21 +71,28 @@ uint8_t ESP8266_AT_UDP::begin(uint16_t port)
 uint8_t ESP8266_AT_UDP::beginMulticast(IPAddress ip, uint16_t port) 
 {
   uint8_t sock;
+
+  // New in v1.1.2
+  #if 1  
+  if (_sock != NO_SOCKET_AVAIL)
+  {
+    stop();
+  }
   
+  sock = ESP8266_AT_Class::getFreeSocket();
+  
+  #else
   if (_sock == NO_SOCKET_AVAIL)
     sock = ESP8266_AT_Class::getFreeSocket();
+  #endif
      
   if (sock != NO_SOCKET_AVAIL)
   {
     char s[18];
     
-// KH, Restore PROGMEM commands, except nRF52 and STM32, not reliable
-//#if !(ESP8266_AT_USE_NRF528XX || ESP8266_AT_USE_STM32)    
+    // KH, Restore PROGMEM commands, except nRF52 and STM32, not reliable
     sprintf_P(s, PSTR("%d.%d.%d.%d"), ip[0], ip[1], ip[2], ip[3]);
-//#else
-    //sprintf(s, "%d.%d.%d.%d", ip[0], ip[1], ip[2], ip[3]);
-//#endif
-    
+
     ESP8266_AT_Drv::startClient(s, port, sock, UDP_MULTICAST_MODE);
 
     ESP8266_AT_Class::allocateSocket(sock);  // allocating the socket for the listener

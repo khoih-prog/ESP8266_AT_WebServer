@@ -11,7 +11,7 @@
    @file       Esp8266WebServer.h
    @author     Ivan Grokhotkov
 
-   Version: 1.1.1
+   Version: 1.1.2
 
    Version Modified By   Date      Comments
    ------- -----------  ---------- -----------
@@ -31,7 +31,10 @@
     1.0.12  K Hoang      26/07/2020 Add example and sample Packages_Patches for STM32F/L/H/G/WB/MP boards
     1.1.0   K Hoang      21/09/2020 Add support to UDP Multicast. Fix bugs.
     1.1.1   K Hoang      26/09/2020 Restore support to PROGMEM-related commands, such as sendContent_P() and send_P()
+    1.1.2   K Hoang      28/12/2020 Suppress all possible compiler warnings
  *****************************************************************************************************************************/
+
+#pragma once
 
 #ifndef RequestHandlerImpl_h
 #define RequestHandlerImpl_h
@@ -39,9 +42,10 @@
 #include "RequestHandler.h"
 #include "mimetable.h"
 
-class FunctionRequestHandler : public RequestHandler 
+class FunctionRequestHandler : public RequestHandler
 {
   public:
+
     FunctionRequestHandler(ESP8266_AT_WebServer::THandlerFunction fn, ESP8266_AT_WebServer::THandlerFunction ufn, const String &uri, HTTPMethod method)
       : _fn(fn)
       , _ufn(ufn)
@@ -50,7 +54,7 @@ class FunctionRequestHandler : public RequestHandler
     {
     }
 
-    bool canHandle(HTTPMethod requestMethod, String requestUri) override  
+    bool canHandle(HTTPMethod requestMethod, String requestUri) override
     {
       if (_method != HTTP_ANY && _method != requestMethod)
         return false;
@@ -62,7 +66,7 @@ class FunctionRequestHandler : public RequestHandler
       {
         String _uristart = _uri;
         _uristart.replace("/*", "");
-        
+
         if (requestUri.startsWith(_uristart))
           return true;
       }
@@ -70,7 +74,7 @@ class FunctionRequestHandler : public RequestHandler
       return false;
     }
 
-    bool canUpload(String requestUri) override  
+    bool canUpload(String requestUri) override
     {
       if (!_ufn || !canHandle(HTTP_POST, requestUri))
         return false;
@@ -78,27 +82,22 @@ class FunctionRequestHandler : public RequestHandler
       return true;
     }
 
-    bool handle(ESP8266_AT_WebServer& server, HTTPMethod requestMethod, String requestUri) override 
+    bool handle(ESP8266_AT_WebServer& server, HTTPMethod requestMethod, String requestUri) override
     {
-      (void) server;
+      ESP_AT_UNUSED(server);
       
       if (!canHandle(requestMethod, requestUri))
         return false;
 
-      AT_LOGINFO(F("ReqHandler::handle"));
-
       _fn();
-
-      AT_LOGINFO(F("ReqHandler::handle done"));
-      
       return true;
     }
 
-    void upload(ESP8266_AT_WebServer& server, String requestUri, HTTPUpload& upload) override 
+    void upload(ESP8266_AT_WebServer& server, String requestUri, HTTPUpload& upload) override
     {
-      (void) server;
-      (void) upload;
-        
+      ESP_AT_UNUSED(server);
+      ESP_AT_UNUSED(upload);
+      
       if (canUpload(requestUri))
         _ufn();
     }
@@ -110,13 +109,13 @@ class FunctionRequestHandler : public RequestHandler
     HTTPMethod _method;
 };
 
-class StaticRequestHandler : public RequestHandler 
+class StaticRequestHandler : public RequestHandler
 {
   public:
 
-    bool canHandle(HTTPMethod requestMethod, String requestUri) override  
+    bool canHandle(HTTPMethod requestMethod, String requestUri) override
     {
-      if ((requestMethod != HTTP_GET) && (requestMethod != HTTP_HEAD))
+      if (requestMethod != HTTP_GET)
         return false;
 
       if ((_isFile && requestUri != _uri) || !requestUri.startsWith(_uri))
@@ -125,32 +124,33 @@ class StaticRequestHandler : public RequestHandler
       return true;
     }
 
-    #if USE_NEW_WEBSERVER_VERSION
-    
-    static String getContentType(const String& path) 
+#if USE_NEW_WEBSERVER_VERSION
+
+    static String getContentType(const String& path)
     {
-        using namespace mime;
-        char buff[sizeof(mimeTable[0].mimeType)];
-        
-        // Check all entries but last one for match, return if found
-        for (size_t i=0; i < sizeof(mimeTable)/sizeof(mimeTable[0])-1; i++) 
+      using namespace mime;
+      char buff[sizeof(mimeTable[0].mimeType)];
+
+      // Check all entries but last one for match, return if found
+      for (size_t i = 0; i < sizeof(mimeTable) / sizeof(mimeTable[0]) - 1; i++)
+      {
+        strcpy(buff, mimeTable[i].endsWith);
+
+        if (path.endsWith(buff))
         {
-            strcpy(buff, mimeTable[i].endsWith);
-            
-            if (path.endsWith(buff)) {
-                strcpy(buff, mimeTable[i].mimeType);
-                return String(buff);
-            }
+          strcpy(buff, mimeTable[i].mimeType);
+          return String(buff);
         }
-        
-        // Fall-through and just return default type
-        strcpy(buff, mimeTable[sizeof(mimeTable)/sizeof(mimeTable[0])-1].mimeType);
-        return String(buff);
+      }
+
+      // Fall-through and just return default type
+      strcpy(buff, mimeTable[sizeof(mimeTable) / sizeof(mimeTable[0]) - 1].mimeType);
+      return String(buff);
     }
-    
-    #else
-    
-    static String getContentType(const String& path) 
+
+#else
+
+    static String getContentType(const String& path)
     {
       if (path.endsWith(".html"))           return "text/html";
       else if (path.endsWith(".htm"))       return "text/html";
@@ -173,14 +173,14 @@ class StaticRequestHandler : public RequestHandler
       else if (path.endsWith(".zip"))       return "application/zip";
       else if (path.endsWith(".gz"))        return "application/x-gzip";
       else if (path.endsWith(".appcache"))  return "text/cache-manifest";
+
       return "application/octet-stream";
     }
-    
-  #endif
-  
-  
+
+#endif
+
   protected:
-  
+
     String _uri;
     String _path;
     String _cache_header;

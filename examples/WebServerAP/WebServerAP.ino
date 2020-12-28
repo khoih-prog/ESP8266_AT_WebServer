@@ -10,27 +10,6 @@
   Original author:
   @file       Esp8266WebServer.h
   @author     Ivan Grokhotkov
-  
-  Version: 1.1.1
-  
-  Version Modified By   Date      Comments
-  ------- -----------  ---------- -----------
-  1.0.0   K Hoang      12/02/2020 Initial coding for Arduino Mega, Teensy, etc
-  1.0.1   K Hoang      17/02/2020 Add support to server's lambda function calls
-  1.0.2   K Hoang      22/02/2020 Add support to SAMD (DUE, ZERO, MKR, NANO_33_IOT, M0, M0 Pro, AdaFruit, etc) boards
-  1.0.3   K Hoang      03/03/2020 Add support to STM32 (STM32,F0,F1, F2, F3, F4, F7, etc) boards
-  1.0.4   K Hoang      19/03/2020 Fix bug. Sync with ESP8266WebServer library of core v2.6.3
-  1.0.5   K Hoang      17/04/2020 Add support to SAMD51 and SAM DUE boards
-  1.0.6   K Hoang      11/06/2020 Add support to nRF52 boards, such as AdaFruit Feather nRF52832, nRF52840 Express, BlueFruit Sense, 
-                                  Itsy-Bitsy nRF52840 Express, Metro nRF52840 Express, NINA_B302_ublox, NINA_B112_ublox, etc.
-  1.0.7   K Hoang      23/06/2020 Add support to ESP32-AT. Update deprecated ESP8266-AT commands. Restructure examples. 
-  1.0.8   K Hoang      01/07/2020 Fix bug. Add features to ESP32-AT.   
-  1.0.9   K Hoang      03/07/2020 Fix bug. Add functions. Restructure codes.
-  1.0.10  K Hoang      22/07/2020 Fix bug not closing client and releasing socket.
-  1.0.11  K Hoang      25/07/2020 Add support to all STM32F/L/H/G/WB/MP1 and Seeeduino SAMD21/SAMD51 boards  
-  1.0.12  K Hoang      26/07/2020 Add example and sample Packages_Patches for STM32F/L/H/G/WB/MP boards
-  1.1.0   K Hoang      21/09/2020 Add support to UDP Multicast. Fix bugs.
-  1.1.1   K Hoang      26/09/2020 Restore support to PROGMEM-related commands, such as sendContent_P() and send_P()
  *****************************************************************************************************************************/
 
 // Credits of [Miguel Alexandre Wisintainer](https://github.com/tcpipchip) for this simple yet effective method
@@ -75,7 +54,7 @@ void printWifiStatus()
 
 void handleRoot()
 {
-#define BUFFER_SIZE     400
+#define BUFFER_SIZE     500
   
   char temp[BUFFER_SIZE];
   
@@ -101,7 +80,7 @@ body { background-color: #cccccc; font-family: Arial, Helvetica, Sans-Serif; Col
 <h3>on %s</h3>\
 <h3>Uptime: %d d %02d:%02d:%02d</h3>\
 <p>Requests received: %d</p>\
-<p>Analog input A0: %d</p>\
+<p>Analog input A0: %ld</p>\
 </body>\
 </html>", BOARD_NAME, BOARD_NAME, SHIELD_TYPE, day, hr, min % 60, sec % 60, ++reqCount, analogRead(0));
 
@@ -134,8 +113,11 @@ void setup()
   Serial.begin(115200);
   while (!Serial);
 
-  Serial.print("\nStarting WebServerAP on " + String(BOARD_NAME));
-  Serial.println(" with " + String(SHIELD_TYPE));
+  Serial.print(F("\nStarting WebServerAP on "));
+  Serial.print(BOARD_NAME);
+  Serial.print(F(" with "));
+  Serial.println(SHIELD_TYPE); 
+  Serial.println(ESP8266_AT_WEBSERVER_VERSION);
 
   // initialize serial for ESP module
   EspSerial.begin(115200);

@@ -11,7 +11,7 @@
    @file       Esp8266WebServer.h
    @author     Ivan Grokhotkov
 
-   Version: 1.1.1
+   Version: 1.1.2
 
    Version Modified By   Date      Comments
    ------- -----------  ---------- -----------
@@ -31,6 +31,7 @@
     1.0.12  K Hoang      26/07/2020 Add example and sample Packages_Patches for STM32F/L/H/G/WB/MP boards
     1.1.0   K Hoang      21/09/2020 Add support to UDP Multicast. Fix bugs.
     1.1.1   K Hoang      26/09/2020 Restore support to PROGMEM-related commands, such as sendContent_P() and send_P()
+    1.1.2   K Hoang      28/12/2020 Suppress all possible compiler warnings
  *****************************************************************************************************************************/
 
 #ifndef ESP8266_AT_Debug_H

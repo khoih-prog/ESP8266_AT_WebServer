@@ -11,7 +11,7 @@
    @file       Esp8266WebServer.h
    @author     Ivan Grokhotkov
 
-   Version: 1.1.1
+   Version: 1.1.2
 
    Version Modified By   Date      Comments
    ------- -----------  ---------- -----------
@@ -31,6 +31,7 @@
     1.0.12  K Hoang      26/07/2020 Add example and sample Packages_Patches for STM32F/L/H/G/WB/MP boards
     1.1.0   K Hoang      21/09/2020 Add support to UDP Multicast. Fix bugs.
     1.1.1   K Hoang      26/09/2020 Restore support to PROGMEM-related commands, such as sendContent_P() and send_P()
+    1.1.2   K Hoang      28/12/2020 Suppress all possible compiler warnings
  *****************************************************************************************************************************/
 
 #include <Arduino.h>
@@ -1140,6 +1141,8 @@ void ESP8266_AT_Drv::stopClient(uint8_t sock)
 
 uint8_t ESP8266_AT_Drv::getServerState(uint8_t sock)
 {
+  ESP_AT_UNUSED(sock);
+  
   return 0;
 }
 
@@ -1314,7 +1317,7 @@ bool ESP8266_AT_Drv::sendData(uint8_t sock, const uint8_t *data, uint16_t len)
   AT_LOGDEBUG1(F("AT_Drv::sendData1: len ="), len);
   AT_LOGDEBUG1(F("AT_Drv::sendData1: data ="), (char*) data);
 
-  char cmdBuf[20];
+  char cmdBuf[24];
   
   // KH, Restore PROGMEM commands
   sprintf_P(cmdBuf, PSTR("AT+CIPSEND=%d,%u"), sock, len);
@@ -1350,7 +1353,7 @@ bool ESP8266_AT_Drv::sendData(uint8_t sock, const __FlashStringHelper *data, uin
 {
   AT_LOGDEBUG2(F("> sendData2:"), sock, len);
 
-  char cmdBuf[20];
+  char cmdBuf[24];
   uint16_t len2 = len + 2 * appendCrLf;
   
   // KH, Restore PROGMEM commands 
@@ -1399,7 +1402,7 @@ bool ESP8266_AT_Drv::sendDataUdp(uint8_t sock, const char* host, uint16_t port, 
   AT_LOGDEBUG2(F("> sendDataUdp:"), sock, len);
   AT_LOGDEBUG2(F("> sendDataUdp:"), host, port);
 
-  char cmdBuf[40];
+  char cmdBuf[48];
   
   // KH, Restore PROGMEM commands
   sprintf_P(cmdBuf, PSTR("AT+CIPSEND=%d,%u,\"%s\",%u"), sock, len, host, port);

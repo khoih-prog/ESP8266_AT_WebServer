@@ -11,7 +11,7 @@
    @file       Esp8266WebServer.h
    @author     Ivan Grokhotkov
 
-   Version: 1.1.1
+   Version: 1.1.2
 
    Version Modified By   Date      Comments
    ------- -----------  ---------- -----------
@@ -31,47 +31,70 @@
     1.0.12  K Hoang      26/07/2020 Add example and sample Packages_Patches for STM32F/L/H/G/WB/MP boards
     1.1.0   K Hoang      21/09/2020 Add support to UDP Multicast. Fix bugs.
     1.1.1   K Hoang      26/09/2020 Restore support to PROGMEM-related commands, such as sendContent_P() and send_P()
+    1.1.2   K Hoang      28/12/2020 Suppress all possible compiler warnings
  *****************************************************************************************************************************/
+
+#pragma once
 
 #ifndef RequestHandler_h
 #define RequestHandler_h
 
+#ifndef ESP_AT_UNUSED
+  #define ESP_AT_UNUSED(x) (void)(x)
+#endif
+
+
 class RequestHandler
 {
   public:
-  
-    virtual ~RequestHandler() { }
-    
-    virtual bool canHandle(HTTPMethod method, String uri) 
-    {
-      return false;
-    }
-    
-    virtual bool canUpload(String uri) 
-    {
-      return false;
-    }
-    
-    virtual bool handle(ESP8266_AT_WebServer& server, HTTPMethod requestMethod, String requestUri) 
-    {
-      return false;
-    }
-    
-    virtual void upload(ESP8266_AT_WebServer& server, String requestUri, HTTPUpload& upload) {}
 
-    RequestHandler* next() 
+    virtual ~RequestHandler() { }
+
+    virtual bool canHandle(HTTPMethod method, String uri)
+    {
+      ESP_AT_UNUSED(method);
+      ESP_AT_UNUSED(uri);
+      
+      return false;
+    }
+
+    virtual bool canUpload(String uri)
+    {
+      ESP_AT_UNUSED(uri);
+      
+      return false;
+    }
+
+    virtual bool handle(ESP8266_AT_WebServer& server, HTTPMethod requestMethod, String requestUri)
+    {
+      ESP_AT_UNUSED(server);
+      ESP_AT_UNUSED(requestMethod);
+      ESP_AT_UNUSED(requestUri);
+      
+      return false;
+    }
+
+    virtual void upload(ESP8266_AT_WebServer& server, String requestUri, HTTPUpload& upload) 
+    {
+      ESP_AT_UNUSED(server);
+      ESP_AT_UNUSED(requestUri);
+      ESP_AT_UNUSED(upload);
+    }
+
+    RequestHandler* next()
     {
       return _next;
     }
-    
-    void next(RequestHandler* r) 
+
+    void next(RequestHandler* r)
     {
       _next = r;
     }
 
   private:
-  
+
     RequestHandler* _next = nullptr;
 };
+
 
 #endif //RequestHandler_h
