@@ -16,6 +16,7 @@
   * [Currently Supported Boards](#currently-supported-boards)
   * [Currently Supported AT-command shields](#currently-supported-at-command-shields)
 * [Changelog](#changelog)
+  * [Releases v1.2.0](#releases-v120)
   * [Releases v1.1.2](#releases-v112)
   * [Releases v1.1.1](#releases-v111)
   * [Releases v1.1.0](#releases-v110)
@@ -50,6 +51,9 @@
   * [5. For Adafruit SAMD boards](#5-for-adafruit-samd-boards)
   * [6. For Seeeduino SAMD boards](#6-for-seeeduino-samd-boards)
   * [7. For STM32 boards](#7-for-stm32-boards) 
+    * [7.1 For STM32 boards to use LAN8720](#71-for-stm32-boards-to-use-lan8720)
+    * [7.2 For STM32 boards to use Serial1](#72-for-stm32-boards-to-use-serial1)
+  * [8. For RP2040-based boards](#8-for-rp2040-based-boards)
 * [Usage](#usage) 
   * [Class Constructor](#class-constructor) 
   * [Basic Operations](#basic-operations) 
@@ -82,11 +86,14 @@
   * [2. MQTT_ThingStream on Adafruit SAMD51 ITSYBITSY_M4 using ESP8266-AT shield](#2-mqtt_thingstream-on-adafruit-samd51-itsybitsy_m4-using-esp8266-at-shield)
   * [3. MQTTClient_Auth on Adafruit SAMD51 ITSYBITSY_M4 using ESP8266-AT shield](#3-mqttclient_auth-on-adafruit-samd51-itsybitsy_m4-using-esp8266-at-shield)
   * [4. MQTTClient_Basic on Adafruit SAMD51 ITSYBITSY_M4 using ESP8266-AT shield](#4-mqttclient_basic-on-adafruit-samd51-itsybitsy_m4-using-esp8266-at-shield)
+  * [5. WebClientRepeating on RASPBERRY_PI_PICO using ESP8266-AT shield](#5-webclienrRepeating-on-raspberry_pi_pico-using-esp8266-at-shield)
+  * [6. MQTTClient_Auth on RASPBERRY_PI_PICO using ESP8266-AT shield](#6-mqttclient_auth-on-raspberry_pi_pico-using-esp8266-at-shield)
 * [Screen Shots](#screen-shots)
   * [1. SAMD51 Itsy-Bitsy M4](#1-samd51-itsy-bitsy-m4)
   * [2. STM32 Nucleo-144 NUCLEO_F767ZI](#2-stm32-nucleo-144-nucleo_f767zi)
   * [3. nRF52 Itsy-Bitsy nRF52840](#3-nrf52-itsy-bitsy-nrf52840)
   * [4. Seeeduino SEEED_XIAO_M0](#4-seeeduino-seeed_xiao_m0)
+  * [5. RASPBERRY_PI_PICO](#4-raspberry_pi_pico)
 * [Debug](#debug)
 * [Troubleshooting](#troubleshooting)
 * [Releases](#releases)
@@ -129,13 +136,42 @@ The ESP8266_AT_Web_Server class found in `ESP8266_AT_Web_Server.h` header, is a 
 
 #### Currently Supported Boards
 
- 1. **Arduino SAMD21 (ZERO, MKR, NANO_33_IOT, etc.)**
- 2. **Adafruit SAMD21 (Itsy-Bitsy M0, Metro M0, Feather M0 Express, etc.)**.
- 3. **Adafruit SAMD51 (Itsy-Bitsy M4, Metro M4, Grand Central M4, Feather M4 Express, etc.)**.
- 4. **Adafruit nRF52 ( Feather nRF52832, nRF52840 Express, BlueFruit Sense, Itsy-Bitsy nRF52840 Express, Metro nRF52840 Express, NINA_B302_ublox, NINA_B112_ublox, etc.)**.
- 5. SAM DUE.
- 6. **STM32F/L/H/G/WB/MP1**
- 7. **Seeeduino SAMD21/SAMD51 boards (SEEED_WIO_TERMINAL, SEEED_FEMTO_M0, SEEED_XIAO_M0, Wio_Lite_MG126, WIO_GPS_BOARD, SEEEDUINO_ZERO, SEEEDUINO_LORAWAN, SEEED_GROVE_UI_WIRELESS, etc.)**
+ 1. **nRF52 boards**, such as **AdaFruit Feather nRF52832, nRF52840 Express, BlueFruit Sense, Itsy-Bitsy nRF52840 Express, Metro nRF52840 Express, NINA_B302_ublox, NINA_B112_ublox, etc.**
+ 
+ 2. **SAM DUE**
+ 
+ 3. **SAMD21**
+  - Arduino SAMD21: ZERO, MKRs, NANO_33_IOT, etc.
+  - Adafruit SAMD21 (M0): ItsyBitsy M0, Feather M0, Feather M0 Express, Metro M0 Express, Circuit Playground Express, Trinket M0, PIRkey, Hallowing M0, Crickit M0, etc.
+  - Seeeduino: LoRaWAN, Zero, Femto M0, XIAO M0, Wio GPS Board, etc.
+  
+ 4. **SAMD51**
+  - Adafruit SAMD51 (M4): Metro M4, Grand Central M4, ItsyBitsy M4, Feather M4 Express, Trellis M4, Metro M4 AirLift Lite, MONSTER M4SK Express, Hallowing M4, etc.
+  - Seeeduino: Wio Terminal, Grove UI Wireless
+  
+ 5. **Teensy (4.1, 4.0, 3.6, 3.5, 3,2, 3.1, 3.0, LC)**
+ 
+ 6. **STM32F/L/H/G/WB/MP1 boards (with 64+K Flash)**
+
+- Nucleo-144
+- Nucleo-64
+- Discovery
+- Generic STM32F0, STM32F1, STM32F2, STM32F3, STM32F4, STM32F7 (with 64+K Flash): x8 and up
+- STM32L0, STM32L1, STM32L4, **STM32L5**
+- STM32G0, STM32G4
+- STM32H7
+- STM32WB
+- STM32MP1
+- LoRa boards
+- 3-D printer boards
+- Generic Flight Controllers
+- Midatronics boards
+
+7. RP2040-based boards, such as **RASPBERRY_PI_PICO, ADAFRUIT_FEATHER_RP2040 and GENERIC_RP2040**.
+
+8. **SIPEED_MAIX_DUINO** boards
+
+---
 
 #### Currently Supported AT-command shields
 
@@ -147,6 +183,11 @@ The ESP8266_AT_Web_Server class found in `ESP8266_AT_Web_Server.h` header, is a 
 ---
 
 ## Changelog
+
+### Releases v1.2.0
+
+1. Add support to **RASPBERRY_PI_PICO boards** using [Earle Philhower's arduino-pico core](https://github.com/earlephilhower/arduino-pico)
+2. Add support to **SIPEED_MAIX_DUINO boards**
 
 ### Releases v1.1.2
 
@@ -234,14 +275,15 @@ The ESP8266_AT_Web_Server class found in `ESP8266_AT_Web_Server.h` header, is a 
  3. [`Teensy core v1.53+`](https://www.pjrc.com/teensy/td_download.html) for Teensy (4.1, 4.0, 3.6, 3.5, 3,2, 3.1, 3.0) boards.
  4. [`Arduino SAM DUE core v1.6.12+`](https://github.com/arduino/ArduinoCore-sam) for SAM DUE ARM Cortex-M3 boards.
  5. [`Arduino SAMD core 1.8.11+`](https://github.com/arduino/ArduinoCore-samd) for SAMD ARM Cortex-M0+ boards. [![GitHub release](https://img.shields.io/github/release/arduino/ArduinoCore-samd.svg)](https://github.com/arduino/ArduinoCore-samd/releases/latest)
- 6. [`Adafruit SAMD core 1.6.5+`](https://github.com/adafruit/ArduinoCore-samd) for SAMD ARM Cortex-M0+ and M4 boards (Nano 33 IoT, etc.). [![GitHub release](https://img.shields.io/github/release/adafruit/ArduinoCore-samd.svg)](https://github.com/adafruit/ArduinoCore-samd/releases/latest)
+ 6. [`Adafruit SAMD core 1.6.8+`](https://github.com/adafruit/ArduinoCore-samd) for SAMD ARM Cortex-M0+ and M4 boards (Nano 33 IoT, etc.). [![GitHub release](https://img.shields.io/github/release/adafruit/ArduinoCore-samd.svg)](https://github.com/adafruit/ArduinoCore-samd/releases/latest)
  7. [`Seeeduino SAMD core 1.8.1+`](https://github.com/Seeed-Studio/ArduinoCore-samd) for SAMD21/SAMD51 boards (XIAO M0, Wio Terminal, etc.). [![Latest release](https://img.shields.io/github/release/Seeed-Studio/ArduinoCore-samd.svg)](https://github.com/Seeed-Studio/ArduinoCore-samd/releases/latest/)
  8. [`Adafruit nRF52 v0.21.0+`](https://github.com/adafruit/Adafruit_nRF52_Arduino) for nRF52 boards such as Adafruit NRF52840_FEATHER, NRF52832_FEATHER, NRF52840_FEATHER_SENSE, NRF52840_ITSYBITSY, NRF52840_CIRCUITPLAY, NRF52840_CLUE, NRF52840_METRO, NRF52840_PCA10056, PARTICLE_XENON, **NINA_B302_ublox**, etc. [![GitHub release](https://img.shields.io/github/release/adafruit/Adafruit_nRF52_Arduino.svg)](https://github.com/adafruit/Adafruit_nRF52_Arduino/releases/latest)
- 9. [`Arduino Core for STM32 v1.9.0+`](https://github.com/stm32duino/Arduino_Core_STM32) for STM32F/L/H/G/WB/MP1 boards. [![GitHub release](https://img.shields.io/github/release/stm32duino/Arduino_Core_STM32.svg)](https://github.com/stm32duino/Arduino_Core_STM32/releases/latest)
-10. [`Functional-VLPP library v1.0.2+`](https://github.com/khoih-prog/functional-vlpp) to use server's lambda function. To install. check [![arduino-library-badge](https://www.ardu-badge.com/badge/Functional-Vlpp.svg?)](https://www.ardu-badge.com/Functional-Vlpp)
-11. [`Ai-Thinker AT Firmware v1.5.4`](AT_Firmwares/At_firmware_bin1.54.zip) or [`AT Firmware v1.7.4.0`](AT_Firmwares/AT_Firmware_bin_1.7.4.0.zip) for ESP8266-AT shields.
-12. [`AT version_2.1.0.0_dev`](AT_Firmwares/AT_version_2.1.0.0_dev.zip) for ESP32-AT shields.
-13. `AT version_1.1.4` for WIS600-01S and W600-AT WiFi shields.
+ 9. [`Arduino Core for STM32 v2.0.0+`](https://github.com/stm32duino/Arduino_Core_STM32) for STM32F/L/H/G/WB/MP1 boards. [![GitHub release](https://img.shields.io/github/release/stm32duino/Arduino_Core_STM32.svg)](https://github.com/stm32duino/Arduino_Core_STM32/releases/latest)
+10. [`Earle Philhower's arduino-pico core v1.2.1+`](https://github.com/earlephilhower/arduino-pico) for RP2040-based boards such as **RASPBERRY_PI_PICO, ADAFRUIT_FEATHER_RP2040 and GENERIC_RP2040**, etc. [![GitHub release](https://img.shields.io/github/release/earlephilhower/arduino-pico.svg)](https://github.com/earlephilhower/arduino-pico/releases/latest) 
+11. [`Functional-VLPP library v1.0.2+`](https://github.com/khoih-prog/functional-vlpp) to use server's lambda function. To install. check [![arduino-library-badge](https://www.ardu-badge.com/badge/Functional-Vlpp.svg?)](https://www.ardu-badge.com/Functional-Vlpp)
+12. [`Ai-Thinker AT Firmware v1.5.4`](AT_Firmwares/At_firmware_bin1.54.zip) or [`AT Firmware v1.7.4.0`](AT_Firmwares/AT_Firmware_bin_1.7.4.0.zip) for ESP8266-AT shields.
+13. [`AT version_2.1.0.0_dev`](AT_Firmwares/AT_version_2.1.0.0_dev.zip) for ESP32-AT shields.
+14. `AT version_1.1.4` for WIS600-01S and W600-AT WiFi shields.
 
 ---
 ---
@@ -410,7 +452,7 @@ This file must be copied into the directory:
  
  ***To be able to compile without error and automatically detect and display BOARD_NAME on Arduino SAMD (Nano-33-IoT, etc) boards***, you have to copy the whole [Arduino SAMD cores 1.8.10](Packages_Patches/arduino/hardware/samd/1.8.10) directory into Arduino SAMD directory (~/.arduino15/packages/arduino/hardware/samd/1.8.10).
  
-#### For core version v1.8.11+
+#### For core version v1.8.10+
 
 Supposing the Arduino SAMD version is 1.8.11. Now only one file must be copied into the directory:
 
@@ -447,11 +489,11 @@ Whenever the above-mentioned compiler error issue is fixed with the new Arduino 
 
 #### 5. For Adafruit SAMD boards
  
- ***To be able to automatically detect and display BOARD_NAME on Adafruit SAMD (Itsy-Bitsy M4, etc) boards***, you have to copy the file [Adafruit SAMD platform.txt](Packages_Patches/adafruit/hardware/samd/1.6.4) into Adafruit samd directory (~/.arduino15/packages/adafruit/hardware/samd/1.6.4). 
+ ***To be able to automatically detect and display BOARD_NAME on Adafruit SAMD (Itsy-Bitsy M4, etc) boards***, you have to copy the file [Adafruit SAMD platform.txt](Packages_Patches/adafruit/hardware/samd/1.6.7) into Adafruit samd directory (~/.arduino15/packages/adafruit/hardware/samd/1.6.7). 
 
-Supposing the Adafruit SAMD core version is 1.6.4. This file must be copied into the directory:
+Supposing the Adafruit SAMD core version is 1.6.7. This file must be copied into the directory:
 
-- `~/.arduino15/packages/adafruit/hardware/samd/1.6.4/platform.txt`
+- `~/.arduino15/packages/adafruit/hardware/samd/1.6.7/platform.txt`
 
 Whenever a new version is installed, remember to copy this file into the new version directory. For example, new version is x.yy.zz
 This file must be copied into the directory:
@@ -473,6 +515,30 @@ This file must be copied into the directory:
 
 #### 7. For STM32 boards
 
+#### 7.1 For STM32 boards to use LAN8720
+
+To use LAN8720 on some STM32 boards 
+
+- **Nucleo-144 (F429ZI, NUCLEO_F746NG, NUCLEO_F746ZG, NUCLEO_F756ZG)**
+- **Discovery (DISCO_F746NG)**
+- **STM32F4 boards (BLACK_F407VE, BLACK_F407VG, BLACK_F407ZE, BLACK_F407ZG, BLACK_F407VE_Mini, DIYMORE_F407VGT, FK407M1)**
+
+you have to copy the files [stm32f4xx_hal_conf_default.h](Packages_Patches/STM32/hardware/stm32/1.9.0/system/STM32F4xx) and [stm32f7xx_hal_conf_default.h](Packages_Patches/STM32/hardware/stm32/1.9.0/system/STM32F7xx) into STM32 stm32 directory (~/.arduino15/packages/STM32/hardware/stm32/1.9.0/system) to overwrite the old files.
+
+Supposing the STM32 stm32 core version is 1.9.0. These files must be copied into the directory:
+
+- `~/.arduino15/packages/STM32/hardware/stm32/1.9.0/system/STM32F4xx/stm32f4xx_hal_conf_default.h` for STM32F4.
+- `~/.arduino15/packages/STM32/hardware/stm32/1.9.0/system/STM32F7xx/stm32f7xx_hal_conf_default.h` for Nucleo-144 STM32F7.
+
+Whenever a new version is installed, remember to copy this file into the new version directory. For example, new version is x.yy.zz,
+theses files must be copied into the corresponding directory:
+
+- `~/.arduino15/packages/STM32/hardware/stm32/x.yy.zz/system/STM32F4xx/stm32f4xx_hal_conf_default.h`
+- `~/.arduino15/packages/STM32/hardware/stm32/x.yy.zz/system/STM32F7xx/stm32f7xx_hal_conf_default.h
+
+
+#### 7.2 For STM32 boards to use Serial1
+
 **To use Serial1 on some STM32 boards without Serial1 definition (Nucleo-144 NUCLEO_F767ZI, Nucleo-64 NUCLEO_L053R8, etc.) boards**, you have to copy the files [STM32 variant.h](Packages_Patches/STM32/hardware/stm32/1.9.0) into STM32 stm32 directory (~/.arduino15/packages/STM32/hardware/stm32/1.9.0). You have to modify the files corresponding to your boards, this is just an illustration how to do.
 
 Supposing the STM32 stm32 core version is 1.9.0. These files must be copied into the directory:
@@ -485,6 +551,21 @@ theses files must be copied into the corresponding directory:
 
 - `~/.arduino15/packages/STM32/hardware/stm32/x.yy.zz/variants/NUCLEO_F767ZI/variant.h`
 - `~/.arduino15/packages/STM32/hardware/stm32/x.yy.zz/variants/NUCLEO_L053R8/variant.h`
+
+
+#### 8. For RP2040-based boards
+ 
+ ***To be able to automatically detect and display BOARD_NAME on Seeeduino SAMD (RASPBERRY_PI_PICO, ADAFRUIT_FEATHER_RP2040, GENERIC_RP2040, etc) boards***, you have to copy the file [RP2040 platform.txt](Packages_Patches/rp2040/hardware/rp2040/1.2.1) into rp2040 directory (~/.arduino15/packages/rp2040/hardware/rp2040/1.2.1). 
+
+Supposing the rp2040 core version is 1.2.1. This file must be copied into the directory:
+
+- `~/.arduino15/packages/rp2040/hardware/rp2040/1.2.1/platform.txt`
+
+Whenever a new version is installed, remember to copy this file into the new version directory. For example, new version is x.yy.zz
+This file must be copied into the directory:
+
+- `~/.arduino15/packages/rp2040/hardware/rp2040/x.yy.zz/platform.txt`
+
 
 
 ---
@@ -701,7 +782,7 @@ Please take a look at other examples, as well.
 int status = WL_IDLE_STATUS;     // the Wifi radio's status
 int reqCount = 0;                // number of requests received
 
-#define WEBSERVER_PORT      5990      // 80
+#define WEBSERVER_PORT      80    //5990
 //ESP8266_AT_WebServer server(WEBSERVER_PORT);
 ESP8266_AT_WebServer server(WEBSERVER_PORT);
 
@@ -709,7 +790,7 @@ const int led = 13;
 
 void handleRoot()
 {
-#define BUFFER_SIZE     400
+#define BUFFER_SIZE     500
   
   digitalWrite(led, 1);
   char temp[BUFFER_SIZE];
@@ -860,7 +941,7 @@ void loop(void)
 #define DEBUG_ESP8266_AT_WEBSERVER_PORT Serial
 
 // Debug Level from 0 to 4
-#define _ESP_AT_LOGLEVEL_       1
+#define _ESP_AT_LOGLEVEL_       0
 
 // Uncomment to use ESP32-AT commands
 //#define USE_ESP32_AT      true
@@ -909,13 +990,31 @@ void loop(void)
   #define ESP8266_AT_USE_STM32      true
 #endif
 
+#if ( defined(ARDUINO_AVR_ADK) || defined(ARDUINO_AVR_MEGA) || defined(ARDUINO_AVR_MEGA2560) )
+  #if defined(ESP_AT_USE_AVR)
+    #undef ESP_AT_USE_AVR
+  #endif
+  #define ESP_AT_USE_AVR      true
+#endif
+
 #ifdef CORE_TEENSY
   // For Teensy 4.1/4.0
-  #define EspSerial Serial2   //Serial2, Pin RX2 : 7, TX2 : 8
+  //#define EspSerial Serial1   //Serial1, Pin RX1 :  0, TX1 :  1
+  #define EspSerial Serial2   //Serial2, Pin RX2 :  7, TX2 :  8
+  //#define EspSerial Serial3   //Serial3, Pin RX3 : 15, TX3 : 14
+  //#define EspSerial Serial4   //Serial4, Pin RX4 : 16, TX4 : 17
   
   #if defined(__IMXRT1062__)
     // For Teensy 4.1/4.0
-    #define BOARD_TYPE      "TEENSY 4.1/4.0"
+    #if defined(ARDUINO_TEENSY41)
+      #define BOARD_TYPE      "TEENSY 4.1"
+      // Use true for NativeEthernet Library, false if using other Ethernet libraries
+      #define USE_NATIVE_ETHERNET     true
+    #elif defined(ARDUINO_TEENSY40)
+      #define BOARD_TYPE      "TEENSY 4.0"
+    #else
+      #define BOARD_TYPE      "TEENSY 4.x"
+    #endif    
   #elif defined(__MK66FX1M0__)
     #define BOARD_TYPE "Teensy 3.6"
   #elif defined(__MK64FX512__)
@@ -1145,12 +1244,39 @@ void loop(void)
   #else
     #warning STM32 unknown board selected
     #define BOARD_TYPE  "STM32 Unknown"
+
   #endif
 
+#elif defined(BOARD_SIPEED_MAIX_DUINO)
+
+  #warning SIPEED_MAIX_DUINO board selected
+  #define BOARD_TYPE  "BOARD_SIPEED_MAIX_DUINO"
+
+  #define EspSerial       Serial1
+
+#elif ( defined(ARDUINO_RASPBERRY_PI_PICO) || defined(ARDUINO_ADAFRUIT_FEATHER_RP2040) || defined(ARDUINO_GENERIC_RP2040) )
+    
+  #warning RASPBERRY_PI_PICO board selected
+  #define BOARD_TYPE  "RASPBERRY_PI_PICO"
+  
+  #define EspSerial       Serial1   
+  
+#elif (ESP_AT_USE_AVR)
+
+  #if defined(ARDUINO_AVR_MEGA2560)
+    #define BOARD_TYPE      "AVR Mega2560"
+  #elif defined(ARDUINO_AVR_MEGA) 
+    #define BOARD_TYPE      "AVR Mega"
+  #else
+    #define BOARD_TYPE      "AVR ADK"
+  #endif
+
+  // For Mega, use Serial1 or Serial3
+  #define EspSerial Serial3
+
 #else
-  // For Mega
-  define EspSerial Serial3
-  #define BOARD_TYPE      "AVR Mega"
+  #error Unknown or unsupported Board. Please check your Tools->Board setting.
+  
 #endif
 
 #ifndef BOARD_NAME
@@ -1176,7 +1302,7 @@ The following are debug terminal output when running example [AdvancedWebServer]
 
 ```
 Starting AdvancedWebServer on NRF52840_ITSYBITSY_EXPRESS
-ESP8266_AT_WebServer v1.1.2
+ESP8266_AT_WebServer v1.2.0
 [ESP_AT] Initializing ESP module
 [ESP_AT] Use ES8266-AT Command
 WiFi shield init done
@@ -1305,7 +1431,7 @@ The following are debug terminal output when running example [MQTT_ThingStream](
 
 ```
 Start MQTT_ThingStream on ITSYBITSY_M4 with ESP8266-AT & ESP8266_AT_WebServer Library
-ESP8266_AT_WebServer v1.1.2
+ESP8266_AT_WebServer v1.2.0
 [ESP_AT] Use ES8266-AT Command
 WiFi shield init done
 Connecting to SSID: HueNet1
@@ -1340,7 +1466,7 @@ The following are debug terminal output when running example [MQTTClient_Auth](e
 
 ```
 Starting MQTTClient_Auth on ITSYBITSY_M4 with ESP8266-AT & ESP8266_AT_WebServer Library
-ESP8266_AT_WebServer v1.1.2
+ESP8266_AT_WebServer v1.2.0
 [ESP_AT] Use ES8266-AT Command
 WiFi shield init done
 Connecting to SSID: HueNet1
@@ -1359,8 +1485,6 @@ Message arrived [MQTT_Pub] Hello from MQTTClient_Auth on ITSYBITSY_M4 with ESP82
 
 ---
 
----
-
 #### 4. MQTTClient_Basic on Adafruit SAMD51 ITSYBITSY_M4 using ESP8266-AT shield
 
 The following are debug terminal output when running example [MQTTClient_Basic](examples/MQTTClient_Basic) on Adafruit SAMD51 ITSYBITSY_M4 and ESP8266-AT shield.
@@ -1368,7 +1492,7 @@ The following are debug terminal output when running example [MQTTClient_Basic](
 
 ```
 MQTTClient_Basic on ITSYBITSY_M4 with ESP8266-AT & ESP8266_AT_WebServer Library
-ESP8266_AT_WebServer v1.1.2
+ESP8266_AT_WebServer v1.2.0
 [ESP_AT] Use ES8266-AT Command
 WiFi shield init done
 Connecting to SSID: HueNet1
@@ -1384,6 +1508,100 @@ Message Send : MQTT_Pub => Hello from MQTTClient_Basic on ITSYBITSY_M4 with ESP8
 Message Send : MQTT_Pub => Hello from MQTTClient_Basic on ITSYBITSY_M4 with ESP8266-AT & ESP8266_AT_WebServer Library
 ```
 
+---
+
+#### 5. WebClientRepeating on RASPBERRY_PI_PICO using ESP8266-AT shield
+
+The following are debug terminal output when running example [WebClientRepeating](examples/WebClientRepeating) on RP2040-based RASPBERRY_PI_PICO and ESP8266-AT shield.
+
+
+```
+Starting WebClientRepeating on RASPBERRY_PI_PICO with ESP8266-AT & ESP8266_AT_WebServer Library
+ESP8266_AT_WebServer v1.2.0
+[ESP_AT] Use ES8266-AT Command
+WiFi shield init done
+Connecting to SSID: HueNet1
+You're connected to the network, IP = 192.168.2.185
+SSID: HueNet1, Signal strength (RSSI): -37 dBm
+
+Connecting...
+HTTP/1.1 200 OK
+Server: nginx/1.4.2
+Date: Tue, 11 May 2021 06:21:15 GMT
+Content-Type: text/plain
+Content-Length: 2263
+Last-Modified: Wed, 02 Oct 2013 13:46:47 GMT
+Connection: close
+Vary: Accept-Encoding
+ETag: "524c23c7-8d7"
+Accept-Ranges: bytes
+
+
+           `:;;;,`                      .:;;:.           
+        .;;;;;;;;;;;`                :;;;;;;;;;;:     TM 
+      `;;;;;;;;;;;;;;;`            :;;;;;;;;;;;;;;;      
+     :;;;;;;;;;;;;;;;;;;         `;;;;;;;;;;;;;;;;;;     
+    ;;;;;;;;;;;;;;;;;;;;;       .;;;;;;;;;;;;;;;;;;;;    
+   ;;;;;;;;:`   `;;;;;;;;;     ,;;;;;;;;.`   .;;;;;;;;   
+  .;;;;;;,         :;;;;;;;   .;;;;;;;          ;;;;;;;  
+  ;;;;;;             ;;;;;;;  ;;;;;;,            ;;;;;;. 
+ ,;;;;;               ;;;;;;.;;;;;;`              ;;;;;; 
+ ;;;;;.                ;;;;;;;;;;;`      ```       ;;;;;`
+ ;;;;;                  ;;;;;;;;;,       ;;;       .;;;;;
+`;;;;:                  `;;;;;;;;        ;;;        ;;;;;
+,;;;;`    `,,,,,,,,      ;;;;;;;      .,,;;;,,,     ;;;;;
+:;;;;`    .;;;;;;;;       ;;;;;,      :;;;;;;;;     ;;;;;
+:;;;;`    .;;;;;;;;      `;;;;;;      :;;;;;;;;     ;;;;;
+.;;;;.                   ;;;;;;;.        ;;;        ;;;;;
+ ;;;;;                  ;;;;;;;;;        ;;;        ;;;;;
+ ;;;;;                 .;;;;;;;;;;       ;;;       ;;;;;,
+ ;;;;;;               `;;;;;;;;;;;;                ;;;;; 
+ `;;;;;,             .;;;;;; ;;;;;;;              ;;;;;; 
+  ;;;;;;:           :;;;;;;.  ;;;;  ;;;;;;;`       .;;;;;;;,    ;;;;;;;;        ;;;;;;;:  
+    ;;;;;;;;;:,:;;;;;;;;;:      ;;;;;;;;;;:,;;;;;;;;;;   
+    `;;;;;;;;;;;;;;;;;;;.        ;;;;;;;;;;;;;;;;;;;;    
+      ;;;;;;;;;;;;;;;;;           :;;;;;;;;;;;;;;;;:     
+       ,;;;;;;;;;;;;;,              ;;;;;;;;;;;;;;       
+         .;;;;;;;;;`                  ,;;;;;;;;:         
+                                                         
+                                                         
+                                                         
+                                                         
+    ;;;   ;;;;;`  ;;;;:  .;;  ;; ,;;;;;, ;;. `;,  ;;;;   
+    ;;;   ;;:;;;  ;;;;;; .;;  ;; ,;;;;;: ;;; `;, ;;;:;;  
+   ,;:;   ;;  ;;  ;;  ;; .;;  ;;   ,;,   ;;;,`;, ;;  ;;  
+   ;; ;:  ;;  ;;  ;;  ;; .;;  ;;   ,;,   ;;;;`;, ;;  ;;. 
+   ;: ;;  ;;;;;:  ;;  ;; .;;  ;;   ,;,   ;;`;;;, ;;  ;;` 
+  ,;;;;;  ;;`;;   ;;  ;; .;;  ;;   ,;,   ;; ;;;, ;;  ;;  
+  ;;  ,;, ;; .;;  ;;;;;:  ;;;;;: ,;;;;;: ;;  ;;, ;;;;;;  
+  ;;   ;; ;;  ;;` ;;;;.   `;;;:  ,;;;;;, ;;  ;;,  ;;;;   
+3,CLOSED
+```
+
+---
+
+#### 6. MQTTClient_Auth on RASPBERRY_PI_PICO using ESP8266-AT shield
+
+The following are debug terminal output when running example [MQTTClient_Auth](examples/MQTTClient_Auth) on RP2040-based RASPBERRY_PI_PICO and ESP8266-AT shield.
+
+```
+Starting MQTTClient_Auth on RASPBERRY_PI_PICO with ESP8266-AT & ESP8266_AT_WebServer Library
+ESP8266_AT_WebServer v1.2.0
+[ESP_AT] Use ES8266-AT Command
+WiFi shield init done
+Connecting to SSID: HueNet1
+You're connected to the network, IP = 192.168.2.185
+SSID: HueNet1, Signal strength (RSSI): -36 dBm
+Attempting MQTT connection to broker.emqx.io...connected
+Message Send : MQTT_Pub => Hello from MQTTClient_Auth on RASPBERRY_PI_PICO with ESP8266-AT & ESP8266_AT_WebServer Library
+Message arrived [MQTT_Pub] Hello from MQTTClient_Auth on RASPBERRY_PI_PICO with ESP8266-AT & ESP8266_AT_WebServer Library
+Message Send : MQTT_Pub => Hello from MQTTClient_Auth on RASPBERRY_PI_PICO with ESP8266-AT & ESP8266_AT_WebServer Library
+Message arrived [MQTT_Pub] Hello from MQTTClient_Auth on RASPBERRY_PI_PICO with ESP8266-AT & ESP8266_AT_WebServer Library
+Message Send : MQTT_Pub => Hello from MQTTClient_Auth on RASPBERRY_PI_PICO with ESP8266-AT & ESP8266_AT_WebServer Library
+Message arrived [MQTT_Pub] Hello from MQTTClient_Auth on RASPBERRY_PI_PICO with ESP8266-AT & ESP8266_AT_WebServer Library
+Message Send : MQTT_Pub => Hello from MQTTClient_Auth on RASPBERRY_PI_PICO with ESP8266-AT & ESP8266_AT_WebServer Library
+Message arrived [MQTT_Pub] Hello from MQTTClient_Auth on RASPBERRY_PI_PICO with ESP8266-AT & ESP8266_AT_WebServer Library
+```
 
 ---
 ---
@@ -1424,6 +1642,15 @@ This is the screen shot when running an example using UDP Multicast on **Seeedui
     <img src="https://github.com/khoih-prog/ESP8266_AT_WebServer/blob/master/pics/UPnP_Multicast.png">
 </p>
 
+
+#### 5. RASPBERRY_PI_PICO
+
+This is the screen shot when running example [AdvancedWebServer](https://github.com/khoih-prog/ESP8266_AT_WebServer/tree/master/examples/AdvancedWebServer) on **RASPBERRY_PI_PICO** board using this [ESP8266_AT_WebServer Library](https://github.com/khoih-prog/ESP8266_AT_WebServer)
+
+<p align="center">
+    <img src="https://github.com/khoih-prog/ESP8266_AT_WebServer/blob/master/pics/AdvancedWebServer_RPi_Pico.png">
+</p>
+
 ---
 ---
 
@@ -1450,6 +1677,11 @@ If you get compilation errors, more often than not, you may need to install a ne
 ---
 
 ## Releases
+
+### Releases v1.2.0
+
+1. Add support to **RASPBERRY_PI_PICO boards** using [Earle Philhower's arduino-pico core](https://github.com/earlephilhower/arduino-pico)
+2. Add support to **SIPEED_MAIX_DUINO boards**
 
 ### Releases v1.1.2
 
@@ -1555,15 +1787,44 @@ The library supports:
 
 #### Currently Supported Boards
 
- 1. **Arduino SAMD21 (ZERO, MKR, NANO_33_IOT, etc.)**
- 2. **Adafruit SAMD21 (Itsy-Bitsy M0, Metro M0, Feather M0 Express, etc.)**.
- 3. **Adafruit SAMD51 (Itsy-Bitsy M4, Metro M4, Grand Central M4, Feather M4 Express, etc.)**.
- 4. **Adafruit nRF52 ( Feather nRF52832, nRF52840 Express, BlueFruit Sense, Itsy-Bitsy nRF52840 Express, Metro nRF52840 Express, NINA_B302_ublox, NINA_B112_ublox, etc.)**.
- 5. SAM DUE.
- 6. **STM32F/L/H/G/WB/MP1**
- 7. **Seeeduino SAMD21/SAMD51 boards (SEEED_WIO_TERMINAL, SEEED_FEMTO_M0, SEEED_XIAO_M0, Wio_Lite_MG126, WIO_GPS_BOARD, SEEEDUINO_ZERO, SEEEDUINO_LORAWAN, SEEED_GROVE_UI_WIRELESS, etc.)**
+ 1. **nRF52 boards**, such as **AdaFruit Feather nRF52832, nRF52840 Express, BlueFruit Sense, Itsy-Bitsy nRF52840 Express, Metro nRF52840 Express, NINA_B302_ublox, NINA_B112_ublox, etc.**
+ 
+ 2. **SAM DUE**
+ 
+ 3. **SAMD21**
+  - Arduino SAMD21: ZERO, MKRs, NANO_33_IOT, etc.
+  - Adafruit SAMD21 (M0): ItsyBitsy M0, Feather M0, Feather M0 Express, Metro M0 Express, Circuit Playground Express, Trinket M0, PIRkey, Hallowing M0, Crickit M0, etc.
+  - Seeeduino: LoRaWAN, Zero, Femto M0, XIAO M0, Wio GPS Board, etc.
+  
+ 4. **SAMD51**
+  - Adafruit SAMD51 (M4): Metro M4, Grand Central M4, ItsyBitsy M4, Feather M4 Express, Trellis M4, Metro M4 AirLift Lite, MONSTER M4SK Express, Hallowing M4, etc.
+  - Seeeduino: Wio Terminal, Grove UI Wireless
+  
+ 5. **Teensy (4.1, 4.0, 3.6, 3.5, 3,2, 3.1, 3.0, LC)**
+ 
+ 6. **STM32F/L/H/G/WB/MP1 boards (with 64+K Flash)**
 
-#### Currently Supported Boards
+- Nucleo-144
+- Nucleo-64
+- Discovery
+- Generic STM32F0, STM32F1, STM32F2, STM32F3, STM32F4, STM32F7 (with 64+K Flash): x8 and up
+- STM32L0, STM32L1, STM32L4, **STM32L5**
+- STM32G0, STM32G4
+- STM32H7
+- STM32WB
+- STM32MP1
+- LoRa boards
+- 3-D printer boards
+- Generic Flight Controllers
+- Midatronics boards
+
+7. RP2040-based boards, such as **RASPBERRY_PI_PICO, ADAFRUIT_FEATHER_RP2040 and GENERIC_RP2040**.
+
+8. **SIPEED_MAIX_DUINO** boards
+
+---
+
+#### Currently Supported Shields
 
  1. ESP8266-AT-command shield
  2. ESP32-AT-command shield
@@ -1577,6 +1838,7 @@ The library supports:
 Submit issues to: [ESP8266_AT_WebServer issues](https://github.com/khoih-prog/ESP8266_AT_WebServer/issues)
  
 ---
+---
 
 ### TO DO
 
@@ -1584,6 +1846,7 @@ Submit issues to: [ESP8266_AT_WebServer issues](https://github.com/khoih-prog/ES
 2. Add SSL/TLS Client and Server support
 3. Support more types of boards using ESP8266 AT-command shields.
 4. Add mDNS features.
+5. Add support to RP2040-based boards such as RASPBERRY_PI_PICO, using [**Arduino-mbed RP2040** core](https://github.com/arduino/ArduinoCore-mbed)
 
 ### DONE
 
@@ -1599,9 +1862,12 @@ Submit issues to: [ESP8266_AT_WebServer issues](https://github.com/khoih-prog/ES
 10. Add UDP Multicast feature.
 11. Add PROGMEM and FlashString related commands such as sendContent_P() and send_P(), and use in examples.
 12. Clean-up all compiler warnings possible.
-13.  Add Version String 
+13. Add Version String 
 14. Add Table of Contents
+15. Add support to RP2040-based boards such as RASPBERRY_PI_PICO, using [Earle Philhower's arduino-pico core](https://github.com/earlephilhower/arduino-pico) 
+16. Add support to SIPEED_MAIX_DUINO
  
+---
 ---
  
 ### Contributions and Thanks
@@ -1636,7 +1902,7 @@ If you want to contribute to this project:
 
 ---
 
-## Copyright
+### Copyright
 
 Copyright 2020- Khoi Hoang
 

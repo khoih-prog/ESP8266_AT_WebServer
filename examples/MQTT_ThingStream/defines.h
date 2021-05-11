@@ -18,7 +18,7 @@
 #define DEBUG_ESP8266_AT_WEBSERVER_PORT Serial
 
 // Debug Level from 0 to 4
-#define _ESP_AT_LOGLEVEL_       1
+#define _ESP_AT_LOGLEVEL_       0
 
 // Uncomment to use ESP32-AT commands
 //#define USE_ESP32_AT      true
@@ -67,13 +67,31 @@
   #define ESP8266_AT_USE_STM32      true
 #endif
 
+#if ( defined(ARDUINO_AVR_ADK) || defined(ARDUINO_AVR_MEGA) || defined(ARDUINO_AVR_MEGA2560) )
+  #if defined(ESP_AT_USE_AVR)
+    #undef ESP_AT_USE_AVR
+  #endif
+  #define ESP_AT_USE_AVR      true
+#endif
+
 #ifdef CORE_TEENSY
   // For Teensy 4.1/4.0
-  #define EspSerial Serial2   //Serial2, Pin RX2 : 7, TX2 : 8
+  //#define EspSerial Serial1   //Serial1, Pin RX1 :  0, TX1 :  1
+  #define EspSerial Serial2   //Serial2, Pin RX2 :  7, TX2 :  8
+  //#define EspSerial Serial3   //Serial3, Pin RX3 : 15, TX3 : 14
+  //#define EspSerial Serial4   //Serial4, Pin RX4 : 16, TX4 : 17
   
   #if defined(__IMXRT1062__)
     // For Teensy 4.1/4.0
-    #define BOARD_TYPE      "TEENSY 4.1/4.0"
+    #if defined(ARDUINO_TEENSY41)
+      #define BOARD_TYPE      "TEENSY 4.1"
+      // Use true for NativeEthernet Library, false if using other Ethernet libraries
+      #define USE_NATIVE_ETHERNET     true
+    #elif defined(ARDUINO_TEENSY40)
+      #define BOARD_TYPE      "TEENSY 4.0"
+    #else
+      #define BOARD_TYPE      "TEENSY 4.x"
+    #endif    
   #elif defined(__MK66FX1M0__)
     #define BOARD_TYPE "Teensy 3.6"
   #elif defined(__MK64FX512__)
@@ -303,12 +321,39 @@
   #else
     #warning STM32 unknown board selected
     #define BOARD_TYPE  "STM32 Unknown"
+
   #endif
 
+#elif defined(BOARD_SIPEED_MAIX_DUINO)
+
+  #warning SIPEED_MAIX_DUINO board selected
+  #define BOARD_TYPE  "BOARD_SIPEED_MAIX_DUINO"
+
+  #define EspSerial       Serial1
+
+#elif ( defined(ARDUINO_RASPBERRY_PI_PICO) || defined(ARDUINO_ADAFRUIT_FEATHER_RP2040) || defined(ARDUINO_GENERIC_RP2040) )
+    
+  #warning RASPBERRY_PI_PICO board selected
+  #define BOARD_TYPE  "RASPBERRY_PI_PICO"
+  
+  #define EspSerial       Serial1   
+  
+#elif (ESP_AT_USE_AVR)
+
+  #if defined(ARDUINO_AVR_MEGA2560)
+    #define BOARD_TYPE      "AVR Mega2560"
+  #elif defined(ARDUINO_AVR_MEGA) 
+    #define BOARD_TYPE      "AVR Mega"
+  #else
+    #define BOARD_TYPE      "AVR ADK"
+  #endif
+
+  // For Mega, use Serial1 or Serial3
+  #define EspSerial Serial3
+
 #else
-  // For Mega
-  define EspSerial Serial3
-  #define BOARD_TYPE      "AVR Mega"
+  #error Unknown or unsupported Board. Please check your Tools->Board setting.
+  
 #endif
 
 #ifndef BOARD_NAME
@@ -317,9 +362,7 @@
 
 #include <ESP8266_AT_WebServer.h>
 
-char ssid[] = "HueNet1";        // your network SSID (name)
-char pass[] = "jenniqqs";        // your network password
-//char ssid[] = "****";        // your network SSID (name)
-//char pass[] = "****";        // your network password
+char ssid[] = "****";        // your network SSID (name)
+char pass[] = "****";        // your network password
 
 #endif    //defines_h

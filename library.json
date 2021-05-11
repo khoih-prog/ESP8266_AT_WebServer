@@ -1,8 +1,8 @@
 {
   "name": "ESP8266_AT_WebServer",
-  "version": "1.1.2",
-  "keywords": "wifi, WebServer, AT, ESP8266, ESP32, Teensy, AVR, SAM DUE, SAMD21, SAMD51, STM32, nRF52, ESP8266-AT, ESP32-AT",
-  "description": "Simple WebServer library for AVR, Teensy, SAM DUE, SAMD21, SAMD51, STM32F/L/H/G/WB/MP1, nRF52 boards running ESP8266/ESP32 AT-command shields",
+  "version": "1.2.0",
+  "keywords": "wifi, WebServer, AT-command, wifi-shield, ESP8266, ESP32, Teensy, AVR, SAM DUE, SAMD21, SAMD51, STM32, nRF52, ESP8266-AT, ESP32-AT, rpi-pico, rp2040",
+  "description": "Simple WebServer library for AVR, Teensy, SAM DUE, SAMD21, SAMD51, STM32F/L/H/G/WB/MP1, nRF52, SIPEED_MAIX_DUINO and RASPBERRY_PI_PICO boards boards using ESP8266/ESP32 AT-command shields",
   "authors":
   {
     "name":  "Khoi Hoang",
@@ -27,7 +27,7 @@
     {
       "owner": "khoih-prog",
       "name": "Functional-Vlpp",
-      "version": "^1.0.1",
+      "version": "^1.0.2",
       "platforms": ["*"]
     }
   ],

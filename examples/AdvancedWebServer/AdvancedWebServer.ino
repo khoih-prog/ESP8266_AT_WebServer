@@ -62,7 +62,7 @@
 int status = WL_IDLE_STATUS;     // the Wifi radio's status
 int reqCount = 0;                // number of requests received
 
-#define WEBSERVER_PORT      5990      // 80
+#define WEBSERVER_PORT      80    //5990
 //ESP8266_AT_WebServer server(WEBSERVER_PORT);
 ESP8266_AT_WebServer server(WEBSERVER_PORT);
 
@@ -70,7 +70,7 @@ const int led = 13;
 
 void handleRoot()
 {
-#define BUFFER_SIZE     400
+#define BUFFER_SIZE     500
   
   digitalWrite(led, 1);
   char temp[BUFFER_SIZE];
