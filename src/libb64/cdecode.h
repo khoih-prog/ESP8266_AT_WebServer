@@ -1,9 +1,6 @@
-/****************************************************************************************************************************
+/**************************************************************************************************************************************
   cdecoder.h - c source to a base64 decoding algorithm implementation
-  For ESP8266 AT-command running shields
-
-  This is part of the libb64 project, and has been placed in the public domain.
-  For details, see http://sourceforge.net/projects/libb64
+  For ESP8266/ESP32 AT-command running shields
 
   ESP8266_AT_WebServer is a library for the ESP8266/ESP32 AT-command shields to run WebServer
   Based on and modified from ESP8266 https://github.com/esp8266/Arduino/releases
@@ -14,7 +11,7 @@
   @file       Esp8266WebServer.h
   @author     Ivan Grokhotkov
 
-  Version: 1.2.0
+  Version: 1.3.0
 
   Version Modified By   Date      Comments
   ------- -----------  ---------- -----------
@@ -35,8 +32,9 @@
   1.1.0   K Hoang      21/09/2020 Add support to UDP Multicast. Fix bugs.
   1.1.1   K Hoang      26/09/2020 Restore support to PROGMEM-related commands, such as sendContent_P() and send_P()
   1.1.2   K Hoang      28/12/2020 Suppress all possible compiler warnings
-  1.2.0   K Hoang      11/05/2021 Add support to BOARD_SIPEED_MAIX_DUINO and RASPBERRY_PI_PICO
- *****************************************************************************************************************************/
+  1.2.0   K Hoang      11/05/2021 Add support to BOARD_SIPEED_MAIX_DUINO and RASPBERRY_PI_PICO using Arduino-pico core
+  1.3.0   K Hoang      29/05/2021 Add support to Nano_RP2040_Connect, RASPBERRY_PI_PICO using Arduino mbed code
+ ***************************************************************************************************************************************/
 
 #pragma once
 
@@ -48,12 +46,15 @@
 #define base64_decode_expected_len(n) ((n * 3) / 4)
 
 #ifdef __cplusplus
-extern "C" {
+  extern "C" {
 #endif
 
 typedef enum 
 {
-  step_a, step_b, step_c, step_d
+  step_a, 
+  step_b, 
+  step_c, 
+  step_d
 } base64_decodestep;
 
 typedef struct 
@@ -71,7 +72,7 @@ int base64_decode_block(const char* code_in, const int length_in, char* plaintex
 int base64_decode_chars(const char* code_in, const int length_in, char* plaintext_out);
 
 #ifdef __cplusplus
-} // extern "C"
+  } // extern "C"
 #endif
 
 #endif /* BASE64_CDECODE_H */

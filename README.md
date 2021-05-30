@@ -16,6 +16,7 @@
   * [Currently Supported Boards](#currently-supported-boards)
   * [Currently Supported AT-command shields](#currently-supported-at-command-shields)
 * [Changelog](#changelog)
+  * [Releases v1.3.0](#releases-v130)
   * [Releases v1.2.0](#releases-v120)
   * [Releases v1.1.2](#releases-v112)
   * [Releases v1.1.1](#releases-v111)
@@ -51,9 +52,11 @@
   * [5. For Adafruit SAMD boards](#5-for-adafruit-samd-boards)
   * [6. For Seeeduino SAMD boards](#6-for-seeeduino-samd-boards)
   * [7. For STM32 boards](#7-for-stm32-boards) 
-    * [7.1 For STM32 boards to use LAN8720](#71-for-stm32-boards-to-use-lan8720)
-    * [7.2 For STM32 boards to use Serial1](#72-for-stm32-boards-to-use-serial1)
-  * [8. For RP2040-based boards](#8-for-rp2040-based-boards)
+    * [7.1. For STM32 boards to use LAN8720](#71-for-stm32-boards-to-use-lan8720)
+    * [7.2. For STM32 boards to use Serial1](#72-for-stm32-boards-to-use-serial1)
+  * [8. For RP2040-based boards using Earle Philhower arduino-pico core](#8-for-rp2040-based-boards-using-earle-philhower-arduino-pico-core)
+    * [8.1. To use BOARD_NAME](#81-to-use-board_name)
+    * [8.2. To avoid compile error relating to microsecondsToClockCycles](#82-to-avoid-compile-error-relating-to-microsecondstoclockcycles)
 * [Usage](#usage) 
   * [Class Constructor](#class-constructor) 
   * [Basic Operations](#basic-operations) 
@@ -88,6 +91,7 @@
   * [4. MQTTClient_Basic on Adafruit SAMD51 ITSYBITSY_M4 using ESP8266-AT shield](#4-mqttclient_basic-on-adafruit-samd51-itsybitsy_m4-using-esp8266-at-shield)
   * [5. WebClientRepeating on RASPBERRY_PI_PICO using ESP8266-AT shield](#5-webclientrepeating-on-raspberry_pi_pico-using-esp8266-at-shield)
   * [6. MQTTClient_Auth on RASPBERRY_PI_PICO using ESP8266-AT shield](#6-mqttclient_auth-on-raspberry_pi_pico-using-esp8266-at-shield)
+  * [7. UdpNTPClient on MBED RASPBERRY_PI_PICO using ESP8266-AT shield](#7-udpntpclient-on-mbed-raspberry_pi_pico-using-esp8266-at-shield)
 * [Screen Shots](#screen-shots)
   * [1. SAMD51 Itsy-Bitsy M4](#1-samd51-itsy-bitsy-m4)
   * [2. STM32 Nucleo-144 NUCLEO_F767ZI](#2-stm32-nucleo-144-nucleo_f767zi)
@@ -167,9 +171,12 @@ The ESP8266_AT_Web_Server class found in `ESP8266_AT_Web_Server.h` header, is a 
 - Generic Flight Controllers
 - Midatronics boards
 
-7. RP2040-based boards, such as **RASPBERRY_PI_PICO, ADAFRUIT_FEATHER_RP2040 and GENERIC_RP2040**.
+ 7. **SIPEED_MAIX_DUINO** boards
 
-8. **SIPEED_MAIX_DUINO** boards
+ 8. RP2040-based boards, such as **Nano RP2040 Connect**, using [**Arduino mbed OS for Nano boards**](https://github.com/arduino/ArduinoCore-mbed).
+
+ 9. RP2040-based boards, such as **RASPBERRY_PI_PICO, ADAFRUIT_FEATHER_RP2040 and GENERIC_RP2040**, using [**Arduino-mbed RP2040** core](https://github.com/arduino/ArduinoCore-mbed) or [**Earle Philhower's arduino-pico** core](https://github.com/earlephilhower/arduino-pico).
+ 
 
 ---
 
@@ -183,6 +190,11 @@ The ESP8266_AT_Web_Server class found in `ESP8266_AT_Web_Server.h` header, is a 
 ---
 
 ## Changelog
+
+### Releases v1.3.0
+
+1. Add support to RP2040-based boards, such as **Nano_RP2040_Connect, RASPBERRY_PI_PICO, ADAFRUIT_FEATHER_RP2040 and GENERIC_RP2040**, using [**Arduino-mbed RP2040** core](https://github.com/arduino/ArduinoCore-mbed).
+2. Fix bug.
 
 ### Releases v1.2.0
 
@@ -275,15 +287,16 @@ The ESP8266_AT_Web_Server class found in `ESP8266_AT_Web_Server.h` header, is a 
  3. [`Teensy core v1.53+`](https://www.pjrc.com/teensy/td_download.html) for Teensy (4.1, 4.0, 3.6, 3.5, 3,2, 3.1, 3.0) boards.
  4. [`Arduino SAM DUE core v1.6.12+`](https://github.com/arduino/ArduinoCore-sam) for SAM DUE ARM Cortex-M3 boards.
  5. [`Arduino SAMD core 1.8.11+`](https://github.com/arduino/ArduinoCore-samd) for SAMD ARM Cortex-M0+ boards. [![GitHub release](https://img.shields.io/github/release/arduino/ArduinoCore-samd.svg)](https://github.com/arduino/ArduinoCore-samd/releases/latest)
- 6. [`Adafruit SAMD core 1.6.8+`](https://github.com/adafruit/ArduinoCore-samd) for SAMD ARM Cortex-M0+ and M4 boards (Nano 33 IoT, etc.). [![GitHub release](https://img.shields.io/github/release/adafruit/ArduinoCore-samd.svg)](https://github.com/adafruit/ArduinoCore-samd/releases/latest)
+ 6. [`Adafruit SAMD core 1.7.2+`](https://github.com/adafruit/ArduinoCore-samd) for SAMD ARM Cortex-M0+ and M4 boards (Nano 33 IoT, etc.). [![GitHub release](https://img.shields.io/github/release/adafruit/ArduinoCore-samd.svg)](https://github.com/adafruit/ArduinoCore-samd/releases/latest)
  7. [`Seeeduino SAMD core 1.8.1+`](https://github.com/Seeed-Studio/ArduinoCore-samd) for SAMD21/SAMD51 boards (XIAO M0, Wio Terminal, etc.). [![Latest release](https://img.shields.io/github/release/Seeed-Studio/ArduinoCore-samd.svg)](https://github.com/Seeed-Studio/ArduinoCore-samd/releases/latest/)
- 8. [`Adafruit nRF52 v0.21.0+`](https://github.com/adafruit/Adafruit_nRF52_Arduino) for nRF52 boards such as Adafruit NRF52840_FEATHER, NRF52832_FEATHER, NRF52840_FEATHER_SENSE, NRF52840_ITSYBITSY, NRF52840_CIRCUITPLAY, NRF52840_CLUE, NRF52840_METRO, NRF52840_PCA10056, PARTICLE_XENON, **NINA_B302_ublox**, etc. [![GitHub release](https://img.shields.io/github/release/adafruit/Adafruit_nRF52_Arduino.svg)](https://github.com/adafruit/Adafruit_nRF52_Arduino/releases/latest)
+ 8. [`Adafruit nRF52 v0.22.1+`](https://github.com/adafruit/Adafruit_nRF52_Arduino) for nRF52 boards such as Adafruit NRF52840_FEATHER, NRF52832_FEATHER, NRF52840_FEATHER_SENSE, NRF52840_ITSYBITSY, NRF52840_CIRCUITPLAY, NRF52840_CLUE, NRF52840_METRO, NRF52840_PCA10056, PARTICLE_XENON, **NINA_B302_ublox**, etc. [![GitHub release](https://img.shields.io/github/release/adafruit/Adafruit_nRF52_Arduino.svg)](https://github.com/adafruit/Adafruit_nRF52_Arduino/releases/latest)
  9. [`Arduino Core for STM32 v2.0.0+`](https://github.com/stm32duino/Arduino_Core_STM32) for STM32F/L/H/G/WB/MP1 boards. [![GitHub release](https://img.shields.io/github/release/stm32duino/Arduino_Core_STM32.svg)](https://github.com/stm32duino/Arduino_Core_STM32/releases/latest)
-10. [`Earle Philhower's arduino-pico core v1.2.1+`](https://github.com/earlephilhower/arduino-pico) for RP2040-based boards such as **RASPBERRY_PI_PICO, ADAFRUIT_FEATHER_RP2040 and GENERIC_RP2040**, etc. [![GitHub release](https://img.shields.io/github/release/earlephilhower/arduino-pico.svg)](https://github.com/earlephilhower/arduino-pico/releases/latest) 
-11. [`Functional-VLPP library v1.0.2+`](https://github.com/khoih-prog/functional-vlpp) to use server's lambda function. To install. check [![arduino-library-badge](https://www.ardu-badge.com/badge/Functional-Vlpp.svg?)](https://www.ardu-badge.com/Functional-Vlpp)
-12. [`Ai-Thinker AT Firmware v1.5.4`](AT_Firmwares/At_firmware_bin1.54.zip) or [`AT Firmware v1.7.4.0`](AT_Firmwares/AT_Firmware_bin_1.7.4.0.zip) for ESP8266-AT shields.
-13. [`AT version_2.1.0.0_dev`](AT_Firmwares/AT_version_2.1.0.0_dev.zip) for ESP32-AT shields.
-14. `AT version_1.1.4` for WIS600-01S and W600-AT WiFi shields.
+10. [`Arduino mbed_rp2040 core 2.1.0+`](https://github.com/arduino/ArduinoCore-mbed) for Arduino (Use Arduino Board Manager) RP2040-based boards, such as **Arduino Nano RP2040 Connect, RASPBERRY_PI_PICO, etc.**. [![GitHub release](https://img.shields.io/github/release/arduino/ArduinoCore-mbed.svg)](https://github.com/arduino/ArduinoCore-mbed/releases/latest)
+11. [`Earle Philhower's arduino-pico core v1.6.2+`](https://github.com/earlephilhower/arduino-pico) for RP2040-based boards such as **RASPBERRY_PI_PICO, ADAFRUIT_FEATHER_RP2040 and GENERIC_RP2040**, etc. [![GitHub release](https://img.shields.io/github/release/earlephilhower/arduino-pico.svg)](https://github.com/earlephilhower/arduino-pico/releases/latest)
+12. [`Functional-VLPP library v1.0.2+`](https://github.com/khoih-prog/functional-vlpp) to use server's lambda function. To install. check [![arduino-library-badge](https://www.ardu-badge.com/badge/Functional-Vlpp.svg?)](https://www.ardu-badge.com/Functional-Vlpp)
+13. [`Ai-Thinker AT Firmware v1.5.4`](AT_Firmwares/At_firmware_bin1.54.zip) or [`AT Firmware v1.7.4.0`](AT_Firmwares/AT_Firmware_bin_1.7.4.0.zip) for ESP8266-AT shields.
+14. [`AT version_2.1.0.0_dev`](AT_Firmwares/AT_version_2.1.0.0_dev.zip) for ESP32-AT shields.
+15. `AT version_1.1.4` for WIS600-01S and W600-AT WiFi shields.
 
 ---
 ---
@@ -394,16 +407,16 @@ You can also use this link [![arduino-library-badge](https://www.ardu-badge.com/
 
 #### 1. For Adafruit nRF52840 and nRF52832 boards
 
-**To be able to compile, run and automatically detect and display BOARD_NAME on nRF52840/nRF52832 boards**, you have to copy the whole [nRF52 0.21.0](Packages_Patches/adafruit/hardware/nrf52/0.21.0) directory into Adafruit nRF52 directory (~/.arduino15/packages/adafruit/hardware/nrf52/0.21.0). 
+**To be able to compile, run and automatically detect and display BOARD_NAME on nRF52840/nRF52832 boards**, you have to copy the whole [nRF52 0.22.0](Packages_Patches/adafruit/hardware/nrf52/0.22.0) directory into Adafruit nRF52 directory (~/.arduino15/packages/adafruit/hardware/nrf52/0.22.0). 
 
-Supposing the Adafruit nRF52 version is 0.21.0. These files must be copied into the directory:
-- `~/.arduino15/packages/adafruit/hardware/nrf52/0.21.0/platform.txt`
-- `~/.arduino15/packages/adafruit/hardware/nrf52/0.21.0/boards.txt`
-- `~/.arduino15/packages/adafruit/hardware/nrf52/0.21.0/variants/NINA_B302_ublox/variant.h`
-- `~/.arduino15/packages/adafruit/hardware/nrf52/0.21.0/variants/NINA_B302_ublox/variant.cpp`
-- `~/.arduino15/packages/adafruit/hardware/nrf52/0.21.0/variants/NINA_B112_ublox/variant.h`
-- `~/.arduino15/packages/adafruit/hardware/nrf52/0.21.0/variants/NINA_B112_ublox/variant.cpp`
-- **`~/.arduino15/packages/adafruit/hardware/nrf52/0.21.0/cores/nRF5/Udp.h`**
+Supposing the Adafruit nRF52 version is 0.22.0. These files must be copied into the directory:
+- `~/.arduino15/packages/adafruit/hardware/nrf52/0.22.0/platform.txt`
+- `~/.arduino15/packages/adafruit/hardware/nrf52/0.22.0/boards.txt`
+- `~/.arduino15/packages/adafruit/hardware/nrf52/0.22.0/variants/NINA_B302_ublox/variant.h`
+- `~/.arduino15/packages/adafruit/hardware/nrf52/0.22.0/variants/NINA_B302_ublox/variant.cpp`
+- `~/.arduino15/packages/adafruit/hardware/nrf52/0.22.0/variants/NINA_B112_ublox/variant.h`
+- `~/.arduino15/packages/adafruit/hardware/nrf52/0.22.0/variants/NINA_B112_ublox/variant.cpp`
+- **`~/.arduino15/packages/adafruit/hardware/nrf52/0.22.0/cores/nRF5/Udp.h`**
 
 Whenever a new version is installed, remember to copy these files into the new version directory. For example, new version is x.yy.z
 These files must be copied into the directory:
@@ -450,7 +463,7 @@ This file must be copied into the directory:
 
 #### 4. For Arduino SAMD boards
  
- ***To be able to compile without error and automatically detect and display BOARD_NAME on Arduino SAMD (Nano-33-IoT, etc) boards***, you have to copy the whole [Arduino SAMD cores 1.8.10](Packages_Patches/arduino/hardware/samd/1.8.10) directory into Arduino SAMD directory (~/.arduino15/packages/arduino/hardware/samd/1.8.10).
+ ***To be able to compile without error and automatically detect and display BOARD_NAME on Arduino SAMD (Nano-33-IoT, etc) boards***, you have to copy the whole [Arduino SAMD cores 1.8.11](Packages_Patches/arduino/hardware/samd/1.8.11) directory into Arduino SAMD directory (~/.arduino15/packages/arduino/hardware/samd/1.8.11).
  
 #### For core version v1.8.10+
 
@@ -489,11 +502,11 @@ Whenever the above-mentioned compiler error issue is fixed with the new Arduino 
 
 #### 5. For Adafruit SAMD boards
  
- ***To be able to automatically detect and display BOARD_NAME on Adafruit SAMD (Itsy-Bitsy M4, etc) boards***, you have to copy the file [Adafruit SAMD platform.txt](Packages_Patches/adafruit/hardware/samd/1.6.7) into Adafruit samd directory (~/.arduino15/packages/adafruit/hardware/samd/1.6.7). 
+ ***To be able to automatically detect and display BOARD_NAME on Adafruit SAMD (Itsy-Bitsy M4, etc) boards***, you have to copy the file [Adafruit SAMD platform.txt](Packages_Patches/adafruit/hardware/samd/1.7.1) into Adafruit samd directory (~/.arduino15/packages/adafruit/hardware/samd/1.7.1). 
 
-Supposing the Adafruit SAMD core version is 1.6.7. This file must be copied into the directory:
+Supposing the Adafruit SAMD core version is 1.7.1. This file must be copied into the directory:
 
-- `~/.arduino15/packages/adafruit/hardware/samd/1.6.7/platform.txt`
+- `~/.arduino15/packages/adafruit/hardware/samd/1.7.1/platform.txt`
 
 Whenever a new version is installed, remember to copy this file into the new version directory. For example, new version is x.yy.zz
 This file must be copied into the directory:
@@ -552,19 +565,38 @@ theses files must be copied into the corresponding directory:
 - `~/.arduino15/packages/STM32/hardware/stm32/x.yy.zz/variants/NUCLEO_F767ZI/variant.h`
 - `~/.arduino15/packages/STM32/hardware/stm32/x.yy.zz/variants/NUCLEO_L053R8/variant.h`
 
+#### 8. For RP2040-based boards using [Earle Philhower arduino-pico core](https://github.com/earlephilhower/arduino-pico)
 
-#### 8. For RP2040-based boards
- 
- ***To be able to automatically detect and display BOARD_NAME on Seeeduino SAMD (RASPBERRY_PI_PICO, ADAFRUIT_FEATHER_RP2040, GENERIC_RP2040, etc) boards***, you have to copy the file [RP2040 platform.txt](Packages_Patches/rp2040/hardware/rp2040/1.2.1) into rp2040 directory (~/.arduino15/packages/rp2040/hardware/rp2040/1.2.1). 
+#### 8.1 To use BOARD_NAME
 
-Supposing the rp2040 core version is 1.2.1. This file must be copied into the directory:
+ **To be able to automatically detect and display BOARD_NAME on RP2040-based boards (RASPBERRY_PI_PICO, ADAFRUIT_FEATHER_RP2040, GENERIC_RP2040, etc) boards**, you have to copy the file [RP2040 platform.txt](Packages_Patches/rp2040/hardware/rp2040/1.4.0) into rp2040 directory (~/.arduino15/packages/rp2040/hardware/rp2040/1.4.0). 
 
-- `~/.arduino15/packages/rp2040/hardware/rp2040/1.2.1/platform.txt`
+Supposing the rp2040 core version is 1.4.0. This file must be copied into the directory:
+
+- `~/.arduino15/packages/rp2040/hardware/rp2040/1.4.0/platform.txt`
 
 Whenever a new version is installed, remember to copy this file into the new version directory. For example, new version is x.yy.zz
 This file must be copied into the directory:
 
 - `~/.arduino15/packages/rp2040/hardware/rp2040/x.yy.zz/platform.txt`
+
+With core after v1.5.0, this step is not necessary anymore thanks to the PR [Add -DBOARD_NAME="{build.board}" #136](https://github.com/earlephilhower/arduino-pico/pull/136).
+
+#### 8.2 To avoid compile error relating to microsecondsToClockCycles
+
+Some libraries, such as [Adafruit DHT-sensor-library](https://github.com/adafruit/DHT-sensor-library), require the definition of microsecondsToClockCycles(). **To be able to compile and run on RP2040-based boards**, you have to copy the files in [**RP2040 Arduino.h**](Packages_Patches/rp2040/hardware/rp2040/1.4.0/cores/rp2040/Arduino.h) into rp2040 directory (~/.arduino15/packages/rp2040/hardware/rp2040/1.4.0).
+
+Supposing the rp2040 core version is 1.4.0. This file must be copied to replace:
+
+- `~/.arduino15/packages/rp2040/hardware/rp2040/1.4.0/cores/rp2040/Arduino.h`
+
+Whenever a new version is installed, remember to copy this file into the new version directory. For example, new version is x.yy.zz
+This file must be copied to replace:
+
+- `~/.arduino15/packages/rp2040/hardware/rp2040/x.yy.zz/cores/rp2040/Arduino.h`
+
+With core after v1.5.0, this step is not necessary anymore thanks to the PR [Add defs for compatibility #142](https://github.com/earlephilhower/arduino-pico/pull/142).
+
 
 
 
@@ -1254,10 +1286,37 @@ void loop(void)
 
   #define EspSerial       Serial1
 
-#elif ( defined(ARDUINO_RASPBERRY_PI_PICO) || defined(ARDUINO_ADAFRUIT_FEATHER_RP2040) || defined(ARDUINO_GENERIC_RP2040) )
+#elif ( defined(ARDUINO_NANO_RP2040_CONNECT) || defined(ARDUINO_ARCH_RP2040) || defined(ARDUINO_RASPBERRY_PI_PICO) || \
+      defined(ARDUINO_GENERIC_RP2040) || defined(ARDUINO_ADAFRUIT_FEATHER_RP2040) )
     
   #warning RASPBERRY_PI_PICO board selected
-  #define BOARD_TYPE  "RASPBERRY_PI_PICO"
+
+  #if defined(ARDUINO_ARCH_MBED)
+
+    #warning Using ARDUINO_ARCH_MBED
+    
+    #if ( defined(ARDUINO_NANO_RP2040_CONNECT)    || defined(ARDUINO_RASPBERRY_PI_PICO) || \
+          defined(ARDUINO_GENERIC_RP2040) || defined(ARDUINO_ADAFRUIT_FEATHER_RP2040) )
+      // Only undef known BOARD_NAME to use better one
+      #undef BOARD_NAME
+    #endif
+    
+    #if defined(ARDUINO_RASPBERRY_PI_PICO)
+      #define BOARD_NAME      "MBED RASPBERRY_PI_PICO"
+    #elif defined(ARDUINO_ADAFRUIT_FEATHER_RP2040)
+      #define BOARD_NAME      "MBED ADAFRUIT_FEATHER_RP2040"
+    #elif defined(ARDUINO_GENERIC_RP2040)
+      #define BOARD_NAME      "MBED GENERIC_RP2040"
+    #elif defined(ARDUINO_NANO_RP2040_CONNECT) 
+      #define BOARD_NAME      "MBED NANO_RP2040_CONNECT"
+    #else
+      // Use default BOARD_NAME if exists
+      #if !defined(BOARD_NAME)
+        #define BOARD_NAME      "MBED Unknown RP2040"
+      #endif
+    #endif
+  
+  #endif
   
   #define EspSerial       Serial1   
   
@@ -1302,7 +1361,7 @@ The following are debug terminal output when running example [AdvancedWebServer]
 
 ```
 Starting AdvancedWebServer on NRF52840_ITSYBITSY_EXPRESS
-ESP8266_AT_WebServer v1.2.0
+ESP8266_AT_WebServer v1.3.0
 [ESP_AT] Initializing ESP module
 [ESP_AT] Use ES8266-AT Command
 WiFi shield init done
@@ -1431,7 +1490,7 @@ The following are debug terminal output when running example [MQTT_ThingStream](
 
 ```
 Start MQTT_ThingStream on ITSYBITSY_M4 with ESP8266-AT & ESP8266_AT_WebServer Library
-ESP8266_AT_WebServer v1.2.0
+ESP8266_AT_WebServer v1.3.0
 [ESP_AT] Use ES8266-AT Command
 WiFi shield init done
 Connecting to SSID: HueNet1
@@ -1466,7 +1525,7 @@ The following are debug terminal output when running example [MQTTClient_Auth](e
 
 ```
 Starting MQTTClient_Auth on ITSYBITSY_M4 with ESP8266-AT & ESP8266_AT_WebServer Library
-ESP8266_AT_WebServer v1.2.0
+ESP8266_AT_WebServer v1.3.0
 [ESP_AT] Use ES8266-AT Command
 WiFi shield init done
 Connecting to SSID: HueNet1
@@ -1492,7 +1551,7 @@ The following are debug terminal output when running example [MQTTClient_Basic](
 
 ```
 MQTTClient_Basic on ITSYBITSY_M4 with ESP8266-AT & ESP8266_AT_WebServer Library
-ESP8266_AT_WebServer v1.2.0
+ESP8266_AT_WebServer v1.3.0
 [ESP_AT] Use ES8266-AT Command
 WiFi shield init done
 Connecting to SSID: HueNet1
@@ -1517,7 +1576,7 @@ The following are debug terminal output when running example [WebClientRepeating
 
 ```
 Starting WebClientRepeating on RASPBERRY_PI_PICO with ESP8266-AT & ESP8266_AT_WebServer Library
-ESP8266_AT_WebServer v1.2.0
+ESP8266_AT_WebServer v1.3.0
 [ESP_AT] Use ES8266-AT Command
 WiFi shield init done
 Connecting to SSID: HueNet1
@@ -1582,11 +1641,11 @@ Accept-Ranges: bytes
 
 #### 6. MQTTClient_Auth on RASPBERRY_PI_PICO using ESP8266-AT shield
 
-The following are debug terminal output when running example [MQTTClient_Auth](examples/MQTTClient_Auth) on RP2040-based RASPBERRY_PI_PICO and ESP8266-AT shield.
+The following are debug terminal output when running example [MQTTClient_Auth](examples/MQTTClient_Auth) on RP2040-based RASPBERRY_PI_PICO and ESP8266-AT shield using [Earle Philhower's arduino-pico core](https://github.com/earlephilhower/arduino-pico).
 
 ```
 Starting MQTTClient_Auth on RASPBERRY_PI_PICO with ESP8266-AT & ESP8266_AT_WebServer Library
-ESP8266_AT_WebServer v1.2.0
+ESP8266_AT_WebServer v1.3.0
 [ESP_AT] Use ES8266-AT Command
 WiFi shield init done
 Connecting to SSID: HueNet1
@@ -1601,6 +1660,32 @@ Message Send : MQTT_Pub => Hello from MQTTClient_Auth on RASPBERRY_PI_PICO with 
 Message arrived [MQTT_Pub] Hello from MQTTClient_Auth on RASPBERRY_PI_PICO with ESP8266-AT & ESP8266_AT_WebServer Library
 Message Send : MQTT_Pub => Hello from MQTTClient_Auth on RASPBERRY_PI_PICO with ESP8266-AT & ESP8266_AT_WebServer Library
 Message arrived [MQTT_Pub] Hello from MQTTClient_Auth on RASPBERRY_PI_PICO with ESP8266-AT & ESP8266_AT_WebServer Library
+```
+
+---
+
+#### 7. UdpNTPClient on MBED RASPBERRY_PI_PICO using ESP8266-AT shield
+
+The following are debug terminal output when running example [UdpNTPClient](examples/UdpNTPClient) on RP2040-based MBED RASPBERRY_PI_PICO and ESP8266-AT shield using [**Arduino-mbed RP2040** core](https://github.com/arduino/ArduinoCore-mbed).
+
+```
+Starting UdpNTPClient on MBED RASPBERRY_PI_PICO with ESP8266-AT & ESP8266_AT_WebServer Library
+ESP8266_AT_WebServer v1.3.0
+[ESP_AT] Use ES8266-AT Command
+WiFi shield init done
+Connecting to WPA SSID: HueNet1
+You're connected to the network, IP = 192.168.2.76
+UDP Packet received, size 48
+From 132.163.96.1, port 123
+Seconds since Jan 1 1900 = 3831340334
+Unix time = 1622351534
+The UTC time is 5:12:14
+UDP Packet received, size 48
+From 132.163.96.1, port 123
+Seconds since Jan 1 1900 = 3831340344
+Unix time = 1622351544
+The UTC time is 5:12:24
+
 ```
 
 ---
@@ -1677,6 +1762,11 @@ If you get compilation errors, more often than not, you may need to install a ne
 ---
 
 ## Releases
+
+### Releases v1.3.0
+
+1. Add support to RP2040-based boards, such as **Nano_RP2040_Connect, RASPBERRY_PI_PICO, ADAFRUIT_FEATHER_RP2040 and GENERIC_RP2040**, using [**Arduino-mbed RP2040** core](https://github.com/arduino/ArduinoCore-mbed).
+2. Fix bug.
 
 ### Releases v1.2.0
 
@@ -1818,9 +1908,11 @@ The library supports:
 - Generic Flight Controllers
 - Midatronics boards
 
-7. RP2040-based boards, such as **RASPBERRY_PI_PICO, ADAFRUIT_FEATHER_RP2040 and GENERIC_RP2040**.
+ 7. **SIPEED_MAIX_DUINO** boards
 
-8. **SIPEED_MAIX_DUINO** boards
+ 8. RP2040-based boards, such as **Nano RP2040 Connect**, using [**Arduino mbed OS for Nano boards**](https://github.com/arduino/ArduinoCore-mbed).
+
+ 9. RP2040-based boards, such as **RASPBERRY_PI_PICO, ADAFRUIT_FEATHER_RP2040 and GENERIC_RP2040**, using [**Arduino-mbed RP2040** core](https://github.com/arduino/ArduinoCore-mbed) or [**Earle Philhower's arduino-pico** core](https://github.com/earlephilhower/arduino-pico).
 
 ---
 
@@ -1846,7 +1938,6 @@ Submit issues to: [ESP8266_AT_WebServer issues](https://github.com/khoih-prog/ES
 2. Add SSL/TLS Client and Server support
 3. Support more types of boards using ESP8266 AT-command shields.
 4. Add mDNS features.
-5. Add support to RP2040-based boards such as RASPBERRY_PI_PICO, using [**Arduino-mbed RP2040** core](https://github.com/arduino/ArduinoCore-mbed)
 
 ### DONE
 
@@ -1864,8 +1955,10 @@ Submit issues to: [ESP8266_AT_WebServer issues](https://github.com/khoih-prog/ES
 12. Clean-up all compiler warnings possible.
 13. Add Version String 
 14. Add Table of Contents
-15. Add support to RP2040-based boards such as RASPBERRY_PI_PICO, using [Earle Philhower's arduino-pico core](https://github.com/earlephilhower/arduino-pico) 
-16. Add support to SIPEED_MAIX_DUINO
+15. Add support to SIPEED_MAIX_DUINO
+16. Add support to **Arduino Nano RP2040 Connect** using [**Arduino mbed OS for Nano boards**](https://github.com/arduino/ArduinoCore-mbed).
+17. Add support to RP2040-based boards, such as **RASPBERRY_PI_PICO, ADAFRUIT_FEATHER_RP2040 and GENERIC_RP2040**, using [**Earle Philhower's arduino-pico** core](https://github.com/earlephilhower/arduino-pico).
+18. Add support to RP2040-based boards, such as **RASPBERRY_PI_PICO, ADAFRUIT_FEATHER_RP2040 and GENERIC_RP2040**, using [**Arduino-mbed RP2040** core](https://github.com/arduino/ArduinoCore-mbed)
  
 ---
 ---

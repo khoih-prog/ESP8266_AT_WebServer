@@ -1,9 +1,6 @@
-/****************************************************************************************************************************
+/**************************************************************************************************************************************
   cencoder.h - c source to a base64 decoding algorithm implementation
-  For ESP8266 AT-command running shields
-
-  This is part of the libb64 project, and has been placed in the public domain.
-  For details, see http://sourceforge.net/projects/libb64
+  For ESP8266/ESP32 AT-command running shields
 
   ESP8266_AT_WebServer is a library for the ESP8266/ESP32 AT-command shields to run WebServer
   Based on and modified from ESP8266 https://github.com/esp8266/Arduino/releases
@@ -14,7 +11,7 @@
   @file       Esp8266WebServer.h
   @author     Ivan Grokhotkov
 
-  Version: 1.2.0
+  Version: 1.3.0
 
   Version Modified By   Date      Comments
   ------- -----------  ---------- -----------
@@ -35,8 +32,9 @@
   1.1.0   K Hoang      21/09/2020 Add support to UDP Multicast. Fix bugs.
   1.1.1   K Hoang      26/09/2020 Restore support to PROGMEM-related commands, such as sendContent_P() and send_P()
   1.1.2   K Hoang      28/12/2020 Suppress all possible compiler warnings
-  1.2.0   K Hoang      11/05/2021 Add support to BOARD_SIPEED_MAIX_DUINO and RASPBERRY_PI_PICO
- *****************************************************************************************************************************/
+  1.2.0   K Hoang      11/05/2021 Add support to BOARD_SIPEED_MAIX_DUINO and RASPBERRY_PI_PICO using Arduino-pico core
+  1.3.0   K Hoang      29/05/2021 Add support to Nano_RP2040_Connect, RASPBERRY_PI_PICO using Arduino mbed code
+ ***************************************************************************************************************************************/
 
 #pragma once
 
@@ -45,15 +43,22 @@
 #ifndef BASE64_CENCODE_H
 #define BASE64_CENCODE_H
 
-#define base64_encode_expected_len(n) ((((4 * n) / 3) + 3) & ~3)
+#define BASE64_CHARS_PER_LINE 72
+
+#define base64_encode_expected_len_nonewlines(n) ((((4 * (n)) / 3) + 3) & ~3)
+#define base64_encode_expected_len(n) \
+       (base64_encode_expected_len_nonewlines(n) + ((n / ((BASE64_CHARS_PER_LINE * 3) / 4)) + 1))
+
 
 #ifdef __cplusplus
-extern "C" {
+  extern "C" {
 #endif
 
 typedef enum 
 {
-  step_A, step_B, step_C
+  step_A, 
+  step_B, 
+  step_C
 } base64_encodestep;
 
 typedef struct 
@@ -61,9 +66,11 @@ typedef struct
   base64_encodestep step;
   char result;
   int stepcount;
+  int stepsnewline;
 } base64_encodestate;
 
 void base64_init_encodestate(base64_encodestate* state_in);
+void base64_init_encodestate_nonewlines(base64_encodestate* state_in);
 
 char base64_encode_value(char value_in);
 
@@ -74,7 +81,8 @@ int base64_encode_blockend(char* code_out, base64_encodestate* state_in);
 int base64_encode_chars(const char* plaintext_in, int length_in, char* code_out);
 
 #ifdef __cplusplus
-} // extern "C"
+  } // extern "C"
 #endif
 
 #endif /* BASE64_CENCODE_H */
+
