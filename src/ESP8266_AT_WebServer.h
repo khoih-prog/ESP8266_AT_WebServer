@@ -11,7 +11,7 @@
   @file       Esp8266WebServer.h
   @author     Ivan Grokhotkov
 
-  Version: 1.3.0
+  Version: 1.4.0
 
   Version Modified By   Date      Comments
   ------- -----------  ---------- -----------
@@ -34,12 +34,13 @@
   1.1.2   K Hoang      28/12/2020 Suppress all possible compiler warnings
   1.2.0   K Hoang      11/05/2021 Add support to BOARD_SIPEED_MAIX_DUINO and RASPBERRY_PI_PICO using Arduino-pico core
   1.3.0   K Hoang      29/05/2021 Add support to Nano_RP2040_Connect, RASPBERRY_PI_PICO using Arduino mbed code
+  1.4.0   K Hoang      14/08/2021 Add support to Adafruit nRF52 core v0.22.0+
  *****************************************************************************************************************************/
 
 #ifndef ESP8266_AT_WebServer_h
 #define ESP8266_AT_WebServer_h
 
-#define ESP8266_AT_WEBSERVER_VERSION      "ESP8266_AT_WebServer v1.3.0"
+#define ESP8266_AT_WEBSERVER_VERSION      "ESP8266_AT_WebServer v1.4.0"
 
 #define USE_NEW_WEBSERVER_VERSION         true
 
@@ -84,14 +85,18 @@
   #warning Use SAMD architecture from ESP8266_AT_WebServer
 #endif
 
-#if ( defined(NRF52840_FEATHER) || defined(NRF52832_FEATHER) || defined(NRF52_SERIES) || defined(ARDUINO_NRF52_ADAFRUIT) || \
-      defined(NRF52840_FEATHER_SENSE) || defined(NRF52840_ITSYBITSY) || defined(NRF52840_CIRCUITPLAY) || defined(NRF52840_CLUE) || \
-      defined(NRF52840_METRO) || defined(NRF52840_PCA10056) || defined(PARTICLE_XENON) || defined(NINA_B302_ublox) || defined(NINA_B112_ublox) )
+#if (defined(NRF52840_FEATHER) || defined(NRF52832_FEATHER) || defined(NRF52_SERIES) || defined(ARDUINO_NRF52_ADAFRUIT) || \
+     defined(NRF52840_FEATHER_SENSE) || defined(NRF52840_ITSYBITSY) || defined(NRF52840_CIRCUITPLAY) || \
+     defined(NRF52840_CLUE) || defined(NRF52840_METRO) || defined(NRF52840_PCA10056) || defined(PARTICLE_XENON) || \
+     defined(MDBT50Q_RX) || defined(NINA_B302_ublox) || defined(NINA_B112_ublox) )
   #if defined(ESP8266_AT_USE_NRF528XX)
     #undef ESP8266_AT_USE_NRF528XX
   #endif
   #define ESP8266_AT_USE_NRF528XX      true
   #warning Use nFR52 architecture from ESP8266_AT_WebServer
+  
+  #include <Adafruit_TinyUSB.h>
+  
 #endif
 
 #if ( defined(ARDUINO_SAM_DUE) || defined(__SAM3X8E__) )
