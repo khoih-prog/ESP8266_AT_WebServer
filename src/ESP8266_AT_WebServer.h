@@ -11,7 +11,7 @@
   @file       Esp8266WebServer.h
   @author     Ivan Grokhotkov
 
-  Version: 1.4.0
+  Version: 1.4.1
 
   Version Modified By   Date      Comments
   ------- -----------  ---------- -----------
@@ -35,12 +35,13 @@
   1.2.0   K Hoang      11/05/2021 Add support to BOARD_SIPEED_MAIX_DUINO and RASPBERRY_PI_PICO using Arduino-pico core
   1.3.0   K Hoang      29/05/2021 Add support to Nano_RP2040_Connect, RASPBERRY_PI_PICO using Arduino mbed code
   1.4.0   K Hoang      14/08/2021 Add support to Adafruit nRF52 core v0.22.0+
+  1.4.1   K Hoang      08/12/2021 Add Packages_Patches and instructions for BOARD_SIPEED_MAIX_DUINO
  *****************************************************************************************************************************/
 
 #ifndef ESP8266_AT_WebServer_h
 #define ESP8266_AT_WebServer_h
 
-#define ESP8266_AT_WEBSERVER_VERSION      "ESP8266_AT_WebServer v1.4.0"
+#define ESP8266_AT_WEBSERVER_VERSION      "ESP8266_AT_WebServer v1.4.1"
 
 #define USE_NEW_WEBSERVER_VERSION         true
 

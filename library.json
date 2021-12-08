@@ -1,6 +1,6 @@
 {
   "name": "ESP8266_AT_WebServer",
-  "version": "1.4.0",
+  "version": "1.4.1",
   "keywords": "wifi, WebServer, AT-command, wifi-shield, ESP8266, ESP32, Teensy, AVR, SAM DUE, SAMD21, SAMD51, STM32, nRF52, ESP8266-AT, ESP32-AT, rpi-pico, rp2040, nano-rp2040-connect, mbed",
   "description": "Simple WebServer library for AVR, Teensy, SAM DUE, SAMD21, SAMD51, STM32F/L/H/G/WB/MP1, nRF52, SIPEED_MAIX_DUINO and RP2040-based (Nano RP2040 Connect, RASPBERRY_PI_PICO) boards using ESP8266/ESP32 AT-command shields",
   "authors":
@@ -31,7 +31,9 @@
       "platforms": ["*"]
     }
   ],
+  "license": "MIT",
   "frameworks": "*",
   "platforms": "*",
-  "examples": "examples/*/*/*.ino"
+  "examples": "examples/*/*/*.ino",
+  "headers": ["ESP8266_AT_WebServer.h", "ESP8266_AT_Server.h", "ESP8266_AT_Client.h", "ESP8266_AT_Udp.h"]
 }
