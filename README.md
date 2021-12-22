@@ -84,6 +84,7 @@
   * [3. nRF52 Itsy-Bitsy nRF52840](#3-nrf52-itsy-bitsy-nrf52840)
   * [4. Seeeduino SEEED_XIAO_M0](#4-seeeduino-seeed_xiao_m0)
   * [5. RASPBERRY_PI_PICO](#5-raspberry_pi_pico)
+  * [6. MBED RASPBERRY_PI_PICO](#6-mbed-raspberry_pi_pico)
 * [Debug](#debug)
 * [Troubleshooting](#troubleshooting)
 * [Issues](#issues)
