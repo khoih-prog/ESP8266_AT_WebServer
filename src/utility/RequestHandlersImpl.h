@@ -11,7 +11,7 @@
   @file       Esp8266WebServer.h
   @author     Ivan Grokhotkov
 
-  Version: 1.4.1
+  Version: 1.5.0
 
   Version Modified By   Date      Comments
   ------- -----------  ---------- -----------
@@ -36,6 +36,7 @@
   1.3.0   K Hoang      29/05/2021 Add support to Nano_RP2040_Connect, RASPBERRY_PI_PICO using Arduino mbed code
   1.4.0   K Hoang      14/08/2021 Add support to Adafruit nRF52 core v0.22.0+
   1.4.1   K Hoang      08/12/2021 Add Packages_Patches and instructions for BOARD_SIPEED_MAIX_DUINO
+  1.5.0   K Hoang      19/12/2021 Reduce usage of Arduino String with std::string
  *****************************************************************************************************************************/
 
 #pragma once
@@ -50,7 +51,7 @@ class FunctionRequestHandler : public RequestHandler
 {
   public:
 
-    FunctionRequestHandler(ESP8266_AT_WebServer::THandlerFunction fn, ESP8266_AT_WebServer::THandlerFunction ufn, const String &uri, HTTPMethod method)
+    FunctionRequestHandler(ESP8266_AT_WebServer::THandlerFunction fn, ESP8266_AT_WebServer::THandlerFunction ufn, const String &uri, const HTTPMethod& method)
       : _fn(fn)
       , _ufn(ufn)
       , _uri(uri)
@@ -58,7 +59,7 @@ class FunctionRequestHandler : public RequestHandler
     {
     }
 
-    bool canHandle(HTTPMethod requestMethod, String requestUri) override
+    bool canHandle(const HTTPMethod& requestMethod, const String& requestUri) override
     {
       if (_method != HTTP_ANY && _method != requestMethod)
         return false;
@@ -78,7 +79,7 @@ class FunctionRequestHandler : public RequestHandler
       return false;
     }
 
-    bool canUpload(String requestUri) override
+    bool canUpload(const String& requestUri) override
     {
       if (!_ufn || !canHandle(HTTP_POST, requestUri))
         return false;
@@ -86,7 +87,7 @@ class FunctionRequestHandler : public RequestHandler
       return true;
     }
 
-    bool handle(ESP8266_AT_WebServer& server, HTTPMethod requestMethod, String requestUri) override
+    bool handle(ESP8266_AT_WebServer& server, const HTTPMethod& requestMethod, const String& requestUri) override
     {
       ESP_AT_UNUSED(server);
       
@@ -97,7 +98,7 @@ class FunctionRequestHandler : public RequestHandler
       return true;
     }
 
-    void upload(ESP8266_AT_WebServer& server, String requestUri, HTTPUpload& upload) override
+    void upload(ESP8266_AT_WebServer& server, const String& requestUri, const HTTPUpload& upload) override
     {
       ESP_AT_UNUSED(server);
       ESP_AT_UNUSED(upload);
@@ -117,7 +118,7 @@ class StaticRequestHandler : public RequestHandler
 {
   public:
 
-    bool canHandle(HTTPMethod requestMethod, String requestUri) override
+    bool canHandle(const HTTPMethod& requestMethod, const String& requestUri) override
     {
       if (requestMethod != HTTP_GET)
         return false;

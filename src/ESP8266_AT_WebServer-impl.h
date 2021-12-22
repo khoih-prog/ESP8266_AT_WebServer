@@ -11,7 +11,7 @@
   @file       Esp8266WebServer.h
   @author     Ivan Grokhotkov
 
-  Version: 1.4.1
+  Version: 1.5.0
 
   Version Modified By   Date      Comments
   ------- -----------  ---------- -----------
@@ -36,6 +36,7 @@
   1.3.0   K Hoang      29/05/2021 Add support to Nano_RP2040_Connect, RASPBERRY_PI_PICO using Arduino mbed code
   1.4.0   K Hoang      14/08/2021 Add support to Adafruit nRF52 core v0.22.0+
   1.4.1   K Hoang      08/12/2021 Add Packages_Patches and instructions for BOARD_SIPEED_MAIX_DUINO
+  1.5.0   K Hoang      19/12/2021 Reduce usage of Arduino String with std::string
  *****************************************************************************************************************************/
 
 #ifndef ESP8266_AT_WebServer_impl_h
@@ -50,6 +51,8 @@
 #include "utility/mimetable.h"
 
 const char * AUTHORIZATION_HEADER = "Authorization";
+
+// New to use EWString
 
 ESP8266_AT_WebServer::ESP8266_AT_WebServer(int port)
   : _server(port)
@@ -273,6 +276,7 @@ void ESP8266_AT_WebServer::handleClient()
   
 #else
 
+// Update from v1.5.0
 void ESP8266_AT_WebServer::handleClient() 
 {
   if (_currentStatus == HC_NONE)
@@ -281,7 +285,6 @@ void ESP8266_AT_WebServer::handleClient()
     
     if (!client)
     {
-      //LOGINFO(F("handleClient:No client"));
       return;
     }
 
@@ -295,26 +298,31 @@ void ESP8266_AT_WebServer::handleClient()
   if (!_currentClient.connected())
   {
     AT_LOGDEBUG(F("handleClient: Client not connected"));
-    _currentClient = ESP8266_AT_Client();
+    
+    //_currentClient = ESP8266_AT_Client();    
     _currentStatus = HC_NONE;
-    return;
+    
+    goto stopClient;
+    //return;
   }
 
   // Wait for data from client to become available
   if (_currentStatus == HC_WAIT_READ)
   {
-    AT_LOGDEBUG(F("handleClient: _currentStatus = HC_WAIT_READ"));
+    //AT_LOGDEBUG(F("handleClient: _currentStatus = HC_WAIT_READ"));
     
     if (!_currentClient.available())
     {
-      AT_LOGDEBUG(F("handleClient: Client not available"));
+      //AT_LOGDEBUG(F("handleClient: Client not available"));
       
       if (millis() - _statusChange > HTTP_MAX_DATA_WAIT)
       {
         AT_LOGDEBUG(F("handleClient: HTTP_MAX_DATA_WAIT Timeout"));
         
-        _currentClient = ESP8266_AT_Client();
+        //_currentClient = ESP8266_AT_Client();
         _currentStatus = HC_NONE;
+        
+        goto stopClient;
       }
       
       yield();
@@ -327,9 +335,11 @@ void ESP8266_AT_WebServer::handleClient()
     {
       AT_LOGDEBUG(F("handleClient: Can't parse request"));
       
-      _currentClient = ESP8266_AT_Client();
+      //_currentClient = ESP8266_AT_Client();
       _currentStatus = HC_NONE;
-      return;
+      
+      goto stopClient;
+      //return;
     }
     
     _currentClient.setTimeout(HTTP_MAX_SEND_WAIT);
@@ -342,9 +352,11 @@ void ESP8266_AT_WebServer::handleClient()
     {
       AT_LOGDEBUG(F("handleClient: Connection closed"));
       
-      _currentClient = ESP8266_AT_Client();
+      //_currentClient = ESP8266_AT_Client();
       _currentStatus = HC_NONE;
-      return;
+      
+      goto stopClient;
+      //return;
     }
     else
     {
@@ -358,7 +370,7 @@ void ESP8266_AT_WebServer::handleClient()
   {
     if (millis() - _statusChange > HTTP_MAX_CLOSE_WAIT)
     {
-      _currentClient = ESP8266_AT_Client();
+      //_currentClient = ESP8266_AT_Client();
       _currentStatus = HC_NONE;
       
       AT_LOGDEBUG(F("handleClient: HTTP_MAX_CLOSE_WAIT Timeout"));
@@ -371,6 +383,8 @@ void ESP8266_AT_WebServer::handleClient()
       return;
     }
   }
+
+stopClient:
   
   // KH, fix bug. Have to close the connection
   _currentClient.stop();
@@ -392,18 +406,19 @@ void ESP8266_AT_WebServer::stop()
 
 void ESP8266_AT_WebServer::sendHeader(const String& name, const String& value, bool first) 
 {
-  String headerLine = name;
+  EWString headerLine = fromString(name);
+  
   headerLine += ": ";
-  headerLine += value;
-  headerLine += "\r\n";
+  headerLine += fromString(value);
+  headerLine += RETURN_NEWLINE;
 
   if (first) 
   {
-    _responseHeaders = headerLine + _responseHeaders;
+    _responseHeaders = fromEWString(headerLine + fromString(_responseHeaders));
   }
   else 
   {
-    _responseHeaders += headerLine;
+    _responseHeaders = fromEWString(fromString(_responseHeaders) + headerLine);
   }
 }
 
@@ -414,14 +429,16 @@ void ESP8266_AT_WebServer::setContentLength(size_t contentLength)
 
 void ESP8266_AT_WebServer::_prepareHeader(String& response, int code, const char* content_type, size_t contentLength) 
 {
-  response = "HTTP/1." + String(_currentVersion) + " ";
-  response += String(code);
-  response += " ";
-  response += _responseCodeToString(code);
-  response += "\r\n";
-
-  using namespace mime;
+  EWString aResponse = fromString(response);
   
+  aResponse = "HTTP/1." + fromString(String(_currentVersion)) + " ";
+  aResponse += code;
+  aResponse += " ";
+  aResponse += fromString(_responseCodeToString(code));
+  aResponse += RETURN_NEWLINE;
+
+ using namespace mime;
+ 
   if (!content_type)
       content_type = mimeTable[html].mimeType;
 
@@ -436,28 +453,78 @@ void ESP8266_AT_WebServer::_prepareHeader(String& response, int code, const char
     sendHeader("Content-Length", String(_contentLength));
   } 
   else if (_contentLength == CONTENT_LENGTH_UNKNOWN && _currentVersion) 
-  { //HTTP/1.1 or above client
+  { 
+    //HTTP/1.1 or above client
     //let's do chunked
     _chunked = true;
     sendHeader("Accept-Ranges", "none");
     sendHeader("Transfer-Encoding", "chunked");
   }
-
+  
   AT_LOGDEBUG(F("_prepareHeader sendHeader Conn close"));
-
+  
   sendHeader("Connection", "close");
 
-  response += _responseHeaders;
-  response += "\r\n";
+  aResponse += fromString(_responseHeaders);
+  aResponse += RETURN_NEWLINE;
+  
+  response = fromEWString(aResponse);
     
   //MR & KH fix
   //_responseHeaders = String();
   _responseHeaders = *(new String());
 }
 
+#if !ESP_AT_USE_AVR 
+
+void ESP8266_AT_WebServer::_prepareHeader(EWString& response, int code, const char* content_type, size_t contentLength) 
+{
+  response = "HTTP/1." + fromString(String(_currentVersion)) + " ";
+  response += code;
+  response += " ";
+  response += fromString(_responseCodeToString(code));
+  response += RETURN_NEWLINE;
+
+ using namespace mime;
+ 
+  if (!content_type)
+      content_type = mimeTable[html].mimeType;
+
+  sendHeader("Content-Type", content_type, true);
+  
+  if (_contentLength == CONTENT_LENGTH_NOT_SET) 
+  {
+    sendHeader("Content-Length", String(contentLength));
+  } 
+  else if (_contentLength != CONTENT_LENGTH_UNKNOWN) 
+  {
+    sendHeader("Content-Length", String(_contentLength));
+  } 
+  else if (_contentLength == CONTENT_LENGTH_UNKNOWN && _currentVersion) 
+  { 
+    //HTTP/1.1 or above client
+    //let's do chunked
+    _chunked = true;
+    sendHeader("Accept-Ranges", "none");
+    sendHeader("Transfer-Encoding", "chunked");
+  }
+  
+  AT_LOGDEBUG(F("_prepareHeader sendHeader Conn close"));
+  
+  sendHeader("Connection", "close");
+
+  response += fromString(_responseHeaders);
+  response += RETURN_NEWLINE;
+  
+  //MR & KH fix
+  _responseHeaders = *(new String()); 
+}
+
+#endif
+
 void ESP8266_AT_WebServer::send(int code, const char* content_type, const String& content) 
 {
-  String header;
+  EWString header;
   
   // Can we asume the following?
   //if(code == 200 && content.length() == 0 && _contentLength == CONTENT_LENGTH_NOT_SET)
@@ -469,10 +536,10 @@ void ESP8266_AT_WebServer::send(int code, const char* content_type, const String
   _prepareHeader(header, code, content_type, content.length());
 
   _currentClient.write((const uint8_t *)header.c_str(), header.length());
-
+  
   if (content.length())
   {
-    AT_LOGDEBUG1(F("send1: write header = "), header);
+    AT_LOGDEBUG1(F("send1: write header = "), fromEWString(header));
     //sendContent(content);
     sendContent(content, content.length());
   }
@@ -480,7 +547,7 @@ void ESP8266_AT_WebServer::send(int code, const char* content_type, const String
 
 void ESP8266_AT_WebServer::send(int code, char* content_type, const String& content, size_t contentLength)
 {
-  String header;
+  EWString header;
 
   AT_LOGDEBUG1(F("send2: len = "), contentLength);
   AT_LOGDEBUG1(F("content = "), content);
@@ -491,7 +558,7 @@ void ESP8266_AT_WebServer::send(int code, char* content_type, const String& cont
   _prepareHeader(header, code, (const char* )type, contentLength);
 
   AT_LOGDEBUG1(F("send2: hdrlen = "), header.length());
-  AT_LOGDEBUG1(F("header = "), header);
+  AT_LOGDEBUG1(F("header = "), fromEWString(header));
 
   _currentClient.write((const uint8_t *) header.c_str(), header.length());
   
@@ -513,7 +580,7 @@ void ESP8266_AT_WebServer::send(int code, const String& content_type, const Stri
 
 void ESP8266_AT_WebServer::sendContent(const String& content) 
 {
-  const char * footer = "\r\n";
+  const char * footer = RETURN_NEWLINE;
   size_t len = content.length();
   
   if (_chunked) 
@@ -538,7 +605,7 @@ void ESP8266_AT_WebServer::sendContent(const String& content)
 
 void ESP8266_AT_WebServer::sendContent(const String& content, size_t size)
 {
-  const char * footer = "\r\n";
+  const char * footer = RETURN_NEWLINE;
   
   if (_chunked) 
   {
@@ -595,16 +662,17 @@ void ESP8266_AT_WebServer::send_P(int code, PGM_P content_type, PGM_P content)
 
 void ESP8266_AT_WebServer::send_P(int code, PGM_P content_type, PGM_P content, size_t contentLength) 
 {
-  String header;
+  EWString header;
+  
   char type[64];
   
   memccpy_P((void*)type, (PGM_VOID_P)content_type, 0, sizeof(type));
   _prepareHeader(header, code, (const char* )type, contentLength);
-
+  
   AT_LOGDEBUG1(F("send_P: len = "), contentLength);
   AT_LOGDEBUG1(F("content = "), content);
   AT_LOGDEBUG1(F("send_P: hdrlen = "), header.length());
-  AT_LOGDEBUG1(F("header = "), header);
+  AT_LOGDEBUG1(F("header = "), fromEWString(header));
 
   _currentClient.write((const uint8_t *) header.c_str(), header.length());
   
@@ -621,7 +689,7 @@ void ESP8266_AT_WebServer::sendContent_P(PGM_P content)
 
 void ESP8266_AT_WebServer::sendContent_P(PGM_P content, size_t size) 
 {
-  const char * footer = "\r\n";
+  const char * footer = RETURN_NEWLINE;
   
   if (_chunked) 
   {
@@ -669,7 +737,7 @@ void ESP8266_AT_WebServer::sendContent_P(PGM_P content, size_t size)
 //////
 
 
-String ESP8266_AT_WebServer::arg(String name) 
+String ESP8266_AT_WebServer::arg(const String& name) 
 {
   for (int i = 0; i < _currentArgCount; ++i) 
   {
@@ -701,7 +769,7 @@ int ESP8266_AT_WebServer::args()
   return _currentArgCount;
 }
 
-bool ESP8266_AT_WebServer::hasArg(String  name) 
+bool ESP8266_AT_WebServer::hasArg(const String& name) 
 {
   for (int i = 0; i < _currentArgCount; ++i) 
   {
@@ -713,7 +781,7 @@ bool ESP8266_AT_WebServer::hasArg(String  name)
 }
 
 
-String ESP8266_AT_WebServer::header(String name) 
+String ESP8266_AT_WebServer::header(const String& name) 
 {
   for (int i = 0; i < _headerKeysCount; ++i) 
   {
@@ -761,7 +829,7 @@ int ESP8266_AT_WebServer::headers()
   return _headerKeysCount;
 }
 
-bool ESP8266_AT_WebServer::hasHeader(String name) 
+bool ESP8266_AT_WebServer::hasHeader(const String& name) 
 {
   for (int i = 0; i < _headerKeysCount; ++i) 
   {
@@ -844,8 +912,10 @@ void ESP8266_AT_WebServer::_finalizeResponse()
   }
 }
 
-String ESP8266_AT_WebServer::_responseCodeToString(int code) {
-  switch (code) {
+String ESP8266_AT_WebServer::_responseCodeToString(int code) 
+{
+  switch (code) 
+  {
     case 100: return F("Continue");
     case 101: return F("Switching Protocols");
     case 200: return F("OK");

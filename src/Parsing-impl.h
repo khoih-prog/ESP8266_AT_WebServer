@@ -11,7 +11,7 @@
   @file       Esp8266WebServer.h
   @author     Ivan Grokhotkov
 
-  Version: 1.4.1
+  Version: 1.5.0
 
   Version Modified By   Date      Comments
   ------- -----------  ---------- -----------
@@ -36,6 +36,7 @@
   1.3.0   K Hoang      29/05/2021 Add support to Nano_RP2040_Connect, RASPBERRY_PI_PICO using Arduino mbed code
   1.4.0   K Hoang      14/08/2021 Add support to Adafruit nRF52 core v0.22.0+
   1.4.1   K Hoang      08/12/2021 Add Packages_Patches and instructions for BOARD_SIPEED_MAIX_DUINO
+  1.5.0   K Hoang      19/12/2021 Reduce usage of Arduino String with std::string
  *****************************************************************************************************************************/
 
 #ifndef ESP8266_AT_Parsing_impl_h
@@ -224,7 +225,6 @@ bool ESP8266_AT_WebServer::_parseRequest(ESP8266_AT_Client& client)
 
   _currentMethod = method;
 
-
   AT_LOGDEBUG1(F("method: "), methodStr);
   AT_LOGDEBUG1(F("url: "), url);
   AT_LOGDEBUG1(F("search: "), searchStr);
@@ -249,9 +249,13 @@ bool ESP8266_AT_WebServer::_parseRequest(ESP8266_AT_Client& client)
     String headerName;
     String headerValue;
     
-    bool isForm             = false;
-    bool isEncoded          = false;
-    uint32_t contentLength  = 0;
+#if USE_NEW_WEBSERVER_VERSION
+    bool isEncoded  = false;
+#endif    
+    
+    bool isForm     = false;
+    
+    uint32_t contentLength = 0;
 
     //parse headers
     while (1)
@@ -296,7 +300,9 @@ bool ESP8266_AT_WebServer::_parseRequest(ESP8266_AT_Client& client)
         else if (headerValue.startsWith("application/x-www-form-urlencoded"))
         {
           isForm = false;
+#if USE_NEW_WEBSERVER_VERSION          
           isEncoded = true;
+#endif          
         }
         else if (headerValue.startsWith("multipart/"))
         {
@@ -550,7 +556,6 @@ void ESP8266_AT_WebServer::_parseArguments(const String& data)
 
 int ESP8266_AT_WebServer::_parseArgumentsPrivate(const String& data, vl::Func<void(String&,String&,const String&,int,int,int,int)> handler) 
 {
-
   AT_LOGDEBUG1(F("args: "), data);
 
   size_t pos = 0;
@@ -628,7 +633,7 @@ uint8_t ESP8266_AT_WebServer::_uploadReadByte(ESP8266_AT_Client& client)
 
 #else
 
-void ESP8266_AT_WebServer::_parseArguments(String data) 
+void ESP8266_AT_WebServer::_parseArguments(const String& data) 
 {
 
   AT_LOGDEBUG1(F("args: "), data);
@@ -1032,8 +1037,8 @@ bool ESP8266_AT_WebServer::_parseFormUploadAborted()
 
 #else
 
-bool ESP8266_AT_WebServer::_parseForm(ESP8266_AT_Client& client, String boundary, uint32_t len) {
-
+bool ESP8266_AT_WebServer::_parseForm(ESP8266_AT_Client& client, const String& boundary, uint32_t len) 
+{
   AT_LOGDEBUG1(F("Parse Form: Boundary: "), boundary);
   AT_LOGDEBUG1(F("Length: "), len);
 

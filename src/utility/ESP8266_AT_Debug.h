@@ -11,7 +11,7 @@
   @file       Esp8266WebServer.h
   @author     Ivan Grokhotkov
 
-  Version: 1.4.1
+  Version: 1.5.0
 
   Version Modified By   Date      Comments
   ------- -----------  ---------- -----------
@@ -36,6 +36,7 @@
   1.3.0   K Hoang      29/05/2021 Add support to Nano_RP2040_Connect, RASPBERRY_PI_PICO using Arduino mbed code
   1.4.0   K Hoang      14/08/2021 Add support to Adafruit nRF52 core v0.22.0+
   1.4.1   K Hoang      08/12/2021 Add Packages_Patches and instructions for BOARD_SIPEED_MAIX_DUINO
+  1.5.0   K Hoang      19/12/2021 Reduce usage of Arduino String with std::string
  *****************************************************************************************************************************/
 
 #ifndef ESP8266_AT_Debug_H
@@ -60,30 +61,53 @@
   #define _ESP_AT_LOGLEVEL_       1
 #endif
 
+const char EAT_MARK[]  = "[ESP_AT] ";
+const char EAT_SPACE[] = " ";
+const char EAT_LINE[]  = "========================================\n";
 
-#define AT_LOGERROR(x)         if(_ESP_AT_LOGLEVEL_>0) { DEBUG_OUTPUT.print("[ESP_AT] "); DEBUG_OUTPUT.println(x); }
-#define AT_LOGERROR0(x)        if(_ESP_AT_LOGLEVEL_>0) { DEBUG_OUTPUT.print(x); }
-#define AT_LOGERROR1(x,y)      if(_ESP_AT_LOGLEVEL_>0) { DEBUG_OUTPUT.print("[ESP_AT] "); DEBUG_OUTPUT.print(x); DEBUG_OUTPUT.print(" "); DEBUG_OUTPUT.println(y); }
-#define AT_LOGERROR2(x,y,z)    if(_ESP_AT_LOGLEVEL_>0) { DEBUG_OUTPUT.print(x); DEBUG_OUTPUT.print(" "); DEBUG_OUTPUT.print(y); DEBUG_OUTPUT.print(" "); DEBUG_OUTPUT.println(z); }
-#define AT_LOGERROR3(x,y,z,w)  if(_ESP_AT_LOGLEVEL_>0) { DEBUG_OUTPUT.print("[ESP_AT] "); DEBUG_OUTPUT.print(x); DEBUG_OUTPUT.print(" "); DEBUG_OUTPUT.print(y); DEBUG_OUTPUT.print(" "); DEBUG_OUTPUT.print(z); DEBUG_OUTPUT.print(" "); DEBUG_OUTPUT.println(w);}
+#define EAT_PRINT_MARK   EAT_PRINT(EAT_MARK)
+#define EAT_PRINT_SP     EAT_PRINT(EAT_SPACE)
+#define EAT_PRINT_LINE   EAT_PRINT(EAT_LINE)
 
-#define AT_LOGWARN(x)         if(_ESP_AT_LOGLEVEL_>1) { DEBUG_OUTPUT.print("[ESP_AT] "); DEBUG_OUTPUT.println(x); }
-#define AT_LOGWARN0(x)        if(_ESP_AT_LOGLEVEL_>1) { DEBUG_OUTPUT.print(x); }
-#define AT_LOGWARN1(x,y)      if(_ESP_AT_LOGLEVEL_>1) { DEBUG_OUTPUT.print("[ESP_AT] "); DEBUG_OUTPUT.print(x); DEBUG_OUTPUT.print(" "); DEBUG_OUTPUT.println(y); }
-#define AT_LOGWARN2(x,y,z)    if(_ESP_AT_LOGLEVEL_>1) { DEBUG_OUTPUT.print(x); DEBUG_OUTPUT.print(" "); DEBUG_OUTPUT.print(y); DEBUG_OUTPUT.print(" "); DEBUG_OUTPUT.println(z); }
-#define AT_LOGWARN3(x,y,z,w)  if(_ESP_AT_LOGLEVEL_>1) { DEBUG_OUTPUT.print("[ESP_AT] "); DEBUG_OUTPUT.print(x); DEBUG_OUTPUT.print(" "); DEBUG_OUTPUT.print(y); DEBUG_OUTPUT.print(" "); DEBUG_OUTPUT.print(z); DEBUG_OUTPUT.print(" "); DEBUG_OUTPUT.println(w);}
+#define EAT_PRINT        DEBUG_OUTPUT.print
+#define EAT_PRINTLN      DEBUG_OUTPUT.println
 
-#define AT_LOGINFO(x)         if(_ESP_AT_LOGLEVEL_>2) { DEBUG_OUTPUT.print("[ESP_AT] "); DEBUG_OUTPUT.println(x); }
-#define AT_LOGINFO0(x)        if(_ESP_AT_LOGLEVEL_>2) { DEBUG_OUTPUT.print(x); }
-#define AT_LOGINFO1(x,y)      if(_ESP_AT_LOGLEVEL_>2) { DEBUG_OUTPUT.print("[ESP_AT] "); DEBUG_OUTPUT.print(x); DEBUG_OUTPUT.print(" "); DEBUG_OUTPUT.println(y); }
-#define AT_LOGINFO2(x,y,z)    if(_ESP_AT_LOGLEVEL_>2) { DEBUG_OUTPUT.print(x); DEBUG_OUTPUT.print(" "); DEBUG_OUTPUT.print(y); DEBUG_OUTPUT.print(" "); DEBUG_OUTPUT.println(z); }
-#define AT_LOGINFO3(x,y,z,w)  if(_ESP_AT_LOGLEVEL_>2) { DEBUG_OUTPUT.print("[ESP_AT] "); DEBUG_OUTPUT.print(x); DEBUG_OUTPUT.print(" "); DEBUG_OUTPUT.print(y); DEBUG_OUTPUT.print(" "); DEBUG_OUTPUT.print(z); DEBUG_OUTPUT.print(" "); DEBUG_OUTPUT.println(w);}
+///////////////////////////////////////
 
-#define AT_LOGDEBUG(x)        if(_ESP_AT_LOGLEVEL_>3) { DEBUG_OUTPUT.print("[ESP_AT] "); DEBUG_OUTPUT.println(x); }
-#define AT_LOGDEBUG0(x)       if(_ESP_AT_LOGLEVEL_>3) { DEBUG_OUTPUT.print(x); }
-#define AT_LOGDEBUG1(x,y)     if(_ESP_AT_LOGLEVEL_>3) { DEBUG_OUTPUT.print("[ESP_AT] "); DEBUG_OUTPUT.print(x); DEBUG_OUTPUT.print(" "); DEBUG_OUTPUT.println(y); }
-#define AT_LOGDEBUG2(x,y,z)   if(_ESP_AT_LOGLEVEL_>3) { DEBUG_OUTPUT.print("[ESP_AT] "); DEBUG_OUTPUT.print(x); DEBUG_OUTPUT.print(" "); DEBUG_OUTPUT.print(y); DEBUG_OUTPUT.print(" "); DEBUG_OUTPUT.println(z); }
-#define AT_LOGDEBUG3(x,y,z,w) if(_ESP_AT_LOGLEVEL_>3) { DEBUG_OUTPUT.print("[ESP_AT] "); DEBUG_OUTPUT.print(x); DEBUG_OUTPUT.print(" "); DEBUG_OUTPUT.print(y); DEBUG_OUTPUT.print(" "); DEBUG_OUTPUT.print(z); DEBUG_OUTPUT.print(" "); DEBUG_OUTPUT.println(w);}
+#define AT_LOGERROR(x)         if(_ESP_AT_LOGLEVEL_>0) { EAT_PRINT_MARK; EAT_PRINTLN(x); }
+#define AT_LOGERROR_LINE(x)    if(_ESP_AT_LOGLEVEL_>0) { EAT_PRINT_MARK; EAT_PRINTLN(x); EAT_PRINT_LINE; }
+#define AT_LOGERROR0(x)        if(_ESP_AT_LOGLEVEL_>0) { EAT_PRINT(x); }
+#define AT_LOGERROR1(x,y)      if(_ESP_AT_LOGLEVEL_>0) { EAT_PRINT_MARK; EAT_PRINT(x); EAT_PRINT_SP; EAT_PRINTLN(y); }
+#define AT_LOGERROR2(x,y,z)    if(_ESP_AT_LOGLEVEL_>0) { EAT_PRINT_MARK; EAT_PRINT(x); EAT_PRINT_SP; EAT_PRINT(y); EAT_PRINT_SP; EAT_PRINTLN(z); }
+#define AT_LOGERROR3(x,y,z,w)  if(_ESP_AT_LOGLEVEL_>0) { EAT_PRINT_MARK; EAT_PRINT(x); EAT_PRINT_SP; EAT_PRINT(y); EAT_PRINT_SP; EAT_PRINT(z); EAT_PRINT_SP; EAT_PRINTLN(w); }
 
+///////////////////////////////////////
+
+#define AT_LOGWARN(x)          if(_ESP_AT_LOGLEVEL_>1) { EAT_PRINT_MARK; EAT_PRINTLN(x); }
+#define AT_LOGWARN_LINE(x)     if(_ESP_AT_LOGLEVEL_>1) { EAT_PRINT_MARK; EAT_PRINTLN(x); EAT_PRINT_LINE; }
+#define AT_LOGWARN0(x)         if(_ESP_AT_LOGLEVEL_>1) { EAT_PRINT(x); }
+#define AT_LOGWARN1(x,y)       if(_ESP_AT_LOGLEVEL_>1) { EAT_PRINT_MARK; EAT_PRINT(x); EAT_PRINT_SP; EAT_PRINTLN(y); }
+#define AT_LOGWARN2(x,y,z)     if(_ESP_AT_LOGLEVEL_>1) { EAT_PRINT_MARK; EAT_PRINT(x); EAT_PRINT_SP; EAT_PRINT(y); EAT_PRINT_SP; EAT_PRINTLN(z); }
+#define AT_LOGWARN3(x,y,z,w)   if(_ESP_AT_LOGLEVEL_>1) { EAT_PRINT_MARK; EAT_PRINT(x); EAT_PRINT_SP; EAT_PRINT(y); EAT_PRINT_SP; EAT_PRINT(z); EAT_PRINT_SP; EAT_PRINTLN(w); }
+
+///////////////////////////////////////
+
+#define AT_LOGINFO(x)          if(_ESP_AT_LOGLEVEL_>2) { EAT_PRINT_MARK; EAT_PRINTLN(x); }
+#define AT_LOGINFO_LINE(x)     if(_ESP_AT_LOGLEVEL_>2) { EAT_PRINT_MARK; EAT_PRINTLN(x); EAT_PRINT_LINE; }
+#define AT_LOGINFO0(x)         if(_ESP_AT_LOGLEVEL_>2) { EAT_PRINT(x); }
+#define AT_LOGINFO1(x,y)       if(_ESP_AT_LOGLEVEL_>2) { EAT_PRINT_MARK; EAT_PRINT(x); EAT_PRINT_SP; EAT_PRINTLN(y); }
+#define AT_LOGINFO2(x,y,z)     if(_ESP_AT_LOGLEVEL_>2) { EAT_PRINT_MARK; EAT_PRINT(x); EAT_PRINT_SP; EAT_PRINT(y); EAT_PRINT_SP; EAT_PRINTLN(z); }
+#define AT_LOGINFO3(x,y,z,w)   if(_ESP_AT_LOGLEVEL_>2) { EAT_PRINT_MARK; EAT_PRINT(x); EAT_PRINT_SP; EAT_PRINT(y); EAT_PRINT_SP; EAT_PRINT(z); EAT_PRINT_SP; EAT_PRINTLN(w); }
+
+///////////////////////////////////////
+
+#define AT_LOGDEBUG(x)         if(_ESP_AT_LOGLEVEL_>3) { EAT_PRINT_MARK; EAT_PRINTLN(x); }
+#define AT_LOGDEBUG_LINE(x)    if(_ESP_AT_LOGLEVEL_>3) { EAT_PRINT_MARK; EAT_PRINTLN(x); EAT_PRINT_LINE; }
+#define AT_LOGDEBUG0(x)        if(_ESP_AT_LOGLEVEL_>3) { EAT_PRINT(x); }
+#define AT_LOGDEBUG1(x,y)      if(_ESP_AT_LOGLEVEL_>3) { EAT_PRINT_MARK; EAT_PRINT(x); EAT_PRINT_SP; EAT_PRINTLN(y); }
+#define AT_LOGDEBUG2(x,y,z)    if(_ESP_AT_LOGLEVEL_>3) { EAT_PRINT_MARK; EAT_PRINT(x); EAT_PRINT_SP; EAT_PRINT(y); EAT_PRINT_SP; EAT_PRINTLN(z); }
+#define AT_LOGDEBUG3(x,y,z,w)  if(_ESP_AT_LOGLEVEL_>3) { EAT_PRINT_MARK; EAT_PRINT(x); EAT_PRINT_SP; EAT_PRINT(y); EAT_PRINT_SP; EAT_PRINT(z); EAT_PRINT_SP; EAT_PRINTLN(w); }
+
+///////////////////////////////////////
 
 #endif

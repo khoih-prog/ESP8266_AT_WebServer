@@ -131,7 +131,7 @@ void setup()
   httpRequest();
 }
 
-void printoutData(void)
+void printoutData()
 {
   // if there are incoming bytes available
   // from the server, read them and print them

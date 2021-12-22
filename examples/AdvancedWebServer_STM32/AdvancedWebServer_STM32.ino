@@ -149,7 +149,7 @@ void drawGraph()
   server.send(200, F("image/svg+xml"), out);
 }
 
-void setup(void)
+void setup()
 {
   pinMode(led, OUTPUT);
   digitalWrite(led, 0);
@@ -200,7 +200,7 @@ void setup(void)
   Serial.println(WiFi.localIP());
 }
 
-void loop(void)
+void loop()
 {
   server.handleClient();
 }
