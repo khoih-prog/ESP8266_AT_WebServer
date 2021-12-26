@@ -70,7 +70,7 @@ const int led = 13;
 
 void handleRoot()
 {
-#define BUFFER_SIZE     500
+#define BUFFER_SIZE     512
   
   digitalWrite(led, 1);
   char temp[BUFFER_SIZE];
@@ -127,21 +127,26 @@ void handleNotFound()
   digitalWrite(led, 0);
 }
 
-#if (defined(ESP8266_AT_WEBSERVER_VERSION_INT) && (ESP8266_AT_WEBSERVER_VERSION_INT >= 1005000) && !ESP_AT_USE_AVR)
-#warning Using EWString
+#if 1
 
-EWString initHeader = "<svg xmlns=\"http://www.w3.org/2000/svg\" version=\"1.1\" width=\"310\" height=\"150\">\n" \
-                      "<rect width=\"310\" height=\"150\" fill=\"rgb(250, 230, 210)\" stroke-width=\"3\" stroke=\"rgb(0, 0, 0)\" />\n" \
-                      "<g stroke=\"blue\">\n";
+#define ORIGINAL_STR_LEN        2048
 
 void drawGraph()
 {
-  EWString out;
-  
-  out.reserve(3000);
+  static String out;
+  static uint16_t previousStrLen = ORIGINAL_STR_LEN;
+
+  if (out.length() == 0)
+  {
+    AT_LOGWARN1(F("String Len = 0, extend to"), ORIGINAL_STR_LEN);
+    out.reserve(ORIGINAL_STR_LEN);
+  }
+
+  out = F( "<svg xmlns=\"http://www.w3.org/2000/svg\" version=\"1.1\" width=\"310\" height=\"150\">\n" \
+           "<rect width=\"310\" height=\"150\" fill=\"rgb(250, 230, 210)\" stroke-width=\"3\" stroke=\"rgb(0, 0, 0)\" />\n" \
+           "<g stroke=\"blue\">\n");
+
   char temp[70];
-  
-  out += initHeader;
   
   int y = rand() % 130;
 
@@ -152,33 +157,72 @@ void drawGraph()
     out += temp;
     y = y2;
   }
-  out += "</g>\n</svg>\n";
+  
+  out += F("</g>\n</svg>\n");
 
-  server.send(200, "image/svg+xml", fromEWString(out));
+  AT_LOGDEBUG1(F("String Len = "), out.length());
+
+  if (out.length() > previousStrLen)
+  {
+    AT_LOGERROR3(F("String Len > "), previousStrLen, F(", extend to"), out.length() + 48);
+
+    previousStrLen = out.length() + 48;
+    
+    out.reserve(previousStrLen);
+  }
+  else
+  {
+    server.send(200, "image/svg+xml", out);
+  }
 }
 
 #else
 
+#define ORIGINAL_STR_LEN        1280
+
 void drawGraph()
 {
-  String out;
-  out.reserve(3000);
-  char temp[70];
-  out += "<svg xmlns=\"http://www.w3.org/2000/svg\" version=\"1.1\" width=\"310\" height=\"150\">\n";
-  out += "<rect width=\"310\" height=\"150\" fill=\"rgb(250, 230, 210)\" stroke-width=\"3\" stroke=\"rgb(0, 0, 0)\" />\n";
-  out += "<g stroke=\"black\">\n";
-  int y = rand() % 130;
+  static String out;
+  static uint16_t previousStrLen = ORIGINAL_STR_LEN;
 
-  for (int x = 10; x < 300; x += 10)
+  if (out.length() == 0)
   {
-    int y2 = rand() % 130;
-    sprintf(temp, "<line x1=\"%d\" y1=\"%d\" x2=\"%d\" y2=\"%d\" stroke-width=\"2\" />\n", x, 140 - y, x + 10, 140 - y2);
+    AT_LOGWARN1(F("String Len = 0, extend to"), ORIGINAL_STR_LEN);
+    out.reserve(ORIGINAL_STR_LEN);
+  }
+
+  out = F( "<svg xmlns=\"http://www.w3.org/2000/svg\" version=\"1.1\" width=\"160\" height=\"80\">\n" \
+           "<rect width=\"1600\" height=\"800\" fill=\"rgb(250, 230, 210)\" stroke-width=\"3\" stroke=\"rgb(0, 0, 0)\" />\n" \
+           "<g stroke=\"blue\">\n");
+
+  char temp[70];
+  
+  int y = rand() % 60;
+
+  for (int x = 10; x < 150; x += 10)
+  {
+    int y2 = rand() % 60;
+    sprintf(temp, "<line x1=\"%d\" y1=\"%d\" x2=\"%d\" y2=\"%d\" stroke-width=\"2\" />\n", x, 70 - y, x + 10, 70 - y2);
     out += temp;
     y = y2;
   }
-  out += "</g>\n</svg>\n";
+  
+  out += F("</g>\n</svg>\n");
 
-  server.send(200, "image/svg+xml", out);
+  AT_LOGDEBUG1(F("String Len = "), out.length());
+
+  if (out.length() > previousStrLen)
+  {
+    AT_LOGERROR3(F("String Len > "), previousStrLen, F(", extend to"), out.length() + 48);
+
+    previousStrLen = out.length() + 48;
+    
+    out.reserve(previousStrLen);
+  }
+  else
+  {
+    server.send(200, "image/svg+xml", out);
+  }
 }
 
 #endif

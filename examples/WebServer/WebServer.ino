@@ -56,7 +56,7 @@ void printWifiStatus()
 
 void handleRoot()
 {
-#define BUFFER_SIZE     500
+#define BUFFER_SIZE     512
   
   char temp[BUFFER_SIZE];
   
@@ -78,7 +78,7 @@ body { background-color: #cccccc; font-family: Arial, Helvetica, Sans-Serif; Col
 </head>\
 <body>\
 <h1>Hello from %s</h1>\
-<h2>running WebServer</h2>\
+<h2>running ESP8266_AT_WebServer</h2>\
 <h3>on %s</h3>\
 <h3>Uptime: %d d %02d:%02d:%02d</h3>\
 <p>Requests received: %d</p>\

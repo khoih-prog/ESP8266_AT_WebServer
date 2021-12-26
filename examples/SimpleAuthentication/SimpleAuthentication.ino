@@ -110,11 +110,14 @@ void handleLogin()
   server.send(200, F("text/html"), content);
 }
 
+#define ORIGINAL_STR_LEN        384
+
 //root page can be accessed only if authentication is ok
 void handleRoot()
 {
-  String header;
-
+  static String content;
+  static uint16_t previousStrLen = ORIGINAL_STR_LEN;
+  
   Serial.println(F("Enter handleRoot"));
 
   if (!is_authenticated())
@@ -122,26 +125,36 @@ void handleRoot()
     server.sendHeader(F("Location"), F("/login"));
     server.sendHeader(F("Cache-Control"), F("no-cache"));
     server.send(301);
+    
     return;
   }
 
-  String content = F("<html><body><H1>Hello from ");
-  
-  content += String(BOARD_NAME);
-  content += F("</H1><H2>using ");
-  content += String(SHIELD_TYPE);
-  content += F("</H2><br>");
+  content = F("<html><body><H2>Hello, you successfully connected to ESP8266_AT on "); 
+  content += BOARD_NAME;
+  content += F("!</H2><br>");
 
   if (server.hasHeader(F("User-Agent")))
   {
-    content += F("The user agent used is : ");
+    content += F("the user agent used is : ");
     content += server.header(F("User-Agent"));
     content += F("<br><br>");
   }
 
   content += F("You can access this page until you <a href=\"/login?DISCONNECT=YES\">disconnect</a></body></html>");
-  
-  server.send(200, F("text/html"), content);
+
+  if (content.length() > previousStrLen)
+  {
+    AT_LOGERROR3(F("String Len > "), previousStrLen, F(", extend to"), content.length() + 48);
+
+    previousStrLen = content.length() + 48;
+    
+    content.reserve(previousStrLen);
+  }
+  else
+  {
+    AT_LOGDEBUG1(F("Len ="), content.length());
+    server.send(200, F("text/html"), content);
+  }
 }
 
 //no need authentication

@@ -15,10 +15,12 @@
 #ifndef defines_h
 #define defines_h
 
+//#define HTTP_UPLOAD_BUFLEN        4096
+
 #define DEBUG_ESP8266_AT_WEBSERVER_PORT Serial
 
 // Debug Level from 0 to 4
-#define _ESP_AT_LOGLEVEL_       0
+#define _ESP_AT_LOGLEVEL_       2
 
 // Uncomment to use ESP32-AT commands
 //#define USE_ESP32_AT      true

@@ -54,7 +54,7 @@ void printWifiStatus()
 
 void handleRoot()
 {
-#define BUFFER_SIZE     500
+#define BUFFER_SIZE     512
   
   char temp[BUFFER_SIZE];
   

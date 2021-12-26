@@ -97,8 +97,11 @@ void setup()
   Serial.print(F("Open http://"));
   Serial.print(WiFi.localIP());
   Serial.println(F("/ in your browser to see it working"));
-  Serial.print(F("To log in, please use username = "));
-  Serial.println(String(www_username) + " and password = " + www_password);
+  
+  Serial.print(F("To login, use Username = "));
+  Serial.print(www_username);
+  Serial.print(F(", Password = "));
+  Serial.println(www_password);
 }
 
 void loop()
