@@ -11,7 +11,7 @@
   @file       Esp8266WebServer.h
   @author     Ivan Grokhotkov
 
-  Version: 1.5.0
+  Version: 1.5.1
 
   Version Modified By   Date      Comments
   ------- -----------  ---------- -----------
@@ -37,6 +37,7 @@
   1.4.0   K Hoang      14/08/2021 Add support to Adafruit nRF52 core v0.22.0+
   1.4.1   K Hoang      08/12/2021 Add Packages_Patches and instructions for BOARD_SIPEED_MAIX_DUINO
   1.5.0   K Hoang      19/12/2021 Reduce usage of Arduino String with std::string
+  1.5.1   K Hoang      24/12/2021 Fix bug
  *****************************************************************************************************************************/
 
 #ifndef ESP8266_AT_Server_h

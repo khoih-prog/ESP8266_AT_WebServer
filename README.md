@@ -178,7 +178,7 @@ The ESP8266_AT_Web_Server class found in `ESP8266_AT_Web_Server.h` header, is a 
 
 ## Prerequisites
 
- 1. [`Arduino IDE 1.8.18+` for Arduino](https://www.arduino.cc/en/Main/Software)
+ 1. [`Arduino IDE 1.8.19+` for Arduino](https://github.com/arduino/Arduino). [![GitHub release](https://img.shields.io/github/release/arduino/Arduino.svg)](https://github.com/arduino/Arduino/releases/latest)
  2. [`Arduino AVR core 1.8.3+`](https://github.com/arduino/ArduinoCore-avr) for Arduino (Use Arduino Board Manager) for AVR boards. [![GitHub release](https://img.shields.io/github/release/arduino/ArduinoCore-avr.svg)](https://github.com/arduino/ArduinoCore-avr/releases/latest)
  3. [`Teensy core v1.55+`](https://www.pjrc.com/teensy/td_download.html) for Teensy (4.1, 4.0, 3.6, 3.5, 3,2, 3.1, 3.0) boards.
  4. [`Arduino SAM DUE core v1.6.12+`](https://github.com/arduino/ArduinoCore-sam) for SAM DUE ARM Cortex-M3 boards.
@@ -188,7 +188,7 @@ The ESP8266_AT_Web_Server class found in `ESP8266_AT_Web_Server.h` header, is a 
  8. [`Adafruit nRF52 v1.2.0+`](https://www.adafruit.com) for nRF52 boards such as Adafruit NRF52840_FEATHER, NRF52832_FEATHER, NRF52840_FEATHER_SENSE, NRF52840_ITSYBITSY, NRF52840_CIRCUITPLAY, NRF52840_CLUE, NRF52840_METRO, NRF52840_PCA10056, PARTICLE_XENON, **NINA_B302_ublox**, etc. [![GitHub release](https://img.shields.io/github/release/adafruit/Adafruit_nRF52_Arduino.svg)](https://github.com/adafruit/Adafruit_nRF52_Arduino/releases/latest). Please remember to use latest [`Packages_Patches`](https://github.com/khoih-prog/WiFiWebServer/tree/master/Packages_Patches) or getting compiler errors.
  9. [`Arduino Core for STM32 v2.2.0+`](https://github.com/stm32duino/Arduino_Core_STM32) for STM32F/L/H/G/WB/MP1 boards. [![GitHub release](https://img.shields.io/github/release/stm32duino/Arduino_Core_STM32.svg)](https://github.com/stm32duino/Arduino_Core_STM32/releases/latest)
 10. [`Arduino mbed_rp2040 core 2.6.1+`](https://github.com/arduino/ArduinoCore-mbed) for Arduino (Use Arduino Board Manager) RP2040-based boards, such as **Arduino Nano RP2040 Connect, RASPBERRY_PI_PICO, etc.**. [![GitHub release](https://img.shields.io/github/release/arduino/ArduinoCore-mbed.svg)](https://github.com/arduino/ArduinoCore-mbed/releases/latest)
-11. [`Earle Philhower's arduino-pico core v1.9.8+`](https://github.com/earlephilhower/arduino-pico) for RP2040-based boards such as **RASPBERRY_PI_PICO, ADAFRUIT_FEATHER_RP2040 and GENERIC_RP2040**, etc. [![GitHub release](https://img.shields.io/github/release/earlephilhower/arduino-pico.svg)](https://github.com/earlephilhower/arduino-pico/releases/latest)
+11. [`Earle Philhower's arduino-pico core v1.9.9+`](https://github.com/earlephilhower/arduino-pico) for RP2040-based boards such as **RASPBERRY_PI_PICO, ADAFRUIT_FEATHER_RP2040 and GENERIC_RP2040**, etc. [![GitHub release](https://img.shields.io/github/release/earlephilhower/arduino-pico.svg)](https://github.com/earlephilhower/arduino-pico/releases/latest)
 12. [`Sipeed Maixduino core v0.3.11+`](https://github.com/sipeed/Maixduino) for K210-RISC-V-based boards such as **Maixduino AI Development Kit K210 RISC-V AI + IoT ESP32, Sipeed Maix Go, Sipeed Maix Bit**, etc. [![GitHub release](https://img.shields.io/github/release/sipeed/Maixduino.svg)](https://github.com/sipeed/Maixduino/releases/latest)
 13. [`Functional-VLPP library v1.0.2+`](https://github.com/khoih-prog/functional-vlpp) to use server's lambda function. To install. check [![arduino-library-badge](https://www.ardu-badge.com/badge/Functional-Vlpp.svg?)](https://www.ardu-badge.com/Functional-Vlpp)
 14. [`Ai-Thinker AT Firmware v1.5.4`](AT_Firmwares/At_firmware_bin1.54.zip) or [`AT Firmware v1.7.4.0`](AT_Firmwares/AT_Firmware_bin_1.7.4.0.zip) for ESP8266-AT shields.
@@ -334,14 +334,14 @@ These files must be copied into the directory:
 
 #### 2. For Teensy boards
  
- **To be able to compile and run on Teensy boards**, you have to copy the files in [**Packages_Patches for Teensy directory**](Packages_Patches/hardware/teensy/avr) into Teensy hardware directory (./arduino-1.8.18/hardware/teensy/avr/boards.txt). 
+ **To be able to compile and run on Teensy boards**, you have to copy the files in [**Packages_Patches for Teensy directory**](Packages_Patches/hardware/teensy/avr) into Teensy hardware directory (./arduino-1.8.19/hardware/teensy/avr/boards.txt). 
 
-Supposing the Arduino version is 1.8.18. These files must be copied into the directory:
+Supposing the Arduino version is 1.8.19. These files must be copied into the directory:
 
-- `./arduino-1.8.18/hardware/teensy/avr/boards.txt`
-- `./arduino-1.8.18/hardware/teensy/avr/cores/teensy/Stream.h`
-- `./arduino-1.8.18/hardware/teensy/avr/cores/teensy3/Stream.h`
-- `./arduino-1.8.18/hardware/teensy/avr/cores/teensy4/Stream.h`
+- `./arduino-1.8.19/hardware/teensy/avr/boards.txt`
+- `./arduino-1.8.19/hardware/teensy/avr/cores/teensy/Stream.h`
+- `./arduino-1.8.19/hardware/teensy/avr/cores/teensy3/Stream.h`
+- `./arduino-1.8.19/hardware/teensy/avr/cores/teensy4/Stream.h`
 
 Whenever a new version is installed, remember to copy this file into the new version directory. For example, new version is x.yy.zz
 These files must be copied into the directory:
@@ -777,7 +777,7 @@ const int led = 13;
 
 void handleRoot()
 {
-#define BUFFER_SIZE     500
+#define BUFFER_SIZE     512
   
   digitalWrite(led, 1);
   char temp[BUFFER_SIZE];
@@ -834,21 +834,26 @@ void handleNotFound()
   digitalWrite(led, 0);
 }
 
-#if (defined(ESP8266_AT_WEBSERVER_VERSION_INT) && (ESP8266_AT_WEBSERVER_VERSION_INT >= 1005000) && !ESP_AT_USE_AVR)
-#warning Using EWString
+#if 1
 
-EWString initHeader = "<svg xmlns=\"http://www.w3.org/2000/svg\" version=\"1.1\" width=\"310\" height=\"150\">\n" \
-                      "<rect width=\"310\" height=\"150\" fill=\"rgb(250, 230, 210)\" stroke-width=\"3\" stroke=\"rgb(0, 0, 0)\" />\n" \
-                      "<g stroke=\"blue\">\n";
+#define ORIGINAL_STR_LEN        2048
 
 void drawGraph()
 {
-  EWString out;
-  
-  out.reserve(3000);
+  static String out;
+  static uint16_t previousStrLen = ORIGINAL_STR_LEN;
+
+  if (out.length() == 0)
+  {
+    AT_LOGWARN1(F("String Len = 0, extend to"), ORIGINAL_STR_LEN);
+    out.reserve(ORIGINAL_STR_LEN);
+  }
+
+  out = F( "<svg xmlns=\"http://www.w3.org/2000/svg\" version=\"1.1\" width=\"310\" height=\"150\">\n" \
+           "<rect width=\"310\" height=\"150\" fill=\"rgb(250, 230, 210)\" stroke-width=\"3\" stroke=\"rgb(0, 0, 0)\" />\n" \
+           "<g stroke=\"blue\">\n");
+
   char temp[70];
-  
-  out += initHeader;
   
   int y = rand() % 130;
 
@@ -859,38 +864,77 @@ void drawGraph()
     out += temp;
     y = y2;
   }
-  out += "</g>\n</svg>\n";
+  
+  out += F("</g>\n</svg>\n");
 
-  server.send(200, "image/svg+xml", fromEWString(out));
+  AT_LOGDEBUG1(F("String Len = "), out.length());
+
+  if (out.length() > previousStrLen)
+  {
+    AT_LOGERROR3(F("String Len > "), previousStrLen, F(", extend to"), out.length() + 48);
+
+    previousStrLen = out.length() + 48;
+    
+    out.reserve(previousStrLen);
+  }
+  else
+  {
+    server.send(200, "image/svg+xml", out);
+  }
 }
 
 #else
 
+#define ORIGINAL_STR_LEN        1280
+
 void drawGraph()
 {
-  String out;
-  out.reserve(3000);
-  char temp[70];
-  out += "<svg xmlns=\"http://www.w3.org/2000/svg\" version=\"1.1\" width=\"310\" height=\"150\">\n";
-  out += "<rect width=\"310\" height=\"150\" fill=\"rgb(250, 230, 210)\" stroke-width=\"3\" stroke=\"rgb(0, 0, 0)\" />\n";
-  out += "<g stroke=\"black\">\n";
-  int y = rand() % 130;
+  static String out;
+  static uint16_t previousStrLen = ORIGINAL_STR_LEN;
 
-  for (int x = 10; x < 300; x += 10)
+  if (out.length() == 0)
   {
-    int y2 = rand() % 130;
-    sprintf(temp, "<line x1=\"%d\" y1=\"%d\" x2=\"%d\" y2=\"%d\" stroke-width=\"2\" />\n", x, 140 - y, x + 10, 140 - y2);
+    AT_LOGWARN1(F("String Len = 0, extend to"), ORIGINAL_STR_LEN);
+    out.reserve(ORIGINAL_STR_LEN);
+  }
+
+  out = F( "<svg xmlns=\"http://www.w3.org/2000/svg\" version=\"1.1\" width=\"160\" height=\"80\">\n" \
+           "<rect width=\"1600\" height=\"800\" fill=\"rgb(250, 230, 210)\" stroke-width=\"3\" stroke=\"rgb(0, 0, 0)\" />\n" \
+           "<g stroke=\"blue\">\n");
+
+  char temp[70];
+  
+  int y = rand() % 60;
+
+  for (int x = 10; x < 150; x += 10)
+  {
+    int y2 = rand() % 60;
+    sprintf(temp, "<line x1=\"%d\" y1=\"%d\" x2=\"%d\" y2=\"%d\" stroke-width=\"2\" />\n", x, 70 - y, x + 10, 70 - y2);
     out += temp;
     y = y2;
   }
-  out += "</g>\n</svg>\n";
+  
+  out += F("</g>\n</svg>\n");
 
-  server.send(200, "image/svg+xml", out);
+  AT_LOGDEBUG1(F("String Len = "), out.length());
+
+  if (out.length() > previousStrLen)
+  {
+    AT_LOGERROR3(F("String Len > "), previousStrLen, F(", extend to"), out.length() + 48);
+
+    previousStrLen = out.length() + 48;
+    
+    out.reserve(previousStrLen);
+  }
+  else
+  {
+    server.send(200, "image/svg+xml", out);
+  }
 }
 
 #endif
 
-void setup(void)
+void setup()
 {
   pinMode(led, OUTPUT);
   digitalWrite(led, 0);
@@ -992,7 +1036,7 @@ void loop()
 #define DEBUG_ESP8266_AT_WEBSERVER_PORT Serial
 
 // Debug Level from 0 to 4
-#define _ESP_AT_LOGLEVEL_       0
+#define _ESP_AT_LOGLEVEL_       2
 
 // Uncomment to use ESP32-AT commands
 //#define USE_ESP32_AT      true
@@ -1380,7 +1424,7 @@ The following are debug terminal output when running example [AdvancedWebServer]
 
 ```
 Starting AdvancedWebServer on NRF52840_ITSYBITSY_EXPRESS
-ESP8266_AT_WebServer v1.5.0
+ESP8266_AT_WebServer v1.5.1
 [ESP_AT] Initializing ESP module
 [ESP_AT] Use ES8266-AT Command
 WiFi shield init done
@@ -1509,7 +1553,7 @@ The following are debug terminal output when running example [MQTT_ThingStream](
 
 ```
 Start MQTT_ThingStream on ITSYBITSY_M4 with ESP8266-AT & ESP8266_AT_WebServer Library
-ESP8266_AT_WebServer v1.5.0
+ESP8266_AT_WebServer v1.5.1
 [ESP_AT] Use ES8266-AT Command
 WiFi shield init done
 Connecting to SSID: HueNet1
@@ -1544,7 +1588,7 @@ The following are debug terminal output when running example [MQTTClient_Auth](e
 
 ```
 Starting MQTTClient_Auth on ITSYBITSY_M4 with ESP8266-AT & ESP8266_AT_WebServer Library
-ESP8266_AT_WebServer v1.5.0
+ESP8266_AT_WebServer v1.5.1
 [ESP_AT] Use ES8266-AT Command
 WiFi shield init done
 Connecting to SSID: HueNet1
@@ -1570,7 +1614,7 @@ The following are debug terminal output when running example [MQTTClient_Basic](
 
 ```
 MQTTClient_Basic on ITSYBITSY_M4 with ESP8266-AT & ESP8266_AT_WebServer Library
-ESP8266_AT_WebServer v1.5.0
+ESP8266_AT_WebServer v1.5.1
 [ESP_AT] Use ES8266-AT Command
 WiFi shield init done
 Connecting to SSID: HueNet1
@@ -1595,7 +1639,7 @@ The following are debug terminal output when running example [WebClientRepeating
 
 ```
 Starting WebClientRepeating on RASPBERRY_PI_PICO with ESP8266-AT & ESP8266_AT_WebServer Library
-ESP8266_AT_WebServer v1.5.0
+ESP8266_AT_WebServer v1.5.1
 [ESP_AT] Use ES8266-AT Command
 WiFi shield init done
 Connecting to SSID: HueNet1
@@ -1664,7 +1708,7 @@ The following are debug terminal output when running example [MQTTClient_Auth](e
 
 ```
 Starting MQTTClient_Auth on RASPBERRY_PI_PICO with ESP8266-AT & ESP8266_AT_WebServer Library
-ESP8266_AT_WebServer v1.5.0
+ESP8266_AT_WebServer v1.5.1
 [ESP_AT] Use ES8266-AT Command
 WiFi shield init done
 Connecting to SSID: HueNet1
@@ -1689,7 +1733,7 @@ The following are debug terminal output when running example [UdpNTPClient](exam
 
 ```
 Starting UdpNTPClient on MBED RASPBERRY_PI_PICO with ESP8266-AT & ESP8266_AT_WebServer Library
-ESP8266_AT_WebServer v1.5.0
+ESP8266_AT_WebServer v1.5.1
 [ESP_AT] Use ES8266-AT Command
 WiFi shield init done
 Connecting to WPA SSID: HueNet1
