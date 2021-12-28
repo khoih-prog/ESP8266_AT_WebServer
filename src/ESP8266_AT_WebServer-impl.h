@@ -11,7 +11,7 @@
   @file       Esp8266WebServer.h
   @author     Ivan Grokhotkov
 
-  Version: 1.5.1
+  Version: 1.5.2
 
   Version Modified By   Date      Comments
   ------- -----------  ---------- -----------
@@ -38,6 +38,7 @@
   1.4.1   K Hoang      08/12/2021 Add Packages_Patches and instructions for BOARD_SIPEED_MAIX_DUINO
   1.5.0   K Hoang      19/12/2021 Reduce usage of Arduino String with std::string
   1.5.1   K Hoang      24/12/2021 Fix bug
+  1.5.2   K Hoang      28/12/2021 Fix wrong http status header bug
  *****************************************************************************************************************************/
 
 #ifndef ESP8266_AT_WebServer_impl_h
@@ -433,7 +434,7 @@ void ESP8266_AT_WebServer::_prepareHeader(String& response, int code, const char
   EWString aResponse = fromString(response);
   
   aResponse = "HTTP/1." + fromString(String(_currentVersion)) + " ";
-  aResponse += code;
+  aResponse += fromString(String(code));
   aResponse += " ";
   aResponse += fromString(_responseCodeToString(code));
   aResponse += RETURN_NEWLINE;
@@ -479,7 +480,7 @@ void ESP8266_AT_WebServer::_prepareHeader(String& response, int code, const char
 void ESP8266_AT_WebServer::_prepareHeader(EWString& response, int code, const char* content_type, size_t contentLength) 
 {
   response = "HTTP/1." + fromString(String(_currentVersion)) + " ";
-  response += code;
+  response += fromString(String(code));
   response += " ";
   response += fromString(_responseCodeToString(code));
   response += RETURN_NEWLINE;
