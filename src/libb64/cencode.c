@@ -11,7 +11,7 @@
   @file       Esp8266WebServer.h
   @author     Ivan Grokhotkov
 
-  Version: 1.5.2
+  Version: 1.5.3
 
   Version Modified By   Date      Comments
   ------- -----------  ---------- -----------
@@ -39,40 +39,28 @@
   1.5.0   K Hoang      19/12/2021 Reduce usage of Arduino String with std::string
   1.5.1   K Hoang      24/12/2021 Fix bug
   1.5.2   K Hoang      28/12/2021 Fix wrong http status header bug
+  1.5.3   K Hoang      12/01/2022 Fix authenticate issue caused by libb64
  ***************************************************************************************************************************************/
 
 #include "cencode.h"
+
+const int CHARS_PER_LINE = 72;
 
 void base64_init_encodestate(base64_encodestate* state_in)
 {
   state_in->step = step_A;
   state_in->result = 0;
   state_in->stepcount = 0;
-  state_in->stepsnewline = BASE64_CHARS_PER_LINE;
 }
 
-
-void base64_init_encodestate_nonewlines(base64_encodestate* state_in)
+char base64_encode_value(char value_in)
 {
-  base64_init_encodestate(state_in);
-  state_in->stepsnewline = -1;
-}
+  static const char* encoding = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
 
-char base64_encode_value(const char n)
-{
-  char r;
+  if (value_in > 63)
+    return '=';
 
-  if (n < 26)
-    r = n + 'A';
-  else if (n < 26 + 26)
-    r = n - 26 + 'a';
-  else if (n < 26 + 26 + 10 )
-    r = n - 26 - 26 + '0';
-  else if (n == 62 )
-    r = '+';
-  else
-    r = '/';
-  return r;
+  return encoding[(unsigned int)value_in];
 }
 
 int base64_encode_block(const char* plaintext_in, int length_in, char* code_out, base64_encodestate* state_in)
@@ -101,7 +89,9 @@ int base64_encode_block(const char* plaintext_in, int length_in, char* code_out,
         result = (fragment & 0x0fc) >> 2;
         *codechar++ = base64_encode_value(result);
         result = (fragment & 0x003) << 4;
-      // falls through
+        
+        // fall through
+
       case step_B:
         if (plainchar == plaintextend)
         {
@@ -114,7 +104,9 @@ int base64_encode_block(const char* plaintext_in, int length_in, char* code_out,
         result |= (fragment & 0x0f0) >> 4;
         *codechar++ = base64_encode_value(result);
         result = (fragment & 0x00f) << 2;
-      // falls through
+        
+        // fall through
+        
       case step_C:
         if (plainchar == plaintextend)
         {
@@ -131,11 +123,13 @@ int base64_encode_block(const char* plaintext_in, int length_in, char* code_out,
 
         ++(state_in->stepcount);
 
-        if ((state_in->stepcount == BASE64_CHARS_PER_LINE / 4) && (state_in->stepsnewline > 0))
+        if (state_in->stepcount == CHARS_PER_LINE / 4)
         {
           *codechar++ = '\n';
           state_in->stepcount = 0;
         }
+        
+        // fall through
       }
   }
 
@@ -171,7 +165,6 @@ int base64_encode_chars(const char* plaintext_in, int length_in, char* code_out)
 {
   base64_encodestate _state;
   base64_init_encodestate(&_state);
-
   int len = base64_encode_block(plaintext_in, length_in, code_out, &_state);
 
   return len + base64_encode_blockend((code_out + len), &_state);

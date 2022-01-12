@@ -11,7 +11,7 @@
   @file       Esp8266WebServer.h
   @author     Ivan Grokhotkov
 
-  Version: 1.5.2
+  Version: 1.5.3
 
   Version Modified By   Date      Comments
   ------- -----------  ---------- -----------
@@ -39,6 +39,7 @@
   1.5.0   K Hoang      19/12/2021 Reduce usage of Arduino String with std::string
   1.5.1   K Hoang      24/12/2021 Fix bug
   1.5.2   K Hoang      28/12/2021 Fix wrong http status header bug
+  1.5.3   K Hoang      12/01/2022 Fix authenticate issue caused by libb64
  *****************************************************************************************************************************/
 
 #include <Arduino.h>
