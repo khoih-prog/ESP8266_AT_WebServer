@@ -6,7 +6,8 @@
 [![contributions welcome](https://img.shields.io/badge/contributions-welcome-brightgreen.svg?style=flat)](#Contributing)
 [![GitHub issues](https://img.shields.io/github/issues/khoih-prog/ESP8266_AT_WebServer.svg)](http://github.com/khoih-prog/ESP8266_AT_WebServer/issues)
 
-<a href="https://www.buymeacoffee.com/khoihprog6" target="_blank"><img src="https://cdn.buymeacoffee.com/buttons/v2/default-yellow.png" alt="Buy Me A Coffee" style="height: 60px !important;width: 217px !important;" ></a>
+<a href="https://www.buymeacoffee.com/khoihprog6" title="Donate to my libraries using BuyMeACoffee"><img src="https://cdn.buymeacoffee.com/buttons/v2/default-yellow.png" alt="Donate to my libraries using BuyMeACoffee" style="height: 50px !important;width: 181px !important;" ></a>
+<a href="https://www.buymeacoffee.com/khoihprog6" title="Donate to my libraries using BuyMeACoffee"><img src="https://img.shields.io/badge/buy%20me%20a%20coffee-donate-orange.svg?logo=buy-me-a-coffee&logoColor=FFDD00" style="height: 20px !important;width: 200px !important;" ></a>
 
 
 ---
@@ -45,7 +46,9 @@
     * [8.1. To use BOARD_NAME](#81-to-use-board_name)
     * [8.2. To avoid compile error relating to microsecondsToClockCycles](#82-to-avoid-compile-error-relating-to-microsecondstoclockcycles)
   * [9. For Portenta_H7 boards using Arduino IDE in Linux](#9-for-portenta_h7-boards-using-arduino-ide-in-linux)
-  * [10. For Sipeed Maixduino boards](#10-For-Sipeed-Maixduino-boards)
+  * [10. For RTL8720DN boards using AmebaD core](#10-for-rtl8720dn-boards-using-amebad-core)
+  * [11. For SAMD21 and SAMD51 boards using ArduinoCore-fab-sam core](#11-For-SAMD21-and-SAMD51-boards-using-ArduinoCore-fab-sam-core)
+  * [12. For Seeeduino RP2040 boards](#12-For-Seeeduino-RP2040-boards)
 * [Usage](#usage) 
   * [Class Constructor](#class-constructor) 
   * [Basic Operations](#basic-operations) 
@@ -182,16 +185,16 @@ The ESP8266_AT_Web_Server class found in `ESP8266_AT_Web_Server.h` header, is a 
 ## Prerequisites
 
  1. [`Arduino IDE 1.8.19+` for Arduino](https://github.com/arduino/Arduino). [![GitHub release](https://img.shields.io/github/release/arduino/Arduino.svg)](https://github.com/arduino/Arduino/releases/latest)
- 2. [`Arduino AVR core 1.8.3+`](https://github.com/arduino/ArduinoCore-avr) for Arduino (Use Arduino Board Manager) for AVR boards. [![GitHub release](https://img.shields.io/github/release/arduino/ArduinoCore-avr.svg)](https://github.com/arduino/ArduinoCore-avr/releases/latest)
+ 2. [`Arduino AVR core 1.8.5+`](https://github.com/arduino/ArduinoCore-avr) for Arduino (Use Arduino Board Manager) for AVR boards. [![GitHub release](https://img.shields.io/github/release/arduino/ArduinoCore-avr.svg)](https://github.com/arduino/ArduinoCore-avr/releases/latest)
  3. [`Teensy core v1.56+`](https://www.pjrc.com/teensy/td_download.html) for Teensy (4.1, 4.0, 3.6, 3.5, 3,2, 3.1, 3.0) boards.
  4. [`Arduino SAM DUE core v1.6.12+`](https://github.com/arduino/ArduinoCore-sam) for SAM DUE ARM Cortex-M3 boards.
- 5. [`Arduino SAMD core 1.8.12+`](https://github.com/arduino/ArduinoCore-samd) for SAMD ARM Cortex-M0+ boards. [![GitHub release](https://img.shields.io/github/release/arduino/ArduinoCore-samd.svg)](https://github.com/arduino/ArduinoCore-samd/releases/latest)
- 6. [`Adafruit SAMD core 1.7.8+`](https://github.com/adafruit/ArduinoCore-samd) for SAMD ARM Cortex-M0+ and M4 boards (Nano 33 IoT, etc.). [![GitHub release](https://img.shields.io/github/release/adafruit/ArduinoCore-samd.svg)](https://github.com/adafruit/ArduinoCore-samd/releases/latest)
+ 5. [`Arduino SAMD core 1.8.13+`](https://github.com/arduino/ArduinoCore-samd) for SAMD ARM Cortex-M0+ boards. [![GitHub release](https://img.shields.io/github/release/arduino/ArduinoCore-samd.svg)](https://github.com/arduino/ArduinoCore-samd/releases/latest)
+ 6. [`Adafruit SAMD core 1.7.10+`](https://github.com/adafruit/ArduinoCore-samd) for SAMD ARM Cortex-M0+ and M4 boards (Nano 33 IoT, etc.). [![GitHub release](https://img.shields.io/github/release/adafruit/ArduinoCore-samd.svg)](https://github.com/adafruit/ArduinoCore-samd/releases/latest)
  7. [`Seeeduino SAMD core 1.8.2+`](https://github.com/Seeed-Studio/ArduinoCore-samd) for SAMD21/SAMD51 boards (XIAO M0, Wio Terminal, etc.). [![Latest release](https://img.shields.io/github/release/Seeed-Studio/ArduinoCore-samd.svg)](https://github.com/Seeed-Studio/ArduinoCore-samd/releases/latest/)
  8. [`Adafruit nRF52 v1.3.0+`](https://www.adafruit.com) for nRF52 boards such as Adafruit NRF52840_FEATHER, NRF52832_FEATHER, NRF52840_FEATHER_SENSE, NRF52840_ITSYBITSY, NRF52840_CIRCUITPLAY, NRF52840_CLUE, NRF52840_METRO, NRF52840_PCA10056, PARTICLE_XENON, **NINA_B302_ublox**, etc. [![GitHub release](https://img.shields.io/github/release/adafruit/Adafruit_nRF52_Arduino.svg)](https://github.com/adafruit/Adafruit_nRF52_Arduino/releases/latest). Please remember to use latest [`Packages_Patches`](https://github.com/khoih-prog/WiFiWebServer/tree/master/Packages_Patches) or getting compiler errors.
  9. [`Arduino Core for STM32 v2.2.0+`](https://github.com/stm32duino/Arduino_Core_STM32) for STM32F/L/H/G/WB/MP1 boards. [![GitHub release](https://img.shields.io/github/release/stm32duino/Arduino_Core_STM32.svg)](https://github.com/stm32duino/Arduino_Core_STM32/releases/latest)
-10. [`Arduino mbed_rp2040 core 2.6.1+`](https://github.com/arduino/ArduinoCore-mbed) for Arduino (Use Arduino Board Manager) RP2040-based boards, such as **Arduino Nano RP2040 Connect, RASPBERRY_PI_PICO, etc.**. [![GitHub release](https://img.shields.io/github/release/arduino/ArduinoCore-mbed.svg)](https://github.com/arduino/ArduinoCore-mbed/releases/latest)
-11. [`Earle Philhower's arduino-pico core v1.10.0+`](https://github.com/earlephilhower/arduino-pico) for RP2040-based boards such as **RASPBERRY_PI_PICO, ADAFRUIT_FEATHER_RP2040 and GENERIC_RP2040**, etc. [![GitHub release](https://img.shields.io/github/release/earlephilhower/arduino-pico.svg)](https://github.com/earlephilhower/arduino-pico/releases/latest)
+10. [`Arduino mbed_rp2040 core 3.0.1+`](https://github.com/arduino/ArduinoCore-mbed) for Arduino (Use Arduino Board Manager) RP2040-based boards, such as **Arduino Nano RP2040 Connect, RASPBERRY_PI_PICO, etc.**. [![GitHub release](https://img.shields.io/github/release/arduino/ArduinoCore-mbed.svg)](https://github.com/arduino/ArduinoCore-mbed/releases/latest)
+11. [`Earle Philhower's arduino-pico core v1.13.3+`](https://github.com/earlephilhower/arduino-pico) for RP2040-based boards such as **RASPBERRY_PI_PICO, ADAFRUIT_FEATHER_RP2040 and GENERIC_RP2040**, etc. [![GitHub release](https://img.shields.io/github/release/earlephilhower/arduino-pico.svg)](https://github.com/earlephilhower/arduino-pico/releases/latest)
 12. [`Sipeed Maixduino core v0.3.11+`](https://github.com/sipeed/Maixduino) for K210-RISC-V-based boards such as **Maixduino AI Development Kit K210 RISC-V AI + IoT ESP32, Sipeed Maix Go, Sipeed Maix Bit**, etc. [![GitHub release](https://img.shields.io/github/release/sipeed/Maixduino.svg)](https://github.com/sipeed/Maixduino/releases/latest)
 13. [`Functional-Vlpp library v1.0.2+`](https://github.com/khoih-prog/functional-vlpp) to use server's lambda function. To install. check [![arduino-library-badge](https://www.ardu-badge.com/badge/Functional-Vlpp.svg?)](https://www.ardu-badge.com/Functional-Vlpp)
 14. [`Ai-Thinker AT Firmware v1.5.4`](AT_Firmwares/At_firmware_bin1.54.zip) or [`AT Firmware v1.7.4.0`](AT_Firmwares/AT_Firmware_bin_1.7.4.0.zip) for ESP8266-AT shields.
@@ -296,7 +299,7 @@ You can also use this link [![arduino-library-badge](https://www.ardu-badge.com/
 
 1. Install [VS Code](https://code.visualstudio.com/)
 2. Install [PlatformIO](https://platformio.org/platformio-ide)
-3. Install [**ESP8266_AT_WebServer** library](https://platformio.org/lib/show/7047/ESP8266_AT_WebServer) by using [Library Manager](https://platformio.org/lib/show/7047/ESP8266_AT_WebServer/installation) or [Library Manager](https://platformio.org/lib/show/11453/ESP8266_AT_WebServer/installation). Search for **ESP8266_AT_WebServer** in [Platform.io Author's Libraries](https://platformio.org/lib/search?query=author:%22Khoi%20Hoang%22)
+3. Install [**ESP8266_AT_WebServer** library](https://registry.platformio.org/libraries/khoih-prog/ESP8266_AT_WebServer) by using [Library Manager](https://registry.platformio.org/libraries/khoih-prog/ESP8266_AT_WebServer/installation) or [Library Manager](https://platformio.org/lib/show/11453/ESP8266_AT_WebServer/installation). Search for **ESP8266_AT_WebServer** in [Platform.io Author's Libraries](https://platformio.org/lib/search?query=author:%22Khoi%20Hoang%22)
 4. Use included [platformio.ini](platformio/platformio.ini) file from examples to ensure that all dependent libraries will installed automatically. Please visit documentation for the other options and examples at [Project Configuration File](https://docs.platformio.org/page/projectconf.html)
 
 
@@ -369,13 +372,13 @@ This file must be copied into the directory:
 
 #### 4. For Arduino SAMD boards
  
- ***To be able to compile, run and automatically detect and display BOARD_NAME on Arduino SAMD (Nano-33-IoT, etc) boards***, you have to copy the whole [Arduino SAMD Packages_Patches](Packages_Patches/arduino/hardware/samd/1.8.12) directory into Arduino SAMD directory (~/.arduino15/packages/arduino/hardware/samd/1.8.12).
+ ***To be able to compile, run and automatically detect and display BOARD_NAME on Arduino SAMD (Nano-33-IoT, etc) boards***, you have to copy the whole [Arduino SAMD Packages_Patches](Packages_Patches/arduino/hardware/samd/1.8.13) directory into Arduino SAMD directory (~/.arduino15/packages/arduino/hardware/samd/1.8.13).
  
 #### For core version v1.8.10+
 
-Supposing the Arduino SAMD version is 1.8.12. Now only one file must be copied into the directory:
+Supposing the Arduino SAMD version is 1.8.13. Now only one file must be copied into the directory:
 
-- `~/.arduino15/packages/arduino/hardware/samd/1.8.12/platform.txt`
+- `~/.arduino15/packages/arduino/hardware/samd/1.8.13/platform.txt`
 
 Whenever a new version is installed, remember to copy this files into the new version directory. For example, new version is x.yy.zz
 
@@ -408,13 +411,13 @@ Whenever the above-mentioned compiler error issue is fixed with the new Arduino 
 
 #### 5. For Adafruit SAMD boards
  
- ***To be able to compile, run and automatically detect and display BOARD_NAME on Adafruit SAMD (Itsy-Bitsy M4, etc) boards***, you have to copy the whole [Adafruit SAMD Packages_Patches](Packages_Patches/adafruit/hardware/samd/1.7.6) directory into Adafruit samd directory (~/.arduino15/packages/adafruit/hardware/samd/1.7.6). 
+ ***To be able to compile, run and automatically detect and display BOARD_NAME on Adafruit SAMD (Itsy-Bitsy M4, etc) boards***, you have to copy the whole [Adafruit SAMD Packages_Patches](Packages_Patches/adafruit/hardware/samd/1.7.9) directory into Adafruit samd directory (~/.arduino15/packages/adafruit/hardware/samd/1.7.9). 
 
-Supposing the Adafruit SAMD core version is 1.7.6. This file must be copied into the directory:
+Supposing the Adafruit SAMD core version is 1.7.9. This file must be copied into the directory:
 
-- `~/.arduino15/packages/adafruit/hardware/samd/1.7.6/platform.txt`
-- `~/.arduino15/packages/adafruit/hardware/samd/1.7.6/cores/arduino/Print.h`
-- `~/.arduino15/packages/adafruit/hardware/samd/1.7.6/cores/arduino/Print.cpp`
+- `~/.arduino15/packages/adafruit/hardware/samd/1.7.9/platform.txt`
+- `~/.arduino15/packages/adafruit/hardware/samd/1.7.9/cores/arduino/Print.h`
+- `~/.arduino15/packages/adafruit/hardware/samd/1.7.9/cores/arduino/Print.cpp`
 
 Whenever a new version is installed, remember to copy this file into the new version directory. For example, new version is x.yy.zz
 This file must be copied into the directory:
@@ -516,12 +519,12 @@ With core after v1.5.0, this step is not necessary anymore thanks to the PR [Add
 
 #### 9. For Portenta_H7 boards using Arduino IDE in Linux
 
-  **To be able to upload firmware to Portenta_H7 using Arduino IDE in Linux (Ubuntu, etc.)**, you have to copy the file [portenta_post_install.sh](Packages_Patches/arduino/hardware/mbed_portenta/2.6.1/portenta_post_install.sh) into mbed_portenta directory (~/.arduino15/packages/arduino/hardware/mbed_portenta/2.6.1/portenta_post_install.sh). 
+  **To be able to upload firmware to Portenta_H7 using Arduino IDE in Linux (Ubuntu, etc.)**, you have to copy the file [portenta_post_install.sh](Packages_Patches/arduino/hardware/mbed_portenta/3.0.0/portenta_post_install.sh) into mbed_portenta directory (~/.arduino15/packages/arduino/hardware/mbed_portenta/3.0.0/portenta_post_install.sh). 
   
   Then run the following command using `sudo`
   
 ```
-$ cd ~/.arduino15/packages/arduino/hardware/mbed_portenta/2.6.1
+$ cd ~/.arduino15/packages/arduino/hardware/mbed_portenta/3.0.0
 $ chmod 755 portenta_post_install.sh
 $ sudo ./portenta_post_install.sh
 ```
@@ -534,9 +537,9 @@ This will create the file `/etc/udev/rules.d/49-portenta_h7.rules` as follows:
 SUBSYSTEMS=="usb", ATTRS{idVendor}=="2341", ATTRS{idProduct}=="035b", GROUP="plugdev", MODE="0666"
 ```
 
-Supposing the ArduinoCore-mbed core version is 2.6.1. Now only one file must be copied into the directory:
+Supposing the ArduinoCore-mbed core version is 3.0.0. Now only one file must be copied into the directory:
 
-- `~/.arduino15/packages/arduino/hardware/mbed_portenta/2.6.1/portenta_post_install.sh`
+- `~/.arduino15/packages/arduino/hardware/mbed_portenta/3.0.0/portenta_post_install.sh`
 
 Whenever a new version is installed, remember to copy this files into the new version directory. For example, new version is x.yy.zz
 
@@ -545,18 +548,48 @@ This file must be copied into the directory:
 - `~/.arduino15/packages/arduino/hardware/mbed_portenta/x.yy.zz/portenta_post_install.sh`
 
 
-#### 10. For Sipeed Maixduino boards
+#### 10. For RTL8720DN boards using AmebaD core
  
- **To be able to compile, run on Sipeed Maixduino (Maixduino AI Development Kit K210 RISC-V AI + IoT ESP32, Sipeed Maix Go, Sipeed Maix Bit, etc) boards**, you have to copy the whole [Maixduino Packages_Patches](Packages_Patches/Maixduino/hardware/k210/0.3.11) directory into Maixduino core directory (~/.arduino15/packages/Maixduino/hardware/k210/0.3.11). 
+ To avoid compile error relating to PROGMEM, you have to copy the file [Realtek AmebaD core pgmspace.h](Packages_Patches/realtek/hardware/AmebaD/3.1.2/cores/arduino/avr/pgmspace.h) into Realtek AmebaD directory (~/.arduino15/packages/realtek/hardware/AmebaD/3.1.2/cores/arduino/avr/pgmspace.h). 
 
-Supposing the `Sipeed Maixduino` core version is 0.3.11. This file must be copied to replace:
+Supposing the Realtek AmebaD core version is 3.1.2. This file must be copied into the directory:
 
-- `~/.arduino15/packages/Maixduino/hardware/k210/0.3.11/cores/arduino/Stream.h`
+- `~/.arduino15/packages/realtek/hardware/AmebaD/3.1.2/cores/arduino/avr/pgmspace.h`
 
 Whenever a new version is installed, remember to copy this file into the new version directory. For example, new version is x.yy.zz
-This file must be copied to replace:
+This file must be copied into the directory:
 
-- `~/.arduino15/packages/Maixduino/hardware/k210/x.yy.zz/cores/arduino/Stream.h`
+- `~/.arduino15/packages/realtek/hardware/AmebaD/x.yy.zz/cores/arduino/avr/pgmspace.h`
+
+
+#### 11. For SAMD21 and SAMD51 boards using ArduinoCore-fab-sam core
+ 
+ To avoid compile error relating to SAMD21/SAMD51, you have to copy the file [ArduinoCore-fab-sam core pgmspace.h](Packages_Patches/Fab_SAM_Arduino/hardware/samd/1.6.18-alpha2/boards.txt) into `ArduinoCore-fab-sam` samd directory (~/.arduino15/packages/Fab_SAM_Arduino/hardware/samd/1.6.18-alpha2/boards.txt). 
+
+Supposing the `ArduinoCore-fab-sam` samd core version is 1.6.18-alpha2. This file must be copied into the directory:
+
+- `~/.arduino15/packages/Fab_SAM_Arduino/hardware/samd/1.6.18-alpha2/boards.txt`
+
+Whenever a new version is installed, remember to copy this file into the new version directory. For example, new version is x.yy.zz
+This file must be copied into the directory:
+
+- `~/.arduino15/packages/Fab_SAM_Arduino/hardware/samd/x.yy.zz/boards.txt`
+
+
+#### 12. For Seeeduino RP2040 boards
+ 
+ ***To be able to compile, run and automatically detect and display BOARD_NAME on Seeeduino RP2040 (XIAO RP2040, Wio RP2040 Mini) boards***, you have to copy the whole [Seeeduino RP2040 Packages_Patches](Packages_Patches/Seeeduino/hardware/rp2040/2.7.2) directory into Seeeduino samd directory (~/.arduino15/packages/Seeeduino/hardware/rp2040/2.7.2). 
+
+Supposing the Seeeduino SAMD core version is 2.7.2. This file must be copied into the directory:
+
+- `~/.arduino15/packages/Seeeduino/hardware/rp2040/2.7.2/boards.txt`
+- `~/.arduino15/packages/Seeeduino/hardware/rp2040/2.7.2/variants/Seeed_XIAO_RP2040/pins_arduino.h`
+
+Whenever a new version is installed, remember to copy this file into the new version directory. For example, new version is x.yy.zz
+This file must be copied into the directory:
+
+- `~/.arduino15/packages/Seeeduino/hardware/samd/x.yy.zz/boards.txt`
+- `~/.arduino15/packages/Seeeduino/hardware/samd/x.yy.zz/variants/Seeed_XIAO_RP2040/pins_arduino.h`
 
 ---
 ---
@@ -745,676 +778,14 @@ Please take a look at other examples, as well.
 
 #### 1. File [AdvancedWebServer.ino](examples/AdvancedWebServer/AdvancedWebServer.ino)
 
-```cpp
-// Credits of [Miguel Alexandre Wisintainer](https://github.com/tcpipchip) for this simple yet effective method
-// For some STM32, there is only definition of Serial in variant.h, and is used for Serial/USB Debugging
-// For example, in Nucleo-144 F767ZI original variant.h
-//
-// #define SERIAL_PORT_MONITOR     Serial
-// #define SERIAL_PORT_HARDWARE    Serial
-//
-// To use ESP8266/ESP32-AT, we need another Serial, such as Serial1
-// To do this, first, in corresponding variant.h, modify as follows:
 
-// #define SERIAL_PORT_HARDWARE    Serial1
-//
-// then assign pins D0 = RX/D1 = TX to be Hardware Serial1 by putting in sketch as follows:
-//
-// #define EspSerial      SERIAL_PORT_HARDWARE    //Serial1
-// HardwareSerial         Serial1(D0, D1);
-//
-// This must be included in defines.h for each board you'd like to use ESPSerial as Serial1
-//
-// The pin usage must be modified according to your boards.
-
-#include "defines.h"
-
-int status = WL_IDLE_STATUS;     // the Wifi radio's status
-int reqCount = 0;                // number of requests received
-
-#define WEBSERVER_PORT      80    //5990
-//ESP8266_AT_WebServer server(WEBSERVER_PORT);
-ESP8266_AT_WebServer server(WEBSERVER_PORT);
-
-const int led = 13;
-
-void handleRoot()
-{
-#define BUFFER_SIZE     512
-  
-  digitalWrite(led, 1);
-  char temp[BUFFER_SIZE];
-  int sec = millis() / 1000;
-  int min = sec / 60;
-  int hr = min / 60;
-  int day = hr / 24;
-
-  hr = hr % 24;
-
-  snprintf(temp, BUFFER_SIZE - 1,
-           "<html>\
-<head>\
-<meta http-equiv='refresh' content='5'/>\
-<title>%s</title>\
-<style>\
-body { background-color: #cccccc; font-family: Arial, Helvetica, Sans-Serif; Color: #000088; }\
-</style>\
-</head>\
-<body>\
-<h1>Hello from %s</h1>\
-<h3>running AdvancedWebServer</h3>\
-<h3>on %s</h3>\
-<p>Uptime: %d d %02d:%02d:%02d</p>\
-<img src=\"/test.svg\" />\
-</body>\
-</html>", BOARD_NAME, BOARD_NAME, SHIELD_TYPE, day, hr, min % 60, sec % 60);
-
-  server.send(200, F("text/html"), temp);
-  digitalWrite(led, 0);
-}
-
-void handleNotFound()
-{
-  digitalWrite(led, 1);
-  
-  String message = F("File Not Found\n\n");
-  
-  message += F("URI: ");
-  message += server.uri();
-  message += F("\nMethod: ");
-  message += (server.method() == HTTP_GET) ? F("GET") : F("POST");
-  message += F("\nArguments: ");
-  message += server.args();
-  message += F("\n");
-  
-  for (uint8_t i = 0; i < server.args(); i++)
-  {
-    message += " " + server.argName(i) + ": " + server.arg(i) + "\n";
-  }
-  
-  server.send(404, F("text/plain"), message);
-  
-  digitalWrite(led, 0);
-}
-
-#if 1
-
-#define ORIGINAL_STR_LEN        2048
-
-void drawGraph()
-{
-  static String out;
-  static uint16_t previousStrLen = ORIGINAL_STR_LEN;
-
-  if (out.length() == 0)
-  {
-    AT_LOGWARN1(F("String Len = 0, extend to"), ORIGINAL_STR_LEN);
-    out.reserve(ORIGINAL_STR_LEN);
-  }
-
-  out = F( "<svg xmlns=\"http://www.w3.org/2000/svg\" version=\"1.1\" width=\"310\" height=\"150\">\n" \
-           "<rect width=\"310\" height=\"150\" fill=\"rgb(250, 230, 210)\" stroke-width=\"3\" stroke=\"rgb(0, 0, 0)\" />\n" \
-           "<g stroke=\"blue\">\n");
-
-  char temp[70];
-  
-  int y = rand() % 130;
-
-  for (int x = 10; x < 300; x += 10)
-  {
-    int y2 = rand() % 130;
-    sprintf(temp, "<line x1=\"%d\" y1=\"%d\" x2=\"%d\" y2=\"%d\" stroke-width=\"2\" />\n", x, 140 - y, x + 10, 140 - y2);
-    out += temp;
-    y = y2;
-  }
-  
-  out += F("</g>\n</svg>\n");
-
-  AT_LOGDEBUG1(F("String Len = "), out.length());
-
-  if (out.length() > previousStrLen)
-  {
-    AT_LOGERROR3(F("String Len > "), previousStrLen, F(", extend to"), out.length() + 48);
-
-    previousStrLen = out.length() + 48;
-    
-    out.reserve(previousStrLen);
-  }
-  else
-  {
-    server.send(200, "image/svg+xml", out);
-  }
-}
-
-#else
-
-#define ORIGINAL_STR_LEN        1280
-
-void drawGraph()
-{
-  static String out;
-  static uint16_t previousStrLen = ORIGINAL_STR_LEN;
-
-  if (out.length() == 0)
-  {
-    AT_LOGWARN1(F("String Len = 0, extend to"), ORIGINAL_STR_LEN);
-    out.reserve(ORIGINAL_STR_LEN);
-  }
-
-  out = F( "<svg xmlns=\"http://www.w3.org/2000/svg\" version=\"1.1\" width=\"160\" height=\"80\">\n" \
-           "<rect width=\"1600\" height=\"800\" fill=\"rgb(250, 230, 210)\" stroke-width=\"3\" stroke=\"rgb(0, 0, 0)\" />\n" \
-           "<g stroke=\"blue\">\n");
-
-  char temp[70];
-  
-  int y = rand() % 60;
-
-  for (int x = 10; x < 150; x += 10)
-  {
-    int y2 = rand() % 60;
-    sprintf(temp, "<line x1=\"%d\" y1=\"%d\" x2=\"%d\" y2=\"%d\" stroke-width=\"2\" />\n", x, 70 - y, x + 10, 70 - y2);
-    out += temp;
-    y = y2;
-  }
-  
-  out += F("</g>\n</svg>\n");
-
-  AT_LOGDEBUG1(F("String Len = "), out.length());
-
-  if (out.length() > previousStrLen)
-  {
-    AT_LOGERROR3(F("String Len > "), previousStrLen, F(", extend to"), out.length() + 48);
-
-    previousStrLen = out.length() + 48;
-    
-    out.reserve(previousStrLen);
-  }
-  else
-  {
-    server.send(200, "image/svg+xml", out);
-  }
-}
-
-#endif
-
-void setup()
-{
-  pinMode(led, OUTPUT);
-  digitalWrite(led, 0);
-
-  Serial.begin(115200);
-  while (!Serial);
-  
-  Serial.print(F("\nStarting AdvancedServer on "));
-  Serial.print(BOARD_NAME);
-  Serial.print(F(" with "));
-  Serial.println(SHIELD_TYPE); 
-  Serial.println(ESP8266_AT_WEBSERVER_VERSION);
-
-  // initialize serial for ESP module
-  EspSerial.begin(115200);
-  // initialize ESP module
-  WiFi.init(&EspSerial);
-
-  Serial.println(F("WiFi shield init done"));
-
-  // check for the presence of the shield
-  if (WiFi.status() == WL_NO_SHIELD)
-  {
-    Serial.println(F("WiFi shield not present"));
-    // don't continue
-    while (true);
-  }
-
-  // attempt to connect to WiFi network
-  while ( status != WL_CONNECTED)
-  {
-    Serial.print(F("Connecting to WPA SSID: "));
-    Serial.println(ssid);
-    // Connect to WPA/WPA2 network
-    status = WiFi.begin(ssid, pass);
-  }
-
-  server.on(F("/"), handleRoot);
-  server.on(F("/test.svg"), drawGraph);
-  server.on(F("/inline"), []()
-  {
-    server.send(200, F("text/plain"), F("This works as well"));
-  });
-
-  server.onNotFound(handleNotFound);
-  server.begin();
-  Serial.print(F("HTTP server started @ "));
-  Serial.print(WiFi.localIP());
-  Serial.print(F(", Port = "));
-  Serial.println(WEBSERVER_PORT);
-}
-
-void heartBeatPrint()
-{
-  static int num = 1;
-
-  Serial.print(F("."));
-
-  if (num == 80)
-  {
-    Serial.println();
-    num = 1;
-  }
-  else if (num++ % 10 == 0)
-  {
-    Serial.print(F(" "));
-  }
-}
-
-void check_status()
-{
-  static unsigned long checkstatus_timeout = 0;
-
-#define STATUS_CHECK_INTERVAL     10000L
-
-  // Send status report every STATUS_REPORT_INTERVAL (60) seconds: we don't need to send updates frequently if there is no status change.
-  if ((millis() > checkstatus_timeout) || (checkstatus_timeout == 0))
-  {
-    heartBeatPrint();
-    checkstatus_timeout = millis() + STATUS_CHECK_INTERVAL;
-  }
-}
-
-void loop()
-{
-  server.handleClient();
-  check_status();
-}
-```
+https://github.com/khoih-prog/ESP8266_AT_WebServer/blob/6dd9b07c7f3f32898067adc23ab6cc9460ba1aee/examples/AdvancedWebServer/AdvancedWebServer.ino#L39-L316
 
 ---
 
 #### 2. File [defines.h](examples/AdvancedWebServer/defines.h)
 
-```cpp
-#ifndef defines_h
-#define defines_h
-
-#define DEBUG_ESP8266_AT_WEBSERVER_PORT Serial
-
-// Debug Level from 0 to 4
-#define _ESP_AT_LOGLEVEL_       2
-
-// Uncomment to use ESP32-AT commands
-//#define USE_ESP32_AT      true
-
-#if USE_ESP32_AT
-  #warning Using ESP32-AT WiFi and ESP8266_AT_WebServer Library
-  #define SHIELD_TYPE           "ESP32-AT & ESP8266_AT_WebServer Library"
-#else
-  #warning Using ESP8266-AT WiFi with ESP8266_AT_WebServer Library
-  #define SHIELD_TYPE           "ESP8266-AT & ESP8266_AT_WebServer Library" 
-#endif
-
-#if    ( defined(ARDUINO_SAMD_ZERO) || defined(ARDUINO_SAMD_MKR1000) || defined(ARDUINO_SAMD_MKRWIFI1010) \
-      || defined(ARDUINO_SAMD_NANO_33_IOT) || defined(ARDUINO_SAMD_MKRFox1200) || defined(ARDUINO_SAMD_MKRWAN1300) || defined(ARDUINO_SAMD_MKRWAN1310) \
-      || defined(ARDUINO_SAMD_MKRGSM1400) || defined(ARDUINO_SAMD_MKRNB1500) || defined(ARDUINO_SAMD_MKRVIDOR4000) || defined(__SAMD21G18A__) \
-      || defined(ARDUINO_SAMD_CIRCUITPLAYGROUND_EXPRESS) || defined(__SAMD21E18A__) || defined(__SAMD51__) || defined(__SAMD51J20A__) || defined(__SAMD51J19A__) \
-      || defined(__SAMD51G19A__) || defined(__SAMD51P19A__) || defined(__SAMD21G18A__) )
-  #if defined(ESP8266_AT_USE_SAMD)
-    #undef ESP8266_AT_USE_SAMD
-  #endif
-  #define ESP8266_AT_USE_SAMD      true
-#endif
-
-#if ( defined(NRF52840_FEATHER) || defined(NRF52832_FEATHER) || defined(NRF52_SERIES) || defined(ARDUINO_NRF52_ADAFRUIT) || \
-      defined(NRF52840_FEATHER_SENSE) || defined(NRF52840_ITSYBITSY) || defined(NRF52840_CIRCUITPLAY) || defined(NRF52840_CLUE) || \
-      defined(NRF52840_METRO) || defined(NRF52840_PCA10056) || defined(PARTICLE_XENON) || defined(NINA_B302_ublox) || defined(NINA_B112_ublox) )
-  #if defined(ESP8266_AT_USE_NRF528XX)
-    #undef ESP8266_AT_USE_NRF528XX
-  #endif
-  #define ESP8266_AT_USE_NRF528XX      true
-#endif
-
-#if ( defined(ARDUINO_SAM_DUE) || defined(__SAM3X8E__) )
-  #if defined(ESP8266_AT_USE_SAM_DUE)
-    #undef ESP8266_AT_USE_SAM_DUE
-  #endif
-  #define ESP8266_AT_USE_SAM_DUE      true
-#endif
-
-#if ( defined(STM32F0) || defined(STM32F1) || defined(STM32F2) || defined(STM32F3)  ||defined(STM32F4) || defined(STM32F7) || \
-       defined(STM32L0) || defined(STM32L1) || defined(STM32L4) || defined(STM32H7)  ||defined(STM32G0) || defined(STM32G4) || \
-       defined(STM32WB) || defined(STM32MP1) )
-  #if defined(ESP8266_AT_USE_STM32)
-    #undef ESP8266_AT_USE_STM32
-  #endif
-  #define ESP8266_AT_USE_STM32      true
-#endif
-
-#if ( defined(ARDUINO_AVR_ADK) || defined(ARDUINO_AVR_MEGA) || defined(ARDUINO_AVR_MEGA2560) )
-  #if defined(ESP_AT_USE_AVR)
-    #undef ESP_AT_USE_AVR
-  #endif
-  #define ESP_AT_USE_AVR      true
-#endif
-
-#ifdef CORE_TEENSY
-  // For Teensy 4.1/4.0
-  //#define EspSerial Serial1   //Serial1, Pin RX1 :  0, TX1 :  1
-  #define EspSerial Serial2   //Serial2, Pin RX2 :  7, TX2 :  8
-  //#define EspSerial Serial3   //Serial3, Pin RX3 : 15, TX3 : 14
-  //#define EspSerial Serial4   //Serial4, Pin RX4 : 16, TX4 : 17
-  
-  #if defined(__IMXRT1062__)
-    // For Teensy 4.1/4.0
-    #if defined(ARDUINO_TEENSY41)
-      #define BOARD_TYPE      "TEENSY 4.1"
-      // Use true for NativeEthernet Library, false if using other Ethernet libraries
-      #define USE_NATIVE_ETHERNET     true
-    #elif defined(ARDUINO_TEENSY40)
-      #define BOARD_TYPE      "TEENSY 4.0"
-    #else
-      #define BOARD_TYPE      "TEENSY 4.x"
-    #endif    
-  #elif defined(__MK66FX1M0__)
-    #define BOARD_TYPE "Teensy 3.6"
-  #elif defined(__MK64FX512__)
-    #define BOARD_TYPE "Teensy 3.5"
-  #elif defined(__MKL26Z64__)
-    #define BOARD_TYPE "Teensy LC"
-  #elif defined(__MK20DX256__)
-    #define BOARD_TYPE "Teensy 3.2" // and Teensy 3.1 (obsolete)
-  #elif defined(__MK20DX128__)
-    #define BOARD_TYPE "Teensy 3.0"
-  #elif defined(__AVR_AT90USB1286__)
-    #error Teensy 2.0++ not supported yet
-  #elif defined(__AVR_ATmega32U4__)
-    #error Teensy 2.0 not supported yet
-  #else
-    // For Other Boards
-    #define BOARD_TYPE      "Unknown Teensy Board"
-  #endif
-
-#elif defined(ESP8266_AT_USE_SAMD)
-  // For SAMD
-  #define EspSerial Serial1
-  
-  #if defined(ARDUINO_SAMD_ZERO)
-    #define BOARD_TYPE      "SAMD Zero"
-  #elif defined(ARDUINO_SAMD_MKR1000)
-    #define BOARD_TYPE      "SAMD MKR1000"
-  #elif defined(ARDUINO_SAMD_MKRWIFI1010)
-    #define BOARD_TYPE      "SAMD MKRWIFI1010"
-  #elif defined(ARDUINO_SAMD_NANO_33_IOT)
-    #define BOARD_TYPE      "SAMD NANO_33_IOT"
-  #elif defined(ARDUINO_SAMD_MKRFox1200)
-    #define BOARD_TYPE      "SAMD MKRFox1200"
-  #elif ( defined(ARDUINO_SAMD_MKRWAN1300) || defined(ARDUINO_SAMD_MKRWAN1310) )
-    #define BOARD_TYPE      "SAMD MKRWAN13X0"
-  #elif defined(ARDUINO_SAMD_MKRGSM1400)
-    #define BOARD_TYPE      "SAMD MKRGSM1400"
-  #elif defined(ARDUINO_SAMD_MKRNB1500)
-    #define BOARD_TYPE      "SAMD MKRNB1500"
-  #elif defined(ARDUINO_SAMD_MKRVIDOR4000)
-    #define BOARD_TYPE      "SAMD MKRVIDOR4000"
-  #elif defined(ARDUINO_SAMD_CIRCUITPLAYGROUND_EXPRESS)
-    #define BOARD_TYPE      "SAMD ARDUINO_SAMD_CIRCUITPLAYGROUND_EXPRESS"
-  #elif defined(ADAFRUIT_FEATHER_M0_EXPRESS)
-    #define BOARD_TYPE      "SAMD21 ADAFRUIT_FEATHER_M0_EXPRESS"
-  #elif defined(ADAFRUIT_METRO_M0_EXPRESS)
-    #define BOARD_TYPE      "SAMD21 ADAFRUIT_METRO_M0_EXPRESS"
-  #elif defined(ADAFRUIT_CIRCUITPLAYGROUND_M0)
-    #define BOARD_TYPE      "SAMD21 ADAFRUIT_CIRCUITPLAYGROUND_M0"
-  #elif defined(ADAFRUIT_GEMMA_M0)
-    #define BOARD_TYPE      "SAMD21 ADAFRUIT_GEMMA_M0"
-  #elif defined(ADAFRUIT_TRINKET_M0)
-    #define BOARD_TYPE      "SAMD21 ADAFRUIT_TRINKET_M0"
-  #elif defined(ADAFRUIT_ITSYBITSY_M0)
-    #define BOARD_TYPE      "SAMD21 ADAFRUIT_ITSYBITSY_M0"
-  #elif defined(ARDUINO_SAMD_HALLOWING_M0)
-    #define BOARD_TYPE      "SAMD21 ARDUINO_SAMD_HALLOWING_M0"
-  #elif defined(ADAFRUIT_METRO_M4_EXPRESS)
-    #define BOARD_TYPE      "SAMD51 ADAFRUIT_METRO_M4_EXPRESS"
-  #elif defined(ADAFRUIT_GRAND_CENTRAL_M4)
-    #define BOARD_TYPE      "SAMD51 ADAFRUIT_GRAND_CENTRAL_M4"
-  #elif defined(ADAFRUIT_FEATHER_M4_EXPRESS)
-    #define BOARD_TYPE      "SAMD51 ADAFRUIT_FEATHER_M4_EXPRESS"
-  #elif defined(ADAFRUIT_ITSYBITSY_M4_EXPRESS)
-    #define BOARD_TYPE      "SAMD51 ADAFRUIT_ITSYBITSY_M4_EXPRESS"
-  #elif defined(ADAFRUIT_TRELLIS_M4_EXPRESS)
-    #define BOARD_TYPE      "SAMD51 ADAFRUIT_TRELLIS_M4_EXPRESS"
-  #elif defined(ADAFRUIT_PYPORTAL)
-    #define BOARD_TYPE      "SAMD51 ADAFRUIT_PYPORTAL"
-  #elif defined(ADAFRUIT_PYPORTAL_M4_TITANO)
-    #define BOARD_TYPE      "SAMD51 ADAFRUIT_PYPORTAL_M4_TITANO"
-  #elif defined(ADAFRUIT_PYBADGE_M4_EXPRESS)
-    #define BOARD_TYPE      "SAMD51 ADAFRUIT_PYBADGE_M4_EXPRESS"
-  #elif defined(ADAFRUIT_METRO_M4_AIRLIFT_LITE)
-    #define BOARD_TYPE      "SAMD51 ADAFRUIT_METRO_M4_AIRLIFT_LITE"
-  #elif defined(ADAFRUIT_PYGAMER_M4_EXPRESS)
-    #define BOARD_TYPE      "SAMD51 ADAFRUIT_PYGAMER_M4_EXPRESS"
-  #elif defined(ADAFRUIT_PYGAMER_ADVANCE_M4_EXPRESS)
-    #define BOARD_TYPE      "SAMD51 ADAFRUIT_PYGAMER_ADVANCE_M4_EXPRESS"
-  #elif defined(ADAFRUIT_PYBADGE_AIRLIFT_M4)
-    #define BOARD_TYPE      "SAMD51 ADAFRUIT_PYBADGE_AIRLIFT_M4"
-  #elif defined(ADAFRUIT_MONSTER_M4SK_EXPRESS)
-    #define BOARD_TYPE      "SAMD51 ADAFRUIT_MONSTER_M4SK_EXPRESS"
-  #elif defined(ADAFRUIT_HALLOWING_M4_EXPRESS)
-    #define BOARD_TYPE      "SAMD51 ADAFRUIT_HALLOWING_M4_EXPRESS"
-  #elif defined(SEEED_WIO_TERMINAL)
-    #define BOARD_TYPE      "SAMD SEEED_WIO_TERMINAL"
-  #elif defined(SEEED_FEMTO_M0)
-    #define BOARD_TYPE      "SAMD SEEED_FEMTO_M0"
-  #elif defined(SEEED_XIAO_M0)
-    #define BOARD_TYPE      "SAMD SEEED_XIAO_M0"
-  #elif defined(Wio_Lite_MG126)
-    #define BOARD_TYPE      "SAMD SEEED Wio_Lite_MG126"
-  #elif defined(WIO_GPS_BOARD)
-    #define BOARD_TYPE      "SAMD SEEED WIO_GPS_BOARD"
-  #elif defined(SEEEDUINO_ZERO)
-    #define BOARD_TYPE      "SAMD SEEEDUINO_ZERO"
-  #elif defined(SEEEDUINO_LORAWAN)
-    #define BOARD_TYPE      "SAMD SEEEDUINO_LORAWAN"
-  #elif defined(SEEED_GROVE_UI_WIRELESS)
-    #define BOARD_TYPE      "SAMD SEEED_GROVE_UI_WIRELESS"
-  #elif defined(__SAMD21E18A__)
-    #define BOARD_TYPE      "SAMD21E18A"
-  #elif defined(__SAMD21G18A__)
-    #define BOARD_TYPE      "SAMD21G18A"
-  #elif defined(__SAMD51G19A__)
-    #define BOARD_TYPE      "SAMD51G19A"
-  #elif defined(__SAMD51J19A__)
-    #define BOARD_TYPE      "SAMD51J19A"
-  #elif defined(__SAMD51J20A__)
-    #define BOARD_TYPE      "SAMD51J20A"
-  #elif defined(__SAM3X8E__)
-    #define BOARD_TYPE      "SAM3X8E"
-  #elif defined(__CPU_ARC__)
-    #define BOARD_TYPE      "CPU_ARC"
-  #elif defined(__SAMD51__)
-    #define BOARD_TYPE      "SAMD51"
-  #else
-    #define BOARD_TYPE      "SAMD Unknown"
-  #endif
-
-#elif (ESP8266_AT_USE_NRF528XX)
-
-  #if defined(NRF52840_FEATHER)
-    #define BOARD_TYPE      "NRF52840_FEATHER_EXPRESS"
-  #elif defined(NRF52832_FEATHER)
-    #define BOARD_TYPE      "NRF52832_FEATHER"
-  #elif defined(NRF52840_FEATHER_SENSE)
-    #define BOARD_TYPE      "NRF52840_FEATHER_SENSE"
-  #elif defined(NRF52840_ITSYBITSY)
-    #define BOARD_TYPE      "NRF52840_ITSYBITSY_EXPRESS"
-  #elif defined(NRF52840_CIRCUITPLAY)
-    #define BOARD_TYPE      "NRF52840_CIRCUIT_PLAYGROUND"
-  #elif defined(NRF52840_CLUE)
-    #define BOARD_TYPE      "NRF52840_CLUE"
-  #elif defined(NRF52840_METRO)
-    #define BOARD_TYPE      "NRF52840_METRO_EXPRESS"
-  #elif defined(NRF52840_PCA10056)
-    #define BOARD_TYPE      "NORDIC_NRF52840DK"
-  #elif defined(NINA_B302_ublox)
-    #define BOARD_TYPE      "NINA_B302_ublox"
-  #elif defined(NINA_B112_ublox)
-    #define BOARD_TYPE      "NINA_B112_ublox"
-  #elif defined(PARTICLE_XENON)
-    #define BOARD_TYPE      "PARTICLE_XENON"
-  #elif defined(MDBT50Q_RX)
-    #define BOARD_TYPE      "RAYTAC_MDBT50Q_RX"
-  #elif defined(ARDUINO_NRF52_ADAFRUIT)
-    #define BOARD_TYPE      "ARDUINO_NRF52_ADAFRUIT"
-  #else
-    #define BOARD_TYPE      "nRF52 Unknown"
-  #endif
-
-#define EspSerial Serial1
-
-#elif defined(ESP8266_AT_USE_SAM_DUE)
-  // For SAM DUE
-  #define EspSerial Serial1
-  #define BOARD_TYPE      "SAM DUE"
-
-#elif defined(ESP8266_AT_USE_STM32)
-  // For STM32
-  #warning EspSerial using SERIAL_PORT_HARDWARE, can be Serial or Serial1. See your board variant.h
-  #define EspSerial     SERIAL_PORT_HARDWARE    //Serial1
-
-  #if defined(STM32F0)
-    #warning STM32F0 board selected
-    #define BOARD_TYPE  "STM32F0"
-  #elif defined(STM32F1)
-    #warning STM32F1 board selected
-    #define BOARD_TYPE  "STM32F1"
-  #elif defined(STM32F2)
-    #warning STM32F2 board selected
-    #define BOARD_TYPE  "STM32F2"
-  #elif defined(STM32F3)
-    #warning STM32F3 board selected
-    #define BOARD_TYPE  "STM32F3"
-  #elif defined(STM32F4)
-    #warning STM32F4 board selected
-    #define BOARD_TYPE  "STM32F4"
-  #elif defined(STM32F7)
-
-    #if defined(ARDUINO_NUCLEO_F767ZI)
-      #warning Nucleo-144 NUCLEO_F767ZI board selected, using HardwareSerial Serial1 @ pin D0/RX and D1/TX
-      // RX TX
-      HardwareSerial Serial1(D0, D1);
-    #else
-    
-      #warning STM32F7 board selected
-      #define BOARD_TYPE  "STM32F7"
-
-    #endif
-    
-  #elif defined(STM32L0)
-    #if defined(ARDUINO_NUCLEO_L053R8)
-      #warning Nucleo-64 NUCLEO_L053R8 board selected, using HardwareSerial Serial1 @ pin D0/RX and D1/TX
-      // RX TX
-      HardwareSerial Serial1(D0, D1);   // (PA3, PA2);
-    #else
-    
-      #warning STM32L0 board selected
-      #define BOARD_TYPE  "STM32L0"
-
-    #endif
-    
-  #elif defined(STM32L1)
-    #warning STM32L1 board selected
-    #define BOARD_TYPE  "STM32L1"
-  #elif defined(STM32L4)
-    #warning STM32L4 board selected
-    #define BOARD_TYPE  "STM32L4"
-  #elif defined(STM32H7)
-    #warning STM32H7 board selected
-    #define BOARD_TYPE  "STM32H7"
-  #elif defined(STM32G0)
-    #warning STM32G0 board selected
-    #define BOARD_TYPE  "STM32G0"
-  #elif defined(STM32G4)
-    #warning STM32G4 board selected
-    #define BOARD_TYPE  "STM32G4"
-  #elif defined(STM32WB)
-    #warning STM32WB board selected
-    #define BOARD_TYPE  "STM32WB"
-  #elif defined(STM32MP1)
-    #warning STM32MP1 board selected
-    #define BOARD_TYPE  "STM32MP1"
-  #else
-    #warning STM32 unknown board selected
-    #define BOARD_TYPE  "STM32 Unknown"
-
-  #endif
-
-#elif defined(BOARD_SIPEED_MAIX_DUINO)
-
-  #warning SIPEED_MAIX_DUINO board selected
-  #define BOARD_TYPE  "BOARD_SIPEED_MAIX_DUINO"
-
-  #define EspSerial       Serial1
-
-#elif ( defined(ARDUINO_NANO_RP2040_CONNECT) || defined(ARDUINO_ARCH_RP2040) || defined(ARDUINO_RASPBERRY_PI_PICO) || \
-      defined(ARDUINO_GENERIC_RP2040) || defined(ARDUINO_ADAFRUIT_FEATHER_RP2040) )
-    
-  #warning RASPBERRY_PI_PICO board selected
-
-  #if defined(ARDUINO_ARCH_MBED)
-
-    #warning Using ARDUINO_ARCH_MBED
-    
-    #if ( defined(ARDUINO_NANO_RP2040_CONNECT)    || defined(ARDUINO_RASPBERRY_PI_PICO) || \
-          defined(ARDUINO_GENERIC_RP2040) || defined(ARDUINO_ADAFRUIT_FEATHER_RP2040) )
-      // Only undef known BOARD_NAME to use better one
-      #undef BOARD_NAME
-    #endif
-    
-    #if defined(ARDUINO_RASPBERRY_PI_PICO)
-      #define BOARD_NAME      "MBED RASPBERRY_PI_PICO"
-    #elif defined(ARDUINO_ADAFRUIT_FEATHER_RP2040)
-      #define BOARD_NAME      "MBED ADAFRUIT_FEATHER_RP2040"
-    #elif defined(ARDUINO_GENERIC_RP2040)
-      #define BOARD_NAME      "MBED GENERIC_RP2040"
-    #elif defined(ARDUINO_NANO_RP2040_CONNECT) 
-      #define BOARD_NAME      "MBED NANO_RP2040_CONNECT"
-    #else
-      // Use default BOARD_NAME if exists
-      #if !defined(BOARD_NAME)
-        #define BOARD_NAME      "MBED Unknown RP2040"
-      #endif
-    #endif
-  
-  #endif
-  
-  #define EspSerial       Serial1   
-  
-#elif (ESP_AT_USE_AVR)
-
-  #if defined(ARDUINO_AVR_MEGA2560)
-    #define BOARD_TYPE      "AVR Mega2560"
-  #elif defined(ARDUINO_AVR_MEGA) 
-    #define BOARD_TYPE      "AVR Mega"
-  #else
-    #define BOARD_TYPE      "AVR ADK"
-  #endif
-
-  // For Mega, use Serial1 or Serial3
-  #define EspSerial Serial3
-
-#else
-  #error Unknown or unsupported Board. Please check your Tools->Board setting.
-  
-#endif
-
-#ifndef BOARD_NAME
-  #define BOARD_NAME    BOARD_TYPE
-#endif
-
-#include <ESP8266_AT_WebServer.h>
-
-char ssid[] = "YOUR_SSID";        // your network SSID (name)
-char pass[] = "12345678";        // your network password
-
-#endif    //defines_h
-```
+https://github.com/khoih-prog/ESP8266_AT_WebServer/blob/6dd9b07c7f3f32898067adc23ab6cc9460ba1aee/examples/AdvancedWebServer/defines.h#L15-L397
 
 ---
 
@@ -1427,7 +798,7 @@ The following are debug terminal output when running example [AdvancedWebServer]
 
 ```
 Starting AdvancedWebServer on NRF52840_ITSYBITSY_EXPRESS
-ESP8266_AT_WebServer v1.5.3
+ESP8266_AT_WebServer v1.5.4
 [ESP_AT] Initializing ESP module
 [ESP_AT] Use ES8266-AT Command
 WiFi shield init done
@@ -1556,7 +927,7 @@ The following are debug terminal output when running example [MQTT_ThingStream](
 
 ```
 Start MQTT_ThingStream on ITSYBITSY_M4 with ESP8266-AT & ESP8266_AT_WebServer Library
-ESP8266_AT_WebServer v1.5.3
+ESP8266_AT_WebServer v1.5.4
 [ESP_AT] Use ES8266-AT Command
 WiFi shield init done
 Connecting to SSID: HueNet1
@@ -1591,7 +962,7 @@ The following are debug terminal output when running example [MQTTClient_Auth](e
 
 ```
 Starting MQTTClient_Auth on ITSYBITSY_M4 with ESP8266-AT & ESP8266_AT_WebServer Library
-ESP8266_AT_WebServer v1.5.3
+ESP8266_AT_WebServer v1.5.4
 [ESP_AT] Use ES8266-AT Command
 WiFi shield init done
 Connecting to SSID: HueNet1
@@ -1617,7 +988,7 @@ The following are debug terminal output when running example [MQTTClient_Basic](
 
 ```
 MQTTClient_Basic on ITSYBITSY_M4 with ESP8266-AT & ESP8266_AT_WebServer Library
-ESP8266_AT_WebServer v1.5.3
+ESP8266_AT_WebServer v1.5.4
 [ESP_AT] Use ES8266-AT Command
 WiFi shield init done
 Connecting to SSID: HueNet1
@@ -1642,7 +1013,7 @@ The following are debug terminal output when running example [WebClientRepeating
 
 ```
 Starting WebClientRepeating on RASPBERRY_PI_PICO with ESP8266-AT & ESP8266_AT_WebServer Library
-ESP8266_AT_WebServer v1.5.3
+ESP8266_AT_WebServer v1.5.4
 [ESP_AT] Use ES8266-AT Command
 WiFi shield init done
 Connecting to SSID: HueNet1
@@ -1711,7 +1082,7 @@ The following are debug terminal output when running example [MQTTClient_Auth](e
 
 ```
 Starting MQTTClient_Auth on RASPBERRY_PI_PICO with ESP8266-AT & ESP8266_AT_WebServer Library
-ESP8266_AT_WebServer v1.5.3
+ESP8266_AT_WebServer v1.5.4
 [ESP_AT] Use ES8266-AT Command
 WiFi shield init done
 Connecting to SSID: HueNet1
@@ -1736,7 +1107,7 @@ The following are debug terminal output when running example [UdpNTPClient](exam
 
 ```
 Starting UdpNTPClient on MBED RASPBERRY_PI_PICO with ESP8266-AT & ESP8266_AT_WebServer Library
-ESP8266_AT_WebServer v1.5.3
+ESP8266_AT_WebServer v1.5.4
 [ESP_AT] Use ES8266-AT Command
 WiFi shield init done
 Connecting to WPA SSID: HueNet1
