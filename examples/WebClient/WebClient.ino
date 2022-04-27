@@ -37,7 +37,7 @@
 
 int status = WL_IDLE_STATUS;      // the Wifi radio's status
 
-char server[] = "arduino.cc";
+char server[] = "arduino.tips";
 
 // Initialize the Web client object
 ESP8266_AT_Client client;
@@ -75,7 +75,7 @@ void httpRequest()
 
     // send the HTTP PUT request
     client.println(F("GET /asciilogo.txt HTTP/1.1"));
-    client.println(F("Host: arduino.cc"));
+    client.println(F("Host: arduino.tips"));
     client.println(F("Connection: close"));
     client.println();
   }
@@ -90,12 +90,10 @@ void setup()
 {
   // Open serial communications and wait for port to open:
   Serial.begin(115200);
-  while (!Serial);
+  while (!Serial && millis() < 5000);
 
-  Serial.print(F("\nStarting WebClient on "));
-  Serial.print(BOARD_NAME);
-  Serial.print(F(" with "));
-  Serial.println(SHIELD_TYPE); 
+  Serial.print(F("\nStarting WebClient on ")); Serial.print(BOARD_NAME);
+  Serial.print(F(" with ")); Serial.println(SHIELD_TYPE); 
   Serial.println(ESP8266_AT_WEBSERVER_VERSION);
 
   // initialize serial for ESP module

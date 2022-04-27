@@ -63,15 +63,10 @@ void printWifiStatus()
 void setup()
 {
   Serial.begin(115200);
+  while (!Serial && millis() < 5000);
 
-  // initialize serial for ESP module
-  EspSerial.begin(115200);
-  while (!Serial);
-
-  Serial.print(F("\nStarting UDPSendReceive on "));
-  Serial.print(BOARD_NAME);
-  Serial.print(F(" with "));
-  Serial.println(SHIELD_TYPE); 
+  Serial.print(F("\nStarting UDPSendReceive on ")); Serial.print(BOARD_NAME);
+  Serial.print(F(" with ")); Serial.println(SHIELD_TYPE); 
   Serial.println(ESP8266_AT_WEBSERVER_VERSION);
 
   // initialize serial for ESP module

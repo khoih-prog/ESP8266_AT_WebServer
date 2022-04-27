@@ -363,7 +363,7 @@
   
   #endif
   
-  #define EspSerial       Serial1
+  #define EspSerial       Serial1  
   
 #elif (ESP_AT_USE_AVR)
 

@@ -51,12 +51,10 @@ const char* www_username = "admin";
 void setup()
 {
   Serial.begin(115200);
-  while (!Serial);
+  while (!Serial && millis() < 5000);
 
-  Serial.print(F("\nStarting HTTPBasicAuth on "));
-  Serial.print(BOARD_NAME);
-  Serial.print(F(" with "));
-  Serial.println(SHIELD_TYPE); 
+  Serial.print(F("\nStarting HTTPBasicAuth on ")); Serial.print(BOARD_NAME);
+  Serial.print(F(" with ")); Serial.println(SHIELD_TYPE); 
   Serial.println(ESP8266_AT_WEBSERVER_VERSION);
 
   // initialize serial for ESP module
