@@ -89,7 +89,7 @@
   * [5. WebClientRepeating on RASPBERRY_PI_PICO using ESP8266-AT shield](#5-webclientrepeating-on-RASPBERRY_PI_PICO-using-esp8266-at-shield)
   * [6. MQTTClient_Auth on RASPBERRY_PI_PICO using ESP8266-AT shield](#6-MQTTClient_Auth-on-RASPBERRY_PI_PICO-using-esp8266-at-shield)
   * [7. UdpNTPClient on MBED RASPBERRY_PI_PICO using ESP8266-AT shield](#7-UdpNTPClient-on-mbed-RASPBERRY_PI_PICO-using-esp8266-at-shield)
-  * [8. AdvancedWebServer on NRF52840_ITSYBITSY](#8-AdvancedWebServer-on-NRF52840_ITSYBITSY)
+  * [8. AdvancedWebServer on NRF52840_ITSYBITSY](#8-AdvancedWebServer-on-nrf52840_itsybitsy)
   * [9. ATWebServer_BigData on NRF52840_ITSYBITSY](#9-ATWebServer_BigData-on-NRF52840_ITSYBITSY)
 * [Screen Shots](#screen-shots)
   * [1. SAMD51 Itsy-Bitsy M4](#1-samd51-itsy-bitsy-m4)
@@ -1165,7 +1165,7 @@ The UTC time is 5:12:24
 
 ---
 
-#### 8. [AdvancedServer](examples/AdvancedServer) on NRF52840_ITSYBITSY
+#### 8. [AdvancedWebServer](examples/AdvancedWebServer) on NRF52840_ITSYBITSY
 
 The following is debug terminal output when running example [AdvancedServer](examples/AdvancedServer) on `NRF52840_ITSYBITSY` board, to demo how to send much larger data than total 2K of `ESP8266/ESP32 AT-command` shields
 
