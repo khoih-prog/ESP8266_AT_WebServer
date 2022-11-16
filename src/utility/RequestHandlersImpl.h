@@ -11,7 +11,7 @@
   @file       Esp8266WebServer.h
   @author     Ivan Grokhotkov
 
-  Version: 1.5.4
+  Version: 1.6.0
 
   Version Modified By   Date      Comments
   ------- -----------  ---------- -----------
@@ -24,6 +24,7 @@
   1.5.2   K Hoang      28/12/2021 Fix wrong http status header bug
   1.5.3   K Hoang      12/01/2022 Fix authenticate issue caused by libb64
   1.5.4   K Hoang      26/04/2022 Use new arduino.tips site. Improve examples
+  1.6.0   K Hoang      16/11/2022 Fix severe limitation to permit sending larger data than 2K buffer. Add CORS
  *****************************************************************************************************************************/
 
 #pragma once
@@ -31,20 +32,29 @@
 #ifndef RequestHandlerImpl_h
 #define RequestHandlerImpl_h
 
+////////////////////////////////////////
+
 #include "RequestHandler.h"
 #include "mimetable.h"
+
+////////////////////////////////////////
 
 class FunctionRequestHandler : public RequestHandler
 {
   public:
 
-    FunctionRequestHandler(ESP8266_AT_WebServer::THandlerFunction fn, ESP8266_AT_WebServer::THandlerFunction ufn, const String &uri, const HTTPMethod& method)
+    ////////////////////////////////////////
+
+    FunctionRequestHandler(ESP8266_AT_WebServer::THandlerFunction fn, ESP8266_AT_WebServer::THandlerFunction ufn,
+                           const String &uri, const HTTPMethod& method)
       : _fn(fn)
       , _ufn(ufn)
       , _uri(uri)
       , _method(method)
     {
     }
+
+    ////////////////////////////////////////
 
     bool canHandle(const HTTPMethod& requestMethod, const String& requestUri) override
     {
@@ -66,6 +76,8 @@ class FunctionRequestHandler : public RequestHandler
       return false;
     }
 
+    ////////////////////////////////////////
+
     bool canUpload(const String& requestUri) override
     {
       if (!_ufn || !canHandle(HTTP_POST, requestUri))
@@ -74,10 +86,12 @@ class FunctionRequestHandler : public RequestHandler
       return true;
     }
 
+    ////////////////////////////////////////
+
     bool handle(ESP8266_AT_WebServer& server, const HTTPMethod& requestMethod, const String& requestUri) override
     {
       ESP_AT_UNUSED(server);
-      
+
       if (!canHandle(requestMethod, requestUri))
         return false;
 
@@ -85,14 +99,18 @@ class FunctionRequestHandler : public RequestHandler
       return true;
     }
 
+    ////////////////////////////////////////
+
     void upload(ESP8266_AT_WebServer& server, const String& requestUri, const HTTPUpload& upload) override
     {
       ESP_AT_UNUSED(server);
       ESP_AT_UNUSED(upload);
-      
+
       if (canUpload(requestUri))
         _ufn();
     }
+
+    ////////////////////////////////////////
 
   protected:
     ESP8266_AT_WebServer::THandlerFunction _fn;
@@ -101,9 +119,13 @@ class FunctionRequestHandler : public RequestHandler
     HTTPMethod _method;
 };
 
+////////////////////////////////////////
+
 class StaticRequestHandler : public RequestHandler
 {
   public:
+
+    ////////////////////////////////////////
 
     bool canHandle(const HTTPMethod& requestMethod, const String& requestUri) override
     {
@@ -116,7 +138,7 @@ class StaticRequestHandler : public RequestHandler
       return true;
     }
 
-#if USE_NEW_WEBSERVER_VERSION
+    ////////////////////////////////////////
 
     static String getContentType(const String& path)
     {
@@ -140,36 +162,7 @@ class StaticRequestHandler : public RequestHandler
       return String(buff);
     }
 
-#else
-
-    static String getContentType(const String& path)
-    {
-      if (path.endsWith(".html"))           return "text/html";
-      else if (path.endsWith(".htm"))       return "text/html";
-      else if (path.endsWith(".css"))       return "text/css";
-      else if (path.endsWith(".txt"))       return "text/plain";
-      else if (path.endsWith(".js"))        return "application/javascript";
-      else if (path.endsWith(".png"))       return "image/png";
-      else if (path.endsWith(".gif"))       return "image/gif";
-      else if (path.endsWith(".jpg"))       return "image/jpeg";
-      else if (path.endsWith(".ico"))       return "image/x-icon";
-      else if (path.endsWith(".svg"))       return "image/svg+xml";
-      else if (path.endsWith(".ttf"))       return "application/x-font-ttf";
-      else if (path.endsWith(".otf"))       return "application/x-font-opentype";
-      else if (path.endsWith(".woff"))      return "application/font-woff";
-      else if (path.endsWith(".woff2"))     return "application/font-woff2";
-      else if (path.endsWith(".eot"))       return "application/vnd.ms-fontobject";
-      else if (path.endsWith(".sfnt"))      return "application/font-sfnt";
-      else if (path.endsWith(".xml"))       return "text/xml";
-      else if (path.endsWith(".pdf"))       return "application/pdf";
-      else if (path.endsWith(".zip"))       return "application/zip";
-      else if (path.endsWith(".gz"))        return "application/x-gzip";
-      else if (path.endsWith(".appcache"))  return "text/cache-manifest";
-
-      return "application/octet-stream";
-    }
-
-#endif
+    ////////////////////////////////////////
 
   protected:
 
@@ -180,5 +173,6 @@ class StaticRequestHandler : public RequestHandler
     size_t _baseUriLength;
 };
 
+////////////////////////////////////////
 
 #endif //RequestHandlerImpl_h  

@@ -11,7 +11,7 @@
   @file       Esp8266WebServer.h
   @author     Ivan Grokhotkov
 
-  Version: 1.5.4
+  Version: 1.6.0
 
   Version Modified By   Date      Comments
   ------- -----------  ---------- -----------
@@ -24,11 +24,14 @@
   1.5.2   K Hoang      28/12/2021 Fix wrong http status header bug
   1.5.3   K Hoang      12/01/2022 Fix authenticate issue caused by libb64
   1.5.4   K Hoang      26/04/2022 Use new arduino.tips site. Improve examples
+  1.6.0   K Hoang      16/11/2022 Fix severe limitation to permit sending larger data than 2K buffer. Add CORS
  *****************************************************************************************************************************/
 
 #include "RingBuffer.h"
 
 #include <Arduino.h>
+
+////////////////////////////////////////
 
 AT_RingBuffer::AT_RingBuffer(unsigned int size)
 {
@@ -39,6 +42,8 @@ AT_RingBuffer::AT_RingBuffer(unsigned int size)
   init();
 }
 
+////////////////////////////////////////
+
 AT_RingBuffer::~AT_RingBuffer() {}
 
 void AT_RingBuffer::reset()
@@ -46,20 +51,26 @@ void AT_RingBuffer::reset()
   ringBufP = ringBuf;
 }
 
+////////////////////////////////////////
+
 void AT_RingBuffer::init()
 {
   ringBufP = ringBuf;
   memset(ringBuf, 0, _size + 1);
 }
 
+////////////////////////////////////////
+
 void AT_RingBuffer::push(char c)
 {
   *ringBufP = c;
   ringBufP++;
-  
+
   if (ringBufP >= ringBufEnd)
     ringBufP = ringBuf;
 }
+
+////////////////////////////////////////
 
 bool AT_RingBuffer::endsWith(const char* str)
 {
@@ -67,7 +78,7 @@ bool AT_RingBuffer::endsWith(const char* str)
 
   // b is the start position into the ring buffer
   char* b = ringBufP - findStrLen;
-  
+
   if (b < ringBuf)
     b = b + _size;
 
@@ -80,13 +91,15 @@ bool AT_RingBuffer::endsWith(const char* str)
       return false;
 
     b++;
-    
+
     if (b == ringBufEnd)
       b = ringBuf;
   }
 
   return true;
 }
+
+////////////////////////////////////////
 
 void AT_RingBuffer::getStr(char * destination, unsigned int skipChars)
 {
@@ -98,6 +111,8 @@ void AT_RingBuffer::getStr(char * destination, unsigned int skipChars)
   // terminate output string
   //destination[len]=0;
 }
+
+////////////////////////////////////////
 
 void AT_RingBuffer::getStrN(char * destination, unsigned int skipChars, unsigned int num)
 {
@@ -112,3 +127,6 @@ void AT_RingBuffer::getStrN(char * destination, unsigned int skipChars, unsigned
   // terminate output string
   //destination[len]=0;
 }
+
+////////////////////////////////////////
+

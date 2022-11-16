@@ -11,7 +11,7 @@
   @file       Esp8266WebServer.h
   @author     Ivan Grokhotkov
 
-  Version: 1.5.4
+  Version: 1.6.0
 
   Version Modified By   Date      Comments
   ------- -----------  ---------- -----------
@@ -24,24 +24,29 @@
   1.5.2   K Hoang      28/12/2021 Fix wrong http status header bug
   1.5.3   K Hoang      12/01/2022 Fix authenticate issue caused by libb64
   1.5.4   K Hoang      26/04/2022 Use new arduino.tips site. Improve examples
+  1.6.0   K Hoang      16/11/2022 Fix severe limitation to permit sending larger data than 2K buffer. Add CORS
  *****************************************************************************************************************************/
 
 #ifndef ESP8266_AT_WebServer_h
 #define ESP8266_AT_WebServer_h
 
-#define ESP8266_AT_WEBSERVER_VERSION          "ESP8266_AT_WebServer v1.5.4"
+////////////////////////////////////////
+
+#define ESP8266_AT_WEBSERVER_VERSION          "ESP8266_AT_WebServer v1.6.0"
 
 #define ESP8266_AT_WEBSERVER_VERSION_MAJOR    1
-#define ESP8266_AT_WEBSERVER_VERSION_MINOR    5
-#define ESP8266_AT_WEBSERVER_VERSION_PATCH    4
+#define ESP8266_AT_WEBSERVER_VERSION_MINOR    6
+#define ESP8266_AT_WEBSERVER_VERSION_PATCH    0
 
-#define ESP8266_AT_WEBSERVER_VERSION_INT      1005004
+#define ESP8266_AT_WEBSERVER_VERSION_INT      1006000
 
-#define USE_NEW_WEBSERVER_VERSION         true
+////////////////////////////////////////
 
 #ifndef ESP_AT_UNUSED
   #define ESP_AT_UNUSED(x) (void)(x)
 #endif
+
+////////////////////////////////////////
 
 #ifndef USE_ESP32_AT
   // Use ESP8266-AT commands only, some ESP32-AT commands not support _CUR and _DEF options
@@ -50,84 +55,105 @@
   #define USE_ESP32_AT     false
 #endif
 
+////////////////////////////////////////
+
 #if USE_ESP32_AT
   bool useESP32_AT = true;
-  #warning Using USE_ESP32_AT from ESP8266_AT_WebServer.h
+
+  #if(_ESP_AT_LOGLEVEL_> 3)
+    #warning Using USE_ESP32_AT from ESP8266_AT_WebServer.h
+  #endif
 #else
   bool useESP32_AT = false;
-  #warning Using USE_ESP8266_AT from ESP8266_AT_WebServer.h
-#endif
 
-#ifndef USE_NEW_WEBSERVER_VERSION
-  #define USE_NEW_WEBSERVER_VERSION     true
-#endif
-
-#if USE_NEW_WEBSERVER_VERSION
-   #warning USE_NEW_WEBSERVER_VERSION == true
-#else
-  #warning USE_NEW_WEBSERVER_VERSION == false
-#endif   
-
-#if    ( defined(ARDUINO_SAMD_ZERO) || defined(ARDUINO_SAMD_MKR1000) || defined(ARDUINO_SAMD_MKRWIFI1010) \
-      || defined(ARDUINO_SAMD_NANO_33_IOT) || defined(ARDUINO_SAMD_MKRFox1200) || defined(ARDUINO_SAMD_MKRWAN1300) || defined(ARDUINO_SAMD_MKRWAN1310) \
-      || defined(ARDUINO_SAMD_MKRGSM1400) || defined(ARDUINO_SAMD_MKRNB1500) || defined(ARDUINO_SAMD_MKRVIDOR4000) || defined(__SAMD21G18A__) \
-      || defined(ARDUINO_SAMD_CIRCUITPLAYGROUND_EXPRESS) || defined(__SAMD21E18A__) || defined(__SAMD51__) || defined(__SAMD51J20A__) || defined(__SAMD51J19A__) \
-      || defined(__SAMD51G19A__) || defined(__SAMD51P19A__) || defined(__SAMD21G18A__) )
-  #if defined(ESP8266_AT_USE_SAMD)
-    #undef ESP8266_AT_USE_SAMD
+  #if(_ESP_AT_LOGLEVEL_> 3)
+    #warning Using USE_ESP8266_AT from ESP8266_AT_WebServer.h
   #endif
-  #define ESP8266_AT_USE_SAMD      true
+#endif
+
+////////////////////////////////////////
+
+#if ( defined(ARDUINO_SAMD_ZERO) || defined(ARDUINO_SAMD_MKR1000) || defined(ARDUINO_SAMD_MKRWIFI1010) \
+   || defined(ARDUINO_SAMD_NANO_33_IOT) || defined(ARDUINO_SAMD_MKRFox1200) || defined(ARDUINO_SAMD_MKRWAN1300) || defined(ARDUINO_SAMD_MKRWAN1310) \
+   || defined(ARDUINO_SAMD_MKRGSM1400) || defined(ARDUINO_SAMD_MKRNB1500) || defined(ARDUINO_SAMD_MKRVIDOR4000) || defined(__SAMD21G18A__) \
+   || defined(ARDUINO_SAMD_CIRCUITPLAYGROUND_EXPRESS) || defined(__SAMD21E18A__) || defined(__SAMD51__) || defined(__SAMD51J20A__) || defined(__SAMD51J19A__) \
+   || defined(__SAMD51G19A__) || defined(__SAMD51P19A__) || defined(__SAMD21G18A__) )
+#if defined(ESP8266_AT_USE_SAMD)
+  #undef ESP8266_AT_USE_SAMD
+#endif
+#define ESP8266_AT_USE_SAMD      true
+
+#if(_ESP_AT_LOGLEVEL_> 3)
   #warning Use SAMD architecture from ESP8266_AT_WebServer
 #endif
 
-#if (defined(NRF52840_FEATHER) || defined(NRF52832_FEATHER) || defined(NRF52_SERIES) || defined(ARDUINO_NRF52_ADAFRUIT) || \
+////////////////////////////////////////
+
+#elif (defined(NRF52840_FEATHER) || defined(NRF52832_FEATHER) || defined(NRF52_SERIES) || defined(ARDUINO_NRF52_ADAFRUIT) || \
      defined(NRF52840_FEATHER_SENSE) || defined(NRF52840_ITSYBITSY) || defined(NRF52840_CIRCUITPLAY) || \
      defined(NRF52840_CLUE) || defined(NRF52840_METRO) || defined(NRF52840_PCA10056) || defined(PARTICLE_XENON) || \
      defined(MDBT50Q_RX) || defined(NINA_B302_ublox) || defined(NINA_B112_ublox) )
-  #if defined(ESP8266_AT_USE_NRF528XX)
-    #undef ESP8266_AT_USE_NRF528XX
-  #endif
-  #define ESP8266_AT_USE_NRF528XX      true
+#if defined(ESP8266_AT_USE_NRF528XX)
+  #undef ESP8266_AT_USE_NRF528XX
+#endif
+#define ESP8266_AT_USE_NRF528XX      true
+
+#if(_ESP_AT_LOGLEVEL_> 3)
   #warning Use nFR52 architecture from ESP8266_AT_WebServer
-  
-  #include <Adafruit_TinyUSB.h>
-  
 #endif
 
-#if ( defined(ARDUINO_SAM_DUE) || defined(__SAM3X8E__) )
-  #if defined(ESP8266_AT_USE_SAM_DUE)
-    #undef ESP8266_AT_USE_SAM_DUE
-  #endif
-  #define ESP8266_AT_USE_SAM_DUE      true
-  #warning Use SAM_DUE architecture
-#endif
+#include <Adafruit_TinyUSB.h>
 
-#if ( defined(STM32F0) || defined(STM32F1) || defined(STM32F2) || defined(STM32F3)  ||defined(STM32F4) || defined(STM32F7) || \
+////////////////////////////////////////
+
+#elif ( defined(ARDUINO_SAM_DUE) || defined(__SAM3X8E__) )
+#if defined(ESP8266_AT_USE_SAM_DUE)
+  #undef ESP8266_AT_USE_SAM_DUE
+#endif
+#define ESP8266_AT_USE_SAM_DUE      true
+#warning Use SAM_DUE architecture
+
+////////////////////////////////////////
+
+#elif ( defined(STM32F0) || defined(STM32F1) || defined(STM32F2) || defined(STM32F3)  ||defined(STM32F4) || defined(STM32F7) || \
        defined(STM32L0) || defined(STM32L1) || defined(STM32L4) || defined(STM32H7)  ||defined(STM32G0) || defined(STM32G4) || \
        defined(STM32WB) || defined(STM32MP1) )
-  #warning STM32 board selected
 
-  #if defined(ESP8266_AT_USE_STM32)
-    #undef ESP8266_AT_USE_STM32
-  #endif
-  #define ESP8266_AT_USE_STM32      true
+#if(_ESP_AT_LOGLEVEL_> 3)
+  #warning STM32 board selected
 #endif
 
-#if ( defined(ARDUINO_NANO_RP2040_CONNECT) || defined(ARDUINO_ARCH_RP2040) || defined(ARDUINO_RASPBERRY_PI_PICO) || \
+#if defined(ESP8266_AT_USE_STM32)
+  #undef ESP8266_AT_USE_STM32
+#endif
+#define ESP8266_AT_USE_STM32      true
+
+////////////////////////////////////////
+
+#elif ( defined(ARDUINO_NANO_RP2040_CONNECT) || defined(ARDUINO_ARCH_RP2040) || defined(ARDUINO_RASPBERRY_PI_PICO) || \
       defined(ARDUINO_GENERIC_RP2040) || defined(ARDUINO_ADAFRUIT_FEATHER_RP2040) )
 
-    #warning RP2040 board selected
+#if(_ESP_AT_LOGLEVEL_> 3)
+  #warning RP2040 board selected
+#endif
 
-  #if defined(ESP8266_AT_USE_RP2040)
-    #undef ESP8266_AT_USE_RP2040
-  #endif
-  #define ESP8266_AT_USE_RP2040      true      
-#endif      
+#if defined(ESP8266_AT_USE_RP2040)
+  #undef ESP8266_AT_USE_RP2040
+#endif
+#define ESP8266_AT_USE_RP2040      true
+
+////////////////////////////////////////
+
+#endif
+
+////////////////////////////////////////
 
 // To support lambda function in class
 #include <functional-vlpp.h>
 #include <ESP8266_AT.h>
 #include "utility/mimetable.h"
+
+////////////////////////////////////////
 
 // KH, For PROGMEM commands
 // ESP32/ESP8266 includes <pgmspace.h> by default, and memccpy_P was already defined there
@@ -136,56 +162,74 @@
   #define memccpy_P(dest, src, c, n) memccpy((dest), (src), (c), (n))
 #endif
 
+////////////////////////////////////////
+
 // Permit redefinition of SENDCONTENT_P_BUFFER_SZ in sketch, default is 4K, minimum is 256 bytes
 #ifndef SENDCONTENT_P_BUFFER_SZ
   #define SENDCONTENT_P_BUFFER_SZ     4096
-  #warning SENDCONTENT_P_BUFFER_SZ using default 4 Kbytes
+
+  #if(_ESP_AT_LOGLEVEL_> 3)
+    #warning SENDCONTENT_P_BUFFER_SZ using default 4 Kbytes
+  #endif
 #else
   #if (SENDCONTENT_P_BUFFER_SZ < 256)
     #undef SENDCONTENT_P_BUFFER_SZ
     #define SENDCONTENT_P_BUFFER_SZ   256
-    #warning SENDCONTENT_P_BUFFER_SZ reset to min 256 bytes
+
+    #if(_ESP_AT_LOGLEVEL_> 3)
+      #warning SENDCONTENT_P_BUFFER_SZ reset to min 256 bytes
+    #endif
   #endif
 #endif
+
+////////////////////////////////////////
 
 #ifndef PGM_VOID_P
   #define PGM_VOID_P const void *
 #endif
 
-//////
+////////////////////////////////////////
 
-enum HTTPMethod 
-{ 
-  HTTP_ANY, 
+enum HTTPMethod
+{
+  HTTP_ANY,
   HTTP_GET,
   HTTP_HEAD,
-  HTTP_POST, 
-  HTTP_PUT, 
-  HTTP_PATCH, 
-  HTTP_DELETE, 
-  HTTP_OPTIONS 
+  HTTP_POST,
+  HTTP_PUT,
+  HTTP_PATCH,
+  HTTP_DELETE,
+  HTTP_OPTIONS
 };
 
-enum HTTPUploadStatus 
-{ 
-  UPLOAD_FILE_START, 
-  UPLOAD_FILE_WRITE, 
+////////////////////////////////////////
+
+enum HTTPUploadStatus
+{
+  UPLOAD_FILE_START,
+  UPLOAD_FILE_WRITE,
   UPLOAD_FILE_END,
   UPLOAD_FILE_ABORTED
 };
 
-enum HTTPClientStatus 
-{ 
-  HC_NONE, 
-  HC_WAIT_READ, 
-  HC_WAIT_CLOSE 
+////////////////////////////////////////
+
+enum HTTPClientStatus
+{
+  HC_NONE,
+  HC_WAIT_READ,
+  HC_WAIT_CLOSE
 };
 
-enum HTTPAuthMethod 
-{ 
-  BASIC_AUTH, 
-  DIGEST_AUTH 
+////////////////////////////////////////
+
+enum HTTPAuthMethod
+{
+  BASIC_AUTH,
+  DIGEST_AUTH
 };
+
+////////////////////////////////////////
 
 #define HTTP_DOWNLOAD_UNIT_SIZE 1460
 
@@ -206,42 +250,46 @@ enum HTTPAuthMethod
 
 #define RETURN_NEWLINE       "\r\n"
 
+////////////////////////////////////////
+
 #include <Arduino.h>
+
+////////////////////////////////////////
 
 #if ESP_AT_USE_AVR
 
-  // AVR has no string library
-  typedef String EWString;
-    
-  // Do nothing as this is String
-  #define fromString
-  #define fromEWString 
+// AVR has no string library
+typedef String EWString;
+
+// Do nothing as this is String
+#define fromString
+#define fromEWString
 
 #else
 
-  #include <string>
+#include <string>
 
-  typedef std::string EWString;
+typedef std::string EWString;
 
-  EWString fromString(const String& str)
-  {
-    return str.c_str();
-  }
+EWString fromString(const String& str)
+{
+  return str.c_str();
+}
 
-  EWString fromString(const String&& str)
-  {
-    return str.c_str();
-  }
+EWString fromString(const String&& str)
+{
+  return str.c_str();
+}
 
-  String fromEWString(const EWString& str)
-  {
-    return str.c_str();
-  }
+String fromEWString(const EWString& str)
+{
+  return str.c_str();
+}
 
-  String fromEWString(const EWString&& str)
-  {
-    return str.c_str();
-  }
+String fromEWString(const EWString&& str)
+{
+  return str.c_str();
+}
 
 #endif
 
@@ -249,7 +297,7 @@ enum HTTPAuthMethod
 
 class ESP8266_AT_WebServer;
 
-typedef struct 
+typedef struct
 {
   HTTPUploadStatus status;
   String  filename;
@@ -261,7 +309,11 @@ typedef struct
   uint8_t buf[HTTP_UPLOAD_BUFLEN];
 } HTTPUpload;
 
+////////////////////////////////////////
+
 #include "utility/RequestHandler.h"
+
+////////////////////////////////////////
 
 class ESP8266_AT_WebServer
 {
@@ -289,37 +341,40 @@ class ESP8266_AT_WebServer
     void onNotFound(THandlerFunction fn);  //called when handler is not assigned
     void onFileUpload(THandlerFunction fn); //handle file uploads
 
-    String uri() 
+    ////////////////////////////////////////
+
+    String uri()
     {
       return _currentUri;
     }
-    
-    HTTPMethod method() 
+
+    ////////////////////////////////////////
+
+    HTTPMethod method()
     {
       return _currentMethod;
     }
-    
-    ESP8266_AT_Client client() 
+
+    ////////////////////////////////////////
+
+    ESP8266_AT_Client client()
     {
       return _currentClient;
     }
-    
-    #if USE_NEW_WEBSERVER_VERSION
-    HTTPUpload& upload() 
+
+    ////////////////////////////////////////
+
+    HTTPUpload& upload()
     {
       return *_currentUpload;
     }
-    #else
-    HTTPUpload& upload() 
-    {
-      return _currentUpload;
-    }
-    #endif
-    
+
+    ////////////////////////////////////////
+
     String arg(const String& name);         // get request argument value by name
     String arg(int i);                      // get request argument value by number
     String argName(int i);                  // get request argument name by number
-    
+
     int args();                             // get arguments count
     bool hasArg(const String& name);        // check if argument exists
     void collectHeaders(const char* headerKeys[], const size_t headerKeysCount); // set the request headers to collect
@@ -338,8 +393,26 @@ class ESP8266_AT_WebServer
     void send(int code, const char* content_type = NULL, const String& content = String(""));
     void send(int code, char* content_type, const String& content);
     void send(int code, const String& content_type, const String& content);
-    //KH
+
     void send(int code, char*  content_type, const String& content, size_t contentLength);
+    void send(int code, const char* content_type, const char* content);
+    void send(int code, const char* content_type, const char* content, size_t contentLength);
+
+    ////////////////////////////////////////
+
+    inline void enableCORS(bool value = true)
+    {
+      _corsEnabled = value;
+    }
+
+    ////////////////////////////////////////
+
+    inline void enableCrossOrigin(bool value = true)
+    {
+      enableCORS(value);
+    }
+
+    ////////////////////////////////////////
 
     void setContentLength(size_t contentLength);
     void sendHeader(const String& name, const String& value, bool first = false);
@@ -349,62 +422,66 @@ class ESP8266_AT_WebServer
     // KH, Restore PROGMEM commands
     void send_P(int code, PGM_P content_type, PGM_P content);
     void send_P(int code, PGM_P content_type, PGM_P content, size_t contentLength);
-    
+
     void sendContent_P(PGM_P content);
-    void sendContent_P(PGM_P content, size_t size);  
-    //////
+    void sendContent_P(PGM_P content, size_t size);
 
     static String urlDecode(const String& text);
 
+    ////////////////////////////////////////
 
-    template<typename T> size_t streamFile(T &file, const String& contentType) 
+    template<typename T> size_t streamFile(T &file, const String& contentType)
     {
       using namespace mime;
       setContentLength(file.size());
-      
-      if (String(file.name()).endsWith(mimeTable[gz].endsWith) && contentType != mimeTable[gz].mimeType && contentType != mimeTable[none].mimeType) 
+
+      if (String(file.name()).endsWith(mimeTable[gz].endsWith) && contentType != mimeTable[gz].mimeType
+          && contentType != mimeTable[none].mimeType)
       {
         sendHeader("Content-Encoding", "gzip");
       }
-      
+
       send(200, contentType, "");
-      
+
       return _currentClient.write(file);
     }
+
+    ////////////////////////////////////////
 
   protected:
     void _addRequestHandler(RequestHandler* handler);
     void _handleRequest();
     void _finalizeResponse();
     bool _parseRequest(ESP8266_AT_Client& client);
-    
-    //KH
-    #if USE_NEW_WEBSERVER_VERSION
+
     void _parseArguments(const String& data);
-    int  _parseArgumentsPrivate(const String& data, vl::Func<void(String&,String&,const String&,int,int,int,int)> handler);
+    int  _parseArgumentsPrivate(const String& data,
+                                vl::Func<void(String&, String&, const String&, int, int, int, int)> handler);
     bool _parseForm(ESP8266_AT_Client& client, const String& boundary, uint32_t len);
-    #else
-    void _parseArguments(const String& data);
-    bool _parseForm(ESP8266_AT_Client& client, const String& boundary, uint32_t len);
-    #endif
-    
-    static String _responseCodeToString(int code);    
+
+    static String _responseCodeToString(int code);
     bool _parseFormUploadAborted();
     void _uploadWriteByte(uint8_t b);
     uint8_t _uploadReadByte(ESP8266_AT_Client& client);
     void _prepareHeader(String& response, int code, const char* content_type, size_t contentLength);
-    
-#if !ESP_AT_USE_AVR    
+
+#if !ESP_AT_USE_AVR
     void _prepareHeader(EWString& response, int code, const char* content_type, size_t contentLength);
 #endif
-    
+
     bool _collectHeader(const char* headerName, const char* headerValue);
-    
-    struct RequestArgument 
+
+    ////////////////////////////////////////
+
+    struct RequestArgument
     {
       String key;
       String value;
     };
+
+    ////////////////////////////////////////
+
+    bool              _corsEnabled;
 
     ESP8266_AT_Server  _server;
 
@@ -415,34 +492,29 @@ class ESP8266_AT_WebServer
     HTTPClientStatus    _currentStatus;
     unsigned long       _statusChange;
 
-    RequestHandler*     _currentHandler;
-    RequestHandler*     _firstHandler;
-    RequestHandler*     _lastHandler;
+    RequestHandler*   _currentHandler   = nullptr;
+    RequestHandler*   _firstHandler     = nullptr;
+    RequestHandler*   _lastHandler      = nullptr;
     THandlerFunction    _notFoundHandler;
     THandlerFunction    _fileUploadHandler;
 
     int                 _currentArgCount;
-    RequestArgument*    _currentArgs;
-    
+    RequestArgument*  _currentArgs      = nullptr;
 
-    //KH
-    #if USE_NEW_WEBSERVER_VERSION
-    HTTPUpload* _currentUpload;
-    int              _postArgsLen;
-    RequestArgument* _postArgs;
-    
-    #else
-    HTTPUpload       _currentUpload;
-    #endif
-  
+    HTTPUpload*       _currentUpload    = nullptr;
+    int               _postArgsLen;
+    RequestArgument*  _postArgs         = nullptr;
+
     int              _headerKeysCount;
-    RequestArgument* _currentHeaders;
+    RequestArgument*  _currentHeaders   = nullptr;
     size_t           _contentLength;
     String           _responseHeaders;
 
     String           _hostHeader;
     bool             _chunked;
 };
+
+////////////////////////////////////////
 
 #include "ESP8266_AT_WebServer-impl.h"
 #include "Parsing-impl.h"

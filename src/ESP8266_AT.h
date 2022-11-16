@@ -11,7 +11,7 @@
   @file       Esp8266WebServer.h
   @author     Ivan Grokhotkov
 
-  Version: 1.5.4
+  Version: 1.6.0
 
   Version Modified By   Date      Comments
   ------- -----------  ---------- -----------
@@ -24,10 +24,13 @@
   1.5.2   K Hoang      28/12/2021 Fix wrong http status header bug
   1.5.3   K Hoang      12/01/2022 Fix authenticate issue caused by libb64
   1.5.4   K Hoang      26/04/2022 Use new arduino.tips site. Improve examples
+  1.6.0   K Hoang      16/11/2022 Fix severe limitation to permit sending larger data than 2K buffer. Add CORS
  *****************************************************************************************************************************/
 
 #ifndef ESP8266_AT_h
 #define ESP8266_AT_h
+
+////////////////////////////////////////
 
 #include <Arduino.h>
 #include <Stream.h>
@@ -35,6 +38,8 @@
 #include <inttypes.h>
 
 #include "utility/ESP8266_AT_Drv.h"
+
+////////////////////////////////////////
 
 class ESP8266_AT_Class
 {
@@ -61,12 +66,10 @@ class ESP8266_AT_Class
     */
     static void init(Stream* espSerial);
 
-
     /**
       Get firmware version
     */
     static char* firmwareVersion();
-
 
     // NOT IMPLEMENTED
     //int begin(char* ssid);
@@ -74,25 +77,22 @@ class ESP8266_AT_Class
     // NOT IMPLEMENTED
     //int begin(char* ssid, uint8_t key_idx, const char* key);
 
-
     /**
       Start Wifi connection with passphrase
       the most secure supported mode will be automatically selected
 
       param ssid: Pointer to the SSID string.
       param passphrase: Passphrase. Valid characters in a passphrase
-    		  must be between ASCII 32-126 (decimal).
+          must be between ASCII 32-126 (decimal).
     */
     int begin(const char* ssid, const char* passphrase);
-
 
     /**
       Change Ip configuration settings disabling the DHCP client
 
-      param local_ip:	Static ip configuration
+      param local_ip: Static ip configuration
     */
     void config(IPAddress local_ip);
-
 
     // NOT IMPLEMENTED
     //void config(IPAddress local_ip, IPAddress dns_server);
@@ -130,7 +130,6 @@ class ESP8266_AT_Class
     */
     IPAddress localIP();
 
-
     /**
       Get the interface subnet mask address.
 
@@ -160,7 +159,6 @@ class ESP8266_AT_Class
     */
     uint8_t* BSSID(uint8_t* bssid);
 
-
     /**
       Return the current RSSI /Received Signal Strength in dBm)
       associated with the network
@@ -168,7 +166,6 @@ class ESP8266_AT_Class
       return: signed value
     */
     int32_t RSSI();
-
 
     /**
       Return Connection status.
@@ -178,13 +175,12 @@ class ESP8266_AT_Class
     */
     uint8_t status();
 
-
     /*
         Return the Encryption Type associated with the network
 
         return: one value of wl_enc_type enum
     */
-    //uint8_t	encryptionType();
+    //uint8_t encryptionType();
 
     /*
        Start scan WiFi networks available
@@ -200,7 +196,7 @@ class ESP8266_AT_Class
 
        return: ssid string of the specified item on the networks scanned list
     */
-    char*	SSID(uint8_t networkItem);
+    char* SSID(uint8_t networkItem);
 
     /*
        Return the encryption type of the networks discovered during the scanNetworks
@@ -209,7 +205,7 @@ class ESP8266_AT_Class
 
        return: encryption type (enum wl_enc_type) of the specified item on the networks scanned list
     */
-    uint8_t	encryptionType(uint8_t networkItem);
+    uint8_t encryptionType(uint8_t networkItem);
 
     /*
        Return the RSSI of the networks discovered during the scanNetworks
@@ -220,11 +216,8 @@ class ESP8266_AT_Class
     */
     int32_t RSSI(uint8_t networkItem);
 
-
     // NOT IMPLEMENTED
     //int hostByName(const char* aHostname, IPAddress& aResult);
-
-
 
     ////////////////////////////////////////////////////////////////////////////
     // Non standard methods
@@ -236,7 +229,7 @@ class ESP8266_AT_Class
       param ssid: Pointer to the SSID string.
       param channel: WiFi channel (1-14)
       param pwd: Passphrase. Valid characters in a passphrase
-    		  must be between ASCII 32-126 (decimal).
+          must be between ASCII 32-126 (decimal).
       param enc: encryption type (enum wl_enc_type)
       param apOnly: Set to false if you want to run AP and Station modes simultaneously
     */
@@ -251,7 +244,7 @@ class ESP8266_AT_Class
     /**
       Change IP address of the AP
 
-      param ip:	Static ip configuration
+      param ip: Static ip configuration
     */
     void configAP(IPAddress ip);
 
@@ -259,7 +252,7 @@ class ESP8266_AT_Class
       Restart the ESP module.
     */
     void reset();
-    
+
     /**
       Restore the the Factory Default Settings of ESP module.
       Sometimes necessaty for ESP32-AT
@@ -270,7 +263,6 @@ class ESP8266_AT_Class
       Ping a host.
     */
     bool ping(const char *host);
-
 
     friend class ESP8266_AT_Client;
     friend class ESP8266_AT_Server;
@@ -284,7 +276,11 @@ class ESP8266_AT_Class
     static uint8_t espMode;
 };
 
+////////////////////////////////////////
+
 extern ESP8266_AT_Class WiFi;
+
+////////////////////////////////////////
 
 #include "ESP8266_AT-impl.h"
 

@@ -11,7 +11,7 @@
   @file       Esp8266WebServer.h
   @author     Ivan Grokhotkov
 
-  Version: 1.5.4
+  Version: 1.6.0
 
   Version Modified By   Date      Comments
   ------- -----------  ---------- -----------
@@ -24,18 +24,25 @@
   1.5.2   K Hoang      28/12/2021 Fix wrong http status header bug
   1.5.3   K Hoang      12/01/2022 Fix authenticate issue caused by libb64
   1.5.4   K Hoang      26/04/2022 Use new arduino.tips site. Improve examples
+  1.6.0   K Hoang      16/11/2022 Fix severe limitation to permit sending larger data than 2K buffer. Add CORS
  *****************************************************************************************************************************/
 #ifndef ESP8266_AT_Server_impl_h
 #define ESP8266_AT_Server_impl_h
+
+////////////////////////////////////////
 
 #include "ESP8266_AT.h"
 #include "utility/ESP8266_AT_Drv.h"
 #include "utility/ESP8266_AT_Debug.h"
 
+////////////////////////////////////////
+
 ESP8266_AT_Server::ESP8266_AT_Server(uint16_t port)
 {
   _port = port;
 }
+
+////////////////////////////////////////
 
 void ESP8266_AT_Server::begin()
 {
@@ -44,11 +51,13 @@ void ESP8266_AT_Server::begin()
   /* The ESP Module only allows socket 1 to be used for the server */
 #if 0
   _sock = ESP8266_AT_Class::getFreeSocket();
+
   if (_sock == SOCK_NOT_AVAIL)
   {
     AT_LOGERROR(F("No socket available for server"));
     return;
   }
+
 #else
   _sock = 1; // If this is already in use, the startServer attempt will fail
 #endif
@@ -67,44 +76,50 @@ void ESP8266_AT_Server::begin()
   }
 }
 
-// KH, New 1.0.10
+////////////////////////////////////////
+
 void ESP8266_AT_Server::begin(uint16_t port)
 {
   _port = port;
   begin();
 }
 
+////////////////////////////////////////
+
 ESP8266_AT_Client ESP8266_AT_Server::available(byte* status)
 {
   // TODO the original method seems to handle automatic server restart
   ESP_AT_UNUSED(status);
-  
+
   int bytes = ESP8266_AT_Drv::availData(0);
-  
-  // KH
-  //AT_LOGINFO1("available: bytes=", bytes);
-  
+
   if (bytes > 0)
   {
     AT_LOGINFO1(F("New client"), ESP8266_AT_Drv::_connId);
     ESP8266_AT_Class::allocateSocket(ESP8266_AT_Drv::_connId);
     ESP8266_AT_Client client(ESP8266_AT_Drv::_connId);
-    
+
     return client;
   }
 
   return ESP8266_AT_Client(255);
 }
 
+////////////////////////////////////////
+
 uint8_t ESP8266_AT_Server::status()
 {
   return ESP8266_AT_Drv::getServerState(0);
 }
 
+////////////////////////////////////////
+
 size_t ESP8266_AT_Server::write(uint8_t b)
 {
   return write(&b, 1);
 }
+
+////////////////////////////////////////
 
 size_t ESP8266_AT_Server::write(const uint8_t *buffer, size_t size)
 {
@@ -118,8 +133,10 @@ size_t ESP8266_AT_Server::write(const uint8_t *buffer, size_t size)
       n += client.write(buffer, size);
     }
   }
-  
+
   return n;
 }
+
+////////////////////////////////////////
 
 #endif    //ESP8266_AT_Server_impl_h

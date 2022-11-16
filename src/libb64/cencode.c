@@ -6,24 +6,6 @@
   Based on and modified from ESP8266 https://github.com/esp8266/Arduino/releases
   Built by Khoi Hoang https://github.com/khoih-prog/ESP8266_AT_WebServer
   Licensed under MIT license
-
-  Original author:
-  @file       Esp8266WebServer.h
-  @author     Ivan Grokhotkov
-
-  Version: 1.5.4
-
-  Version Modified By   Date      Comments
-  ------- -----------  ---------- -----------
-  1.0.0   K Hoang      12/02/2020 Initial coding for Arduino Mega, Teensy, etc
-  ...
-  1.4.0   K Hoang      14/08/2021 Add support to Adafruit nRF52 core v0.22.0+
-  1.4.1   K Hoang      08/12/2021 Add Packages_Patches and instructions for BOARD_SIPEED_MAIX_DUINO
-  1.5.0   K Hoang      19/12/2021 Reduce usage of Arduino String with std::string
-  1.5.1   K Hoang      24/12/2021 Fix bug
-  1.5.2   K Hoang      28/12/2021 Fix wrong http status header bug
-  1.5.3   K Hoang      12/01/2022 Fix authenticate issue caused by libb64
-  1.5.4   K Hoang      26/04/2022 Use new arduino.tips site. Improve examples
  ***************************************************************************************************************************************/
 
 #include "cencode.h"
@@ -73,8 +55,8 @@ int base64_encode_block(const char* plaintext_in, int length_in, char* code_out,
         result = (fragment & 0x0fc) >> 2;
         *codechar++ = base64_encode_value(result);
         result = (fragment & 0x003) << 4;
-        
-        // fall through
+
+      // fall through
 
       case step_B:
         if (plainchar == plaintextend)
@@ -88,9 +70,9 @@ int base64_encode_block(const char* plaintext_in, int length_in, char* code_out,
         result |= (fragment & 0x0f0) >> 4;
         *codechar++ = base64_encode_value(result);
         result = (fragment & 0x00f) << 2;
-        
-        // fall through
-        
+
+      // fall through
+
       case step_C:
         if (plainchar == plaintextend)
         {
@@ -112,7 +94,7 @@ int base64_encode_block(const char* plaintext_in, int length_in, char* code_out,
           *codechar++ = '\n';
           state_in->stepcount = 0;
         }
-        
+
         // fall through
       }
   }
@@ -132,10 +114,12 @@ int base64_encode_blockend(char* code_out, base64_encodestate* state_in)
       *codechar++ = '=';
       *codechar++ = '=';
       break;
+
     case step_C:
       *codechar++ = base64_encode_value(state_in->result);
       *codechar++ = '=';
       break;
+
     case step_A:
       break;
   }

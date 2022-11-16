@@ -11,7 +11,7 @@
   @file       Esp8266WebServer.h
   @author     Ivan Grokhotkov
 
-  Version: 1.5.4
+  Version: 1.6.0
 
   Version Modified By   Date      Comments
   ------- -----------  ---------- -----------
@@ -24,18 +24,24 @@
   1.5.2   K Hoang      28/12/2021 Fix wrong http status header bug
   1.5.3   K Hoang      12/01/2022 Fix authenticate issue caused by libb64
   1.5.4   K Hoang      26/04/2022 Use new arduino.tips site. Improve examples
+  1.6.0   K Hoang      16/11/2022 Fix severe limitation to permit sending larger data than 2K buffer. Add CORS
  *****************************************************************************************************************************/
 
 #ifndef ESP8266_AT_Server_h
 #define ESP8266_AT_Server_h
 
+////////////////////////////////////////
+
 #include <Server.h>
+
+////////////////////////////////////////
 
 class ESP8266_AT_Client;
 
+////////////////////////////////////////
+
 class ESP8266_AT_Server : public Server
 {
-
   public:
     ESP8266_AT_Server(uint16_t port);
 
@@ -50,8 +56,7 @@ class ESP8266_AT_Server : public Server
       Start the TCP server
     */
     void begin();
-    
-    // KH, New 1.0.10
+
     void begin(uint16_t port);
 
     virtual size_t write(uint8_t);
@@ -61,14 +66,16 @@ class ESP8266_AT_Server : public Server
 
     using Print::write;
 
-
   private:
     uint16_t _port;
     uint8_t _sock;
     bool _started;
-
 };
 
+////////////////////////////////////////
+
 #include "ESP8266_AT_Server-impl.h"
+
+////////////////////////////////////////
 
 #endif
