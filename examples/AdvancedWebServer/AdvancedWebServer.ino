@@ -1,29 +1,29 @@
 /****************************************************************************************************************************
   AdvancedWebServer.ino - Simple Arduino web server sample for ESP8266/ESP32 AT-command shield
   For ESP8266/ESP32 AT-command running shields
-  
+
   ESP8266_AT_WebServer is a library for the ESP8266/ESP32 AT-command shields to run WebServer
   Based on and modified from ESP8266 https://github.com/esp8266/Arduino/releases
   Built by Khoi Hoang https://github.com/khoih-prog/ESP8266_AT_WebServer
   Licensed under MIT license
-  
+
   Copyright (c) 2015, Majenko Technologies
   All rights reserved.
-  
+
   Redistribution and use in source and binary forms, with or without modification,
   are permitted provided that the following conditions are met:
-  
+
   Redistributions of source code must retain the above copyright notice, this
   list of conditions and the following disclaimer.
-  
+
   Redistributions in binary form must reproduce the above copyright notice, this
   list of conditions and the following disclaimer in the documentation and/or
   other materials provided with the distribution.
-  
+
   Neither the name of Majenko Technologies nor the names of its
   contributors may be used to endorse or promote products derived from
   this software without specific prior written permission.
-  
+
   THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
   ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
   WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
@@ -62,8 +62,8 @@
 int status = WL_IDLE_STATUS;     // the Wifi radio's status
 int reqCount = 0;                // number of requests received
 
-#define WEBSERVER_PORT      80    //5990
-//ESP8266_AT_WebServer server(WEBSERVER_PORT);
+#define WEBSERVER_PORT      80
+
 ESP8266_AT_WebServer server(WEBSERVER_PORT);
 
 const int led = 13;
@@ -71,18 +71,18 @@ const int led = 13;
 void handleRoot()
 {
 #define BUFFER_SIZE     512
-  
-  digitalWrite(led, 1);
-  char temp[BUFFER_SIZE];
-  int sec = millis() / 1000;
-  int min = sec / 60;
-  int hr = min / 60;
-  int day = hr / 24;
 
-  hr = hr % 24;
+	digitalWrite(led, 1);
+	char temp[BUFFER_SIZE];
+	int sec = millis() / 1000;
+	int min = sec / 60;
+	int hr = min / 60;
+	int day = hr / 24;
 
-  snprintf(temp, BUFFER_SIZE - 1,
-           "<html>\
+	hr = hr % 24;
+
+	snprintf(temp, BUFFER_SIZE - 1,
+	         "<html>\
 <head>\
 <meta http-equiv='refresh' content='5'/>\
 <title>%s</title>\
@@ -99,218 +99,205 @@ body { background-color: #cccccc; font-family: Arial, Helvetica, Sans-Serif; Col
 </body>\
 </html>", BOARD_NAME, BOARD_NAME, SHIELD_TYPE, day, hr, min % 60, sec % 60);
 
-  server.send(200, F("text/html"), temp);
-  digitalWrite(led, 0);
+	server.send(200, F("text/html"), temp);
+	digitalWrite(led, 0);
 }
 
 void handleNotFound()
 {
-  digitalWrite(led, 1);
-  
-  String message = F("File Not Found\n\n");
-  
-  message += F("URI: ");
-  message += server.uri();
-  message += F("\nMethod: ");
-  message += (server.method() == HTTP_GET) ? F("GET") : F("POST");
-  message += F("\nArguments: ");
-  message += server.args();
-  message += F("\n");
-  
-  for (uint8_t i = 0; i < server.args(); i++)
-  {
-    message += " " + server.argName(i) + ": " + server.arg(i) + "\n";
-  }
-  
-  server.send(404, F("text/plain"), message);
-  
-  digitalWrite(led, 0);
+	digitalWrite(led, 1);
+
+	String message = F("File Not Found\n\n");
+
+	message += F("URI: ");
+	message += server.uri();
+	message += F("\nMethod: ");
+	message += (server.method() == HTTP_GET) ? F("GET") : F("POST");
+	message += F("\nArguments: ");
+	message += server.args();
+	message += F("\n");
+
+	for (uint8_t i = 0; i < server.args(); i++)
+	{
+		message += " " + server.argName(i) + ": " + server.arg(i) + "\n";
+	}
+
+	server.send(404, F("text/plain"), message);
+
+	digitalWrite(led, 0);
 }
 
-#if 1
+// You can also redefine here (1, 2, 4, 6) to override
+#if !defined(MULTIPLY_FACTOR)
+  #define MULTIPLY_FACTOR       1
+#elif (MULTIPLY_FACTOR > 6)
+  #undef  MULTIPLY_FACTOR
+  #define MULTIPLY_FACTOR       6
+#endif
 
-#define ORIGINAL_STR_LEN        2048
+String out;
+
+#define ORIGINAL_STR_LEN        (2048 * MULTIPLY_FACTOR)
 
 void drawGraph()
 {
-  static String out;
-  static uint16_t previousStrLen = ORIGINAL_STR_LEN;
+	//static String out;
+	static uint16_t previousStrLen = ORIGINAL_STR_LEN;
 
-  if (out.length() == 0)
-  {
-    AT_LOGWARN1(F("String Len = 0, extend to"), ORIGINAL_STR_LEN);
-    out.reserve(ORIGINAL_STR_LEN);
-  }
+	//if (out.length() == 0)
+	{
+		//AT_LOGWARN1(F("String Len = 0, extend to"), ORIGINAL_STR_LEN);
+		//out.reserve(ORIGINAL_STR_LEN);
+	}
+
+             
+#if (MULTIPLY_FACTOR == 2)
+
+  out = F( "<svg xmlns=\"http://www.w3.org/2000/svg\" version=\"1.1\" width=\"610\" height=\"150\">\n" \
+           "<rect width=\"610\" height=\"150\" fill=\"rgb(250, 230, 210)\" stroke-width=\"3\" stroke=\"rgb(0, 0, 0)\" />\n" \
+           "<g stroke=\"blue\">\n");
+
+#elif (MULTIPLY_FACTOR == 4)
+
+  out = F( "<svg xmlns=\"http://www.w3.org/2000/svg\" version=\"1.1\" width=\"1210\" height=\"150\">\n" \
+           "<rect width=\"1210\" height=\"150\" fill=\"rgb(250, 230, 210)\" stroke-width=\"3\" stroke=\"rgb(0, 0, 0)\" />\n" \
+           "<g stroke=\"blue\">\n");            
+
+#elif (MULTIPLY_FACTOR == 6)
+
+  out = F( "<svg xmlns=\"http://www.w3.org/2000/svg\" version=\"1.1\" width=\"1810\" height=\"150\">\n" \
+           "<rect width=\"1810\" height=\"150\" fill=\"rgb(250, 230, 210)\" stroke-width=\"3\" stroke=\"rgb(0, 0, 0)\" />\n" \
+           "<g stroke=\"blue\">\n");  
+
+#else   // (MULTIPLY_FACTOR == 1)
 
   out = F( "<svg xmlns=\"http://www.w3.org/2000/svg\" version=\"1.1\" width=\"310\" height=\"150\">\n" \
            "<rect width=\"310\" height=\"150\" fill=\"rgb(250, 230, 210)\" stroke-width=\"3\" stroke=\"rgb(0, 0, 0)\" />\n" \
-           "<g stroke=\"blue\">\n");
-
-  char temp[70];
-  
-  int y = rand() % 130;
-
-  for (int x = 10; x < 300; x += 10)
-  {
-    int y2 = rand() % 130;
-    sprintf(temp, "<line x1=\"%d\" y1=\"%d\" x2=\"%d\" y2=\"%d\" stroke-width=\"2\" />\n", x, 140 - y, x + 10, 140 - y2);
-    out += temp;
-    y = y2;
-  }
-  
-  out += F("</g>\n</svg>\n");
-
-  AT_LOGDEBUG1(F("String Len = "), out.length());
-
-  if (out.length() > previousStrLen)
-  {
-    AT_LOGERROR3(F("String Len > "), previousStrLen, F(", extend to"), out.length() + 48);
-
-    previousStrLen = out.length() + 48;
-    
-    out.reserve(previousStrLen);
-  }
-  else
-  {
-    server.send(200, "image/svg+xml", out);
-  }
-}
-
-#else
-
-#define ORIGINAL_STR_LEN        1280
-
-void drawGraph()
-{
-  static String out;
-  static uint16_t previousStrLen = ORIGINAL_STR_LEN;
-
-  if (out.length() == 0)
-  {
-    AT_LOGWARN1(F("String Len = 0, extend to"), ORIGINAL_STR_LEN);
-    out.reserve(ORIGINAL_STR_LEN);
-  }
-
-  out = F( "<svg xmlns=\"http://www.w3.org/2000/svg\" version=\"1.1\" width=\"160\" height=\"80\">\n" \
-           "<rect width=\"1600\" height=\"800\" fill=\"rgb(250, 230, 210)\" stroke-width=\"3\" stroke=\"rgb(0, 0, 0)\" />\n" \
-           "<g stroke=\"blue\">\n");
-
-  char temp[70];
-  
-  int y = rand() % 60;
-
-  for (int x = 10; x < 150; x += 10)
-  {
-    int y2 = rand() % 60;
-    sprintf(temp, "<line x1=\"%d\" y1=\"%d\" x2=\"%d\" y2=\"%d\" stroke-width=\"2\" />\n", x, 70 - y, x + 10, 70 - y2);
-    out += temp;
-    y = y2;
-  }
-  
-  out += F("</g>\n</svg>\n");
-
-  AT_LOGDEBUG1(F("String Len = "), out.length());
-
-  if (out.length() > previousStrLen)
-  {
-    AT_LOGERROR3(F("String Len > "), previousStrLen, F(", extend to"), out.length() + 48);
-
-    previousStrLen = out.length() + 48;
-    
-    out.reserve(previousStrLen);
-  }
-  else
-  {
-    server.send(200, "image/svg+xml", out);
-  }
-}
-
+           "<g stroke=\"blue\">\n");  
+           
 #endif
+
+	char temp[70];
+
+	int y = rand() % 130;
+
+	//for (int x = 10; x < 300; x += 10)
+  for (int x = 10; x < (300 * MULTIPLY_FACTOR); x += 10)
+	{
+		int y2 = rand() % 130;
+		sprintf(temp, "<line x1=\"%d\" y1=\"%d\" x2=\"%d\" y2=\"%d\" stroke-width=\"2\" />\n", x, 140 - y, x + 10, 140 - y2);
+		out += temp;
+		y = y2;
+	}
+
+	out += F("</g>\n</svg>\n");
+
+	AT_LOGINFO1(F("String Len = "), out.length());
+
+	if (out.length() > previousStrLen)
+	{
+		AT_LOGERROR3(F("String Len > "), previousStrLen, F(", extend to"), out.length() + 48);
+
+		previousStrLen = out.length() + 48;
+
+		out.reserve(previousStrLen);
+	}
+	else
+	{
+		server.send(200, "image/svg+xml", out);
+	}
+}
 
 void setup()
 {
-  pinMode(led, OUTPUT);
-  digitalWrite(led, 0);
-
-  Serial.begin(115200);
-  while (!Serial && millis() < 5000);
+  out.reserve(ORIGINAL_STR_LEN);
   
-  Serial.print(F("\nStarting AdvancedServer on ")); Serial.print(BOARD_NAME);
-  Serial.print(F(" with ")); Serial.println(SHIELD_TYPE); 
-  Serial.println(ESP8266_AT_WEBSERVER_VERSION);
+	pinMode(led, OUTPUT);
+	digitalWrite(led, 0);
 
-  // initialize serial for ESP module
-  EspSerial.begin(115200);
-  // initialize ESP module
-  WiFi.init(&EspSerial);
+	Serial.begin(115200);
 
-  Serial.println(F("WiFi shield init done"));
+	while (!Serial && millis() < 5000);
 
-  // check for the presence of the shield
-  if (WiFi.status() == WL_NO_SHIELD)
-  {
-    Serial.println(F("WiFi shield not present"));
-    // don't continue
-    while (true);
-  }
+	Serial.print(F("\nStarting AdvancedServer on "));
+	Serial.print(BOARD_NAME);
+	Serial.print(F(" with "));
+	Serial.println(SHIELD_TYPE);
+	Serial.println(ESP8266_AT_WEBSERVER_VERSION);
 
-  // attempt to connect to WiFi network
-  while ( status != WL_CONNECTED)
-  {
-    Serial.print(F("Connecting to WPA SSID: "));
-    Serial.println(ssid);
-    // Connect to WPA/WPA2 network
-    status = WiFi.begin(ssid, pass);
-  }
+	// initialize serial for ESP module
+	EspSerial.begin(115200);
+	// initialize ESP module
+	WiFi.init(&EspSerial);
 
-  server.on(F("/"), handleRoot);
-  server.on(F("/test.svg"), drawGraph);
-  server.on(F("/inline"), []()
-  {
-    server.send(200, F("text/plain"), F("This works as well"));
-  });
+	Serial.println(F("WiFi shield init done"));
 
-  server.onNotFound(handleNotFound);
-  server.begin();
-  Serial.print(F("HTTP server started @ "));
-  Serial.print(WiFi.localIP());
-  Serial.print(F(", Port = "));
-  Serial.println(WEBSERVER_PORT);
+	// check for the presence of the shield
+	if (WiFi.status() == WL_NO_SHIELD)
+	{
+		Serial.println(F("WiFi shield not present"));
+
+		// don't continue
+		while (true);
+	}
+
+	// attempt to connect to WiFi network
+	while ( status != WL_CONNECTED)
+	{
+		Serial.print(F("Connecting to WPA SSID: "));
+		Serial.println(ssid);
+		// Connect to WPA/WPA2 network
+		status = WiFi.begin(ssid, pass);
+	}
+
+	server.on(F("/"), handleRoot);
+	server.on(F("/test.svg"), drawGraph);
+	server.on(F("/inline"), []()
+	{
+		server.send(200, F("text/plain"), F("This works as well"));
+	});
+
+	server.onNotFound(handleNotFound);
+	server.begin();
+	Serial.print(F("HTTP server started @ "));
+	Serial.print(WiFi.localIP());
+	Serial.print(F(", Port = "));
+	Serial.println(WEBSERVER_PORT);
 }
 
 void heartBeatPrint()
 {
-  static int num = 1;
+	static int num = 1;
 
-  Serial.print(F("."));
+	Serial.print(F("."));
 
-  if (num == 80)
-  {
-    Serial.println();
-    num = 1;
-  }
-  else if (num++ % 10 == 0)
-  {
-    Serial.print(F(" "));
-  }
+	if (num == 80)
+	{
+		Serial.println();
+		num = 1;
+	}
+	else if (num++ % 10 == 0)
+	{
+		Serial.print(F(" "));
+	}
 }
 
 void check_status()
 {
-  static unsigned long checkstatus_timeout = 0;
+	static unsigned long checkstatus_timeout = 0;
 
 #define STATUS_CHECK_INTERVAL     10000L
 
-  // Send status report every STATUS_REPORT_INTERVAL (60) seconds: we don't need to send updates frequently if there is no status change.
-  if ((millis() > checkstatus_timeout) || (checkstatus_timeout == 0))
-  {
-    heartBeatPrint();
-    checkstatus_timeout = millis() + STATUS_CHECK_INTERVAL;
-  }
+	// Send status report every STATUS_REPORT_INTERVAL (60) seconds: we don't need to send updates frequently if there is no status change.
+	if ((millis() > checkstatus_timeout) || (checkstatus_timeout == 0))
+	{
+		heartBeatPrint();
+		checkstatus_timeout = millis() + STATUS_CHECK_INTERVAL;
+	}
 }
 
 void loop()
 {
-  server.handleClient();
-  check_status();
+	server.handleClient();
+	check_status();
 }
