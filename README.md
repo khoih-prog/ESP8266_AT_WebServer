@@ -832,13 +832,13 @@ Please take a look at other examples, as well.
 #### 1. File [AdvancedWebServer.ino](examples/AdvancedWebServer/AdvancedWebServer.ino)
 
 
-https://github.com/khoih-prog/ESP8266_AT_WebServer/blob/8ca8effb9c9707ac930b9298ef0d9e6af48f6e14/examples/AdvancedWebServer/AdvancedWebServer.ino#L60-L303
+https://github.com/khoih-prog/ESP8266_AT_WebServer/blob/87095386a7c55b26347a5902de65280de35a08c6/examples/AdvancedWebServer/AdvancedWebServer.ino#L60-L305
 
 ---
 
 #### 2. File [defines.h](examples/AdvancedWebServer/defines.h)
 
-https://github.com/khoih-prog/ESP8266_AT_WebServer/blob/8ca8effb9c9707ac930b9298ef0d9e6af48f6e14/examples/AdvancedWebServer/defines.h#L15-L397
+https://github.com/khoih-prog/ESP8266_AT_WebServer/blob/87095386a7c55b26347a5902de65280de35a08c6/examples/AdvancedWebServer/defines.h#L15-L433
 
 ---
 
