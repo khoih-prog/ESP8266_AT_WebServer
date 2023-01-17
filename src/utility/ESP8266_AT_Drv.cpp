@@ -11,21 +11,15 @@
   @file       Esp8266WebServer.h
   @author     Ivan Grokhotkov
 
-  Version: 1.7.0
+  Version: 1.7.1
 
   Version Modified By   Date      Comments
   ------- -----------  ---------- -----------
   1.0.0   K Hoang      12/02/2020 Initial coding for Arduino Mega, Teensy, etc
   ...
-  1.4.0   K Hoang      14/08/2021 Add support to Adafruit nRF52 core v0.22.0+
-  1.4.1   K Hoang      08/12/2021 Add Packages_Patches and instructions for BOARD_SIPEED_MAIX_DUINO
-  1.5.0   K Hoang      19/12/2021 Reduce usage of Arduino String with std::string
-  1.5.1   K Hoang      24/12/2021 Fix bug
-  1.5.2   K Hoang      28/12/2021 Fix wrong http status header bug
-  1.5.3   K Hoang      12/01/2022 Fix authenticate issue caused by libb64
-  1.5.4   K Hoang      26/04/2022 Use new arduino.tips site. Improve examples
   1.6.0   K Hoang      16/11/2022 Fix severe limitation to permit sending larger data than 2K buffer. Add CORS
   1.7.0   K Hoang      16/01/2023 Add support to WizNet WizFi360 such as WIZNET_WIZFI360_EVB_PICO
+  1.7.1   K Hoang      17/01/2023 Fix AP and version bugs for WizNet WizFi360
  *****************************************************************************************************************************/
 
 #include <Arduino.h>
@@ -208,9 +202,15 @@ void ESP8266_AT_Drv::wifiDriverReInit()
 
   if (useESP32_AT)
   {
+#if (USING_WIZFI360) || defined(ARDUINO_WIZNET_WIZFI360_EVB_PICO)
+    // prints a warning message if the firmware is not 3.X or 4.X, no v-prefix
+    if ((fwVersion[0] != '3' and fwVersion[0] != '4') or
+        fwVersion[1] != '.')
+#else  
     // prints a warning message if the firmware is not v3.X or v4.X
     if ((fwVersion[1] != '3' and fwVersion[1] != '4') or
         fwVersion[2] != '.')
+#endif        
     {
       versionSupported = false;
     }
@@ -232,7 +232,7 @@ void ESP8266_AT_Drv::wifiDriverReInit()
   }
   else
   {
-    AT_LOGWARN1(F("Warning: Unsupported Firmware"), fwVersion);
+    AT_LOGERROR1(F("Warning: Unsupported Firmware"), fwVersion);
   }
 
   delay(4000);
@@ -382,6 +382,7 @@ bool ESP8266_AT_Drv::wifiConnect(const char* ssid, const char* passphrase)
 // ‣ 1: Station mode
 // ‣ 2: SoftAP mode
 // ‣ 3: SoftAP+Station mode
+
 bool ESP8266_AT_Drv::wifiStartAP(const char* ssid, const char* pwd, uint8_t channel, uint8_t enc, uint8_t espMode)
 {
   AT_LOGDEBUG(F("> wifiStartAP"));
@@ -391,8 +392,8 @@ bool ESP8266_AT_Drv::wifiStartAP(const char* ssid, const char* pwd, uint8_t chan
 
   if (useESP32_AT)
   {
-    AT_LOGINFO1(F("AT+CWMODE="), espMode);
-    ret = sendCmd(F("AT+CWMODE=%d"), 10000, espMode);
+    AT_LOGINFO1(F("AT+CWMODE_DEF="), espMode);
+    ret = sendCmd(F("AT+CWMODE_DEF=%d"), 10000, espMode);
   }
   else
   {
@@ -405,17 +406,23 @@ bool ESP8266_AT_Drv::wifiStartAP(const char* ssid, const char* pwd, uint8_t chan
     AT_LOGWARN1(F("Failed to set AP mode"), ssid);
     return false;
   }
-
+  
   // TODO
   // Escape character syntax is needed if "SSID" or "password" contains
   // any special characters (',', '"' and '/')
 
   // Configures the ESP8266/ESP32 SoftAP
   if (useESP32_AT)
-  {
+  {   
+#if (USING_WIZFI360) || defined(ARDUINO_WIZNET_WIZFI360_EVB_PICO)
+    AT_LOGINFO2(F("AT+CWSAP_CUR="), ssid, pwd);
+    AT_LOGINFO2(F("AT+CWSAP_CUR="), channel, enc);
+    ret = sendCmd(F("AT+CWSAP_DEF=\"%s\",\"%s\",%d,%d"), 10000, ssid, pwd, channel, enc);
+#else  
     AT_LOGINFO2(F("AT+CWSAP="), ssid, pwd);
     AT_LOGINFO2(F("AT+CWSAP="), channel, enc);
     ret = sendCmd(F("AT+CWSAP=\"%s\",\"%s\",%d,%d"), 10000, ssid, pwd, channel, enc);
+#endif    
   }
   else
   {
@@ -456,8 +463,15 @@ bool ESP8266_AT_Drv::wifiStartAP(const char* ssid, const char* pwd, uint8_t chan
     // ‣ 2: SoftAP mode
     if (useESP32_AT)
     {
+#if (USING_WIZFI360) || defined(ARDUINO_WIZNET_WIZFI360_EVB_PICO)
+      AT_LOGERROR(F("useESP32_AT mode 2 WIZFI360"));
+      AT_LOGINFO(F("AT+CWDHCP_CUR=0,1"));
+      sendCmd(F("AT+CWDHCP_CUR=0,1"));         // enable DHCP for SoftAP mode
+#else      
+      AT_LOGERROR(F("useESP32_AT mode 2"));
       AT_LOGINFO(F("AT+CWDHCP=1,2"));
       sendCmd(F("AT+CWDHCP=1,2"));         // enable DHCP for SoftAP mode
+#endif      
     }
     else
     {
@@ -469,9 +483,16 @@ bool ESP8266_AT_Drv::wifiStartAP(const char* ssid, const char* pwd, uint8_t chan
   {
     // ‣ 3: SoftAP+Station mode
     if (useESP32_AT)
-    {
+    {     
+#if (USING_WIZFI360) || defined(ARDUINO_WIZNET_WIZFI360_EVB_PICO)
+      AT_LOGERROR(F("useESP32_AT mode 3 WIZFI360"));
+      AT_LOGINFO(F("AT+CWDHCP_CUR=2,1"));
+      sendCmd(F("AT+CWDHCP_CUR=2,1"));         // enable DHCP for station and SoftAP mode
+#else      
+      AT_LOGERROR(F("useESP32_AT mode 3"));
       AT_LOGINFO(F("AT+CWDHCP=1,3"));
       sendCmd(F("AT+CWDHCP=1,3"));         // enable DHCP for station and SoftAP mode
+#endif      
     }
     else
     {

@@ -16,6 +16,7 @@
 ## Table of Contents
 
 * [Changelog](#changelog)
+  * [Releases v1.7.1](#releases-v171)
   * [Releases v1.7.0](#releases-v170)
   * [Releases v1.6.0](#releases-v160)
   * [Releases v1.5.4](#releases-v154)
@@ -46,6 +47,10 @@
 ---
 
 ## Changelog
+
+### Releases v1.7.1
+
+1. Fix AP and version bugs for WizNet `WizFi360`
 
 ### Releases v1.7.0
 
