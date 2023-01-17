@@ -29,8 +29,8 @@
 
 // Update these with values suitable for your network.
 //const char* mqttServer = "broker.example";        // Broker address
-//const char* mqttServer = "broker.emqx.io";        // Broker address
-const char* mqttServer = "broker.shiftr.io";        // Broker address
+const char* mqttServer = "broker.emqx.io";        // Broker address
+//const char* mqttServer = "broker.shiftr.io";        // Broker address
 
 const char *ID        = "MQTTClient_SSL-Client";  // Name of our device, must be unique
 const char *TOPIC     = "MQTT_Pub";               // Topic to subcribe to
@@ -156,7 +156,7 @@ void setup()
   delay(1500);
 }
 
-#define MQTT_PUBLISH_INTERVAL_MS       5000L
+#define MQTT_PUBLISH_INTERVAL_MS       10000L
 
 String data         = "Hello from MQTTClient_Basic on " + String(BOARD_NAME) + " with " + String(SHIELD_TYPE);
 const char *pubData = data.c_str();
@@ -179,11 +179,8 @@ void loop()
   {
     lastMsg = now;
 
-    if (!client.publish(TOPIC, pubData))
-    {
-      Serial.println("Message failed to send.");
-    }
-
+    client.publish(TOPIC, pubData);
+    
     Serial.print("Message Send : ");
     Serial.print(TOPIC);
     Serial.print(" => ");

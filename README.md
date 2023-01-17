@@ -113,7 +113,7 @@
 
 ### Important Note from v1.6.0
 
-The new [ESP8266_AT_WebServer v1.6.0+](https://github.com/khoih-prog/ESP8266_AT_WebServer/releases/tag/v1.6.0) fixes severe limitation to permit sending much larger data than total than **2K** buffer of **ESP8266/ESP32 AT-command shield**.
+The new [ESP8266_AT_WebServer v1.7.0+](https://github.com/khoih-prog/ESP8266_AT_WebServer/releases/tag/v1.6.0) fixes severe limitation to permit sending much larger data than total than **2K** buffer of **ESP8266/ESP32 AT-command shield**.
 
 ---
 ---
@@ -182,6 +182,13 @@ The ESP8266_AT_Web_Server class found in `ESP8266_AT_Web_Server.h` header, is a 
 
  9. RP2040-based boards, such as **RASPBERRY_PI_PICO, ADAFRUIT_FEATHER_RP2040 and GENERIC_RP2040**, using [**Arduino-mbed RP2040** core](https://github.com/arduino/ArduinoCore-mbed) or [**Earle Philhower's arduino-pico** core](https://github.com/earlephilhower/arduino-pico).
  
+10. WIZNET_WIZFI360_EVB_PICO using [**Earle Philhower's arduino-pico** core](https://github.com/earlephilhower/arduino-pico)
+
+#### WIZNET_WIZFI360_EVB_PICO
+
+<p align="center">
+    <img src="https://github.com/khoih-prog/ESP8266_AT_WebServer/raw/master/pics/WIZNET_WIZFI360_EVB_PICO.png">
+</p>
 
 ---
 
@@ -190,6 +197,14 @@ The ESP8266_AT_Web_Server class found in `ESP8266_AT_Web_Server.h` header, is a 
  1. ESP8266-AT-command shield
  2. ESP32-AT-command shield
  3. W600 and WIS600-01S AT-command shield
+ 4. WizFi360 AT-command shield
+ 
+#### WIZFI360
+ 
+<p align="center">
+    <img src="https://github.com/khoih-prog/ESP8266_AT_WebServer/raw/master/pics/wizfi360-pa.png">
+</p>
+
  
 ---
 ---
@@ -199,15 +214,15 @@ The ESP8266_AT_Web_Server class found in `ESP8266_AT_Web_Server.h` header, is a 
 
  1. [`Arduino IDE 1.8.19+` for Arduino](https://github.com/arduino/Arduino). [![GitHub release](https://img.shields.io/github/release/arduino/Arduino.svg)](https://github.com/arduino/Arduino/releases/latest)
  2. [`Arduino AVR core 1.8.6+`](https://github.com/arduino/ArduinoCore-avr) for Arduino (Use Arduino Board Manager) for AVR boards. [![GitHub release](https://img.shields.io/github/release/arduino/ArduinoCore-avr.svg)](https://github.com/arduino/ArduinoCore-avr/releases/latest)
- 3. [`Teensy core v1.57+`](https://www.pjrc.com/teensy/td_download.html) for Teensy (4.1, 4.0, 3.6, 3.5, 3,2, 3.1, 3.0) boards.
+ 3. [`Teensy core v1.57+`](https://github.com/PaulStoffregen/cores) for Teensy 4.1.  [![GitHub release](https://img.shields.io/github/release/PaulStoffregen/cores.svg)](https://github.com/PaulStoffregen/cores/releases/latest)
  4. [`Arduino SAM DUE core v1.6.12+`](https://github.com/arduino/ArduinoCore-sam) for SAM DUE ARM Cortex-M3 boards.
  5. [`Arduino SAMD core 1.8.13+`](https://github.com/arduino/ArduinoCore-samd) for SAMD ARM Cortex-M0+ boards. [![GitHub release](https://img.shields.io/github/release/arduino/ArduinoCore-samd.svg)](https://github.com/arduino/ArduinoCore-samd/releases/latest)
  6. [`Adafruit SAMD core 1.7.11+`](https://github.com/adafruit/ArduinoCore-samd) for SAMD ARM Cortex-M0+ and M4 boards (Nano 33 IoT, etc.). [![GitHub release](https://img.shields.io/github/release/adafruit/ArduinoCore-samd.svg)](https://github.com/adafruit/ArduinoCore-samd/releases/latest)
  7. [`Seeeduino SAMD core 1.8.3+`](https://github.com/Seeed-Studio/ArduinoCore-samd) for SAMD21/SAMD51 boards (XIAO M0, Wio Terminal, etc.). [![Latest release](https://img.shields.io/github/release/Seeed-Studio/ArduinoCore-samd.svg)](https://github.com/Seeed-Studio/ArduinoCore-samd/releases/latest/)
  8. [`Adafruit nRF52 v1.3.0+`](https://www.adafruit.com) for nRF52 boards such as Adafruit NRF52840_FEATHER, NRF52832_FEATHER, NRF52840_FEATHER_SENSE, NRF52840_ITSYBITSY, NRF52840_CIRCUITPLAY, NRF52840_CLUE, NRF52840_METRO, NRF52840_PCA10056, PARTICLE_XENON, **NINA_B302_ublox**, etc. [![GitHub release](https://img.shields.io/github/release/adafruit/Adafruit_nRF52_Arduino.svg)](https://github.com/adafruit/Adafruit_nRF52_Arduino/releases/latest). Please remember to use latest [`Packages_Patches`](https://github.com/khoih-prog/WiFiWebServer/tree/master/Packages_Patches) or getting compiler errors.
- 9. [`Arduino Core for STM32 v2.3.0+`](https://github.com/stm32duino/Arduino_Core_STM32) for STM32F/L/H/G/WB/MP1 boards. [![GitHub release](https://img.shields.io/github/release/stm32duino/Arduino_Core_STM32.svg)](https://github.com/stm32duino/Arduino_Core_STM32/releases/latest)
-10. [`Arduino mbed_rp2040 core 3.4.1+`](https://github.com/arduino/ArduinoCore-mbed) for Arduino (Use Arduino Board Manager) RP2040-based boards, such as **Arduino Nano RP2040 Connect, RASPBERRY_PI_PICO, etc.**. [![GitHub release](https://img.shields.io/github/release/arduino/ArduinoCore-mbed.svg)](https://github.com/arduino/ArduinoCore-mbed/releases/latest)
-11. [`Earle Philhower's arduino-pico core v2.6.3+`](https://github.com/earlephilhower/arduino-pico) for RP2040-based boards such as **RASPBERRY_PI_PICO, ADAFRUIT_FEATHER_RP2040 and GENERIC_RP2040**, etc. [![GitHub release](https://img.shields.io/github/release/earlephilhower/arduino-pico.svg)](https://github.com/earlephilhower/arduino-pico/releases/latest)
+ 9. [`Arduino Core for STM32 v2.4.0+`](https://github.com/stm32duino/Arduino_Core_STM32) for STM32F/L/H/G/WB/MP1 boards. [![GitHub release](https://img.shields.io/github/release/stm32duino/Arduino_Core_STM32.svg)](https://github.com/stm32duino/Arduino_Core_STM32/releases/latest)
+10. [`Arduino mbed_rp2040 core 3.5.1+`](https://github.com/arduino/ArduinoCore-mbed) for Arduino (Use Arduino Board Manager) RP2040-based boards, such as **Arduino Nano RP2040 Connect, RASPBERRY_PI_PICO, etc.**. [![GitHub release](https://img.shields.io/github/release/arduino/ArduinoCore-mbed.svg)](https://github.com/arduino/ArduinoCore-mbed/releases/latest)
+11. [`Earle Philhower's arduino-pico core v2.7.1+`](https://github.com/earlephilhower/arduino-pico) for RP2040-based boards such as **RASPBERRY_PI_PICO, ADAFRUIT_FEATHER_RP2040 and GENERIC_RP2040**, etc. [![GitHub release](https://img.shields.io/github/release/earlephilhower/arduino-pico.svg)](https://github.com/earlephilhower/arduino-pico/releases/latest)
 12. [`Sipeed Maixduino core v0.3.11+`](https://github.com/sipeed/Maixduino) for K210-RISC-V-based boards such as **Maixduino AI Development Kit K210 RISC-V AI + IoT ESP32, Sipeed Maix Go, Sipeed Maix Bit**, etc. [![GitHub release](https://img.shields.io/github/release/sipeed/Maixduino.svg)](https://github.com/sipeed/Maixduino/releases/latest)
 13. [`Functional-Vlpp library v1.0.2+`](https://github.com/khoih-prog/functional-vlpp) to use server's lambda function. To install. check [![arduino-library-badge](https://www.ardu-badge.com/badge/Functional-Vlpp.svg?)](https://www.ardu-badge.com/Functional-Vlpp)
 14. [`Ai-Thinker AT Firmware v1.5.4`](AT_Firmwares/At_firmware_bin1.54.zip) or [`AT Firmware v1.7.4.0`](AT_Firmwares/AT_Firmware_bin_1.7.4.0.zip) for ESP8266-AT shields.
@@ -312,7 +327,7 @@ You can also use this link [![arduino-library-badge](https://www.ardu-badge.com/
 
 1. Install [VS Code](https://code.visualstudio.com/)
 2. Install [PlatformIO](https://platformio.org/platformio-ide)
-3. Install [**ESP8266_AT_WebServer** library](https://registry.platformio.org/libraries/khoih-prog/ESP8266_AT_WebServer) by using [Library Manager](https://registry.platformio.org/libraries/khoih-prog/ESP8266_AT_WebServer/installation) or [Library Manager](https://platformio.org/lib/show/11453/ESP8266_AT_WebServer/installation). Search for **ESP8266_AT_WebServer** in [Platform.io Author's Libraries](https://platformio.org/lib/search?query=author:%22Khoi%20Hoang%22)
+3. Install [**ESP8266_AT_WebServer** library](https://registry.platformio.org/libraries/khoih-prog/ESP8266_AT_WebServer) by using [Library Manager](https://registry.platformio.org/libraries/khoih-prog/ESP8266_AT_WebServer/installation). Search for **ESP8266_AT_WebServer** in [Platform.io Author's Libraries](https://platformio.org/lib/search?query=author:%22Khoi%20Hoang%22)
 4. Use included [platformio.ini](platformio/platformio.ini) file from examples to ensure that all dependent libraries will installed automatically. Please visit documentation for the other options and examples at [Project Configuration File](https://docs.platformio.org/page/projectconf.html)
 
 
@@ -634,7 +649,7 @@ These files must be copied into the directory:
 #### Class Constructor
 
 ```cpp
-  ESP8266_AT_WebServer server(80);
+ESP8266_AT_WebServer server(80);
 ```
 
 Creates the ESP8266_AT_WebServer class object.
@@ -648,20 +663,20 @@ host port number: ``int port`` (default is the standard HTTP port 80)
 **Starting the server**
 
 ```cpp
-  void begin();
+void begin();
 ```
 
 **Handling incoming client requests**
 
 ```cpp
-  void handleClient();
+void handleClient();
 ```
 
 **Disabling the server**
 
 ```cpp
-  void close();
-  void stop();
+void close();
+void stop();
 ```
 
 Both methods function the same
@@ -669,25 +684,25 @@ Both methods function the same
 **Client request handlers**
 
 ```cpp
-  void on();
-  void addHandler();
-  void onNotFound();
-  void onFileUpload();	
+void on();
+void addHandler();
+void onNotFound();
+void onFileUpload();	
 ```
 
 Example:
 
 ```cpp
-  server.on("/", handlerFunction);
-  server.onNotFound(handlerFunction);   // called when handler is not assigned
-  server.onFileUpload(handlerFunction); // handle file uploads
+server.on("/", handlerFunction);
+server.onNotFound(handlerFunction);   // called when handler is not assigned
+server.onFileUpload(handlerFunction); // handle file uploads
 ```
 
 **Sending responses to the client**
 
 ```cpp
-  void send();
-  void send_P();
+void send();
+void send_P();
 ```
 
 `Parameters:`
@@ -703,10 +718,10 @@ Example:
 **Getting information about request arguments**
 
 ```cpp
-  const String & arg();
-  const String & argName();
-  int args();
-  bool hasArg();
+const String & arg();
+const String & argName();
+int args();
+bool hasArg();
 ```
 
 `Function usage:`
@@ -722,12 +737,13 @@ Example:
 **Getting information about request headers**
 
 ```cpp
-  const String & header();
-  const String & headerName();
-  const String & hostHeader();
-  int headers();
-  bool hasHeader();
+const String & header();
+const String & headerName();
+const String & hostHeader();
+int headers();
+bool hasHeader();
 ``` 
+
 `Function usage:`
 
 `header` - get request header value
@@ -743,8 +759,8 @@ Example:
 **Authentication**
 
 ```cpp
-  bool authenticate();
-  void requestAuthentication();
+bool authenticate();
+void requestAuthentication();
 ```
 
 `Function usage:`
@@ -756,26 +772,26 @@ Example:
 `Example Usage:`
 
 ```cpp
-
-  if(!server.authenticate(username, password)){
-    server.requestAuthentication();
-  }
+if(!server.authenticate(username, password))
+{
+  server.requestAuthentication();
+}
 ```
 
 #### Other Function Calls
 
 ```cpp
-  const String & uri(); // get the current uri
-  HTTPMethod  method(); // get the current method 
-  WiFiClient client(); // get the current client
-  HTTPUpload & upload(); // get the current upload
-  void setContentLength(); // set content length
-  void sendHeader(); // send HTTP header
-  void sendContent(); // send content
-  void sendContent_P(); 
-  void collectHeaders(); // set the request headers to collect
-  void serveStatic();
-  size_t streamFile();
+const String & uri(); // get the current uri
+HTTPMethod  method(); // get the current method 
+WiFiClient client(); // get the current client
+HTTPUpload & upload(); // get the current upload
+void setContentLength(); // set content length
+void sendHeader(); // send HTTP header
+void sendContent(); // send content
+void sendContent_P(); 
+void collectHeaders(); // set the request headers to collect
+void serveStatic();
+size_t streamFile();
 ```
 
 ---
@@ -835,7 +851,7 @@ The following are debug terminal output when running example [AdvancedWebServer]
 
 ```
 Starting AdvancedWebServer on NRF52840_ITSYBITSY_EXPRESS
-ESP8266_AT_WebServer v1.6.0
+ESP8266_AT_WebServer v1.7.0
 [ESP_AT] Initializing ESP module
 [ESP_AT] Use ES8266-AT Command
 WiFi shield init done
@@ -964,7 +980,7 @@ The following are debug terminal output when running example [MQTT_ThingStream](
 
 ```
 Start MQTT_ThingStream on ITSYBITSY_M4 with ESP8266-AT & ESP8266_AT_WebServer Library
-ESP8266_AT_WebServer v1.6.0
+ESP8266_AT_WebServer v1.7.0
 [ESP_AT] Use ES8266-AT Command
 WiFi shield init done
 Connecting to SSID: HueNet1
@@ -999,7 +1015,7 @@ The following are debug terminal output when running example [MQTTClient_Auth](e
 
 ```
 Starting MQTTClient_Auth on ITSYBITSY_M4 with ESP8266-AT & ESP8266_AT_WebServer Library
-ESP8266_AT_WebServer v1.6.0
+ESP8266_AT_WebServer v1.7.0
 [ESP_AT] Use ES8266-AT Command
 WiFi shield init done
 Connecting to SSID: HueNet1
@@ -1025,7 +1041,7 @@ The following are debug terminal output when running example [MQTTClient_Basic](
 
 ```
 MQTTClient_Basic on ITSYBITSY_M4 with ESP8266-AT & ESP8266_AT_WebServer Library
-ESP8266_AT_WebServer v1.6.0
+ESP8266_AT_WebServer v1.7.0
 [ESP_AT] Use ES8266-AT Command
 WiFi shield init done
 Connecting to SSID: HueNet1
@@ -1050,7 +1066,7 @@ The following are debug terminal output when running example [WebClientRepeating
 
 ```
 Starting WebClientRepeating on RASPBERRY_PI_PICO with ESP8266-AT & ESP8266_AT_WebServer Library
-ESP8266_AT_WebServer v1.6.0
+ESP8266_AT_WebServer v1.7.0
 [ESP_AT] Use ES8266-AT Command
 WiFi shield init done
 Connecting to SSID: HueNet1
@@ -1119,7 +1135,7 @@ The following are debug terminal output when running example [MQTTClient_Auth](e
 
 ```
 Starting MQTTClient_Auth on RASPBERRY_PI_PICO with ESP8266-AT & ESP8266_AT_WebServer Library
-ESP8266_AT_WebServer v1.6.0
+ESP8266_AT_WebServer v1.7.0
 [ESP_AT] Use ES8266-AT Command
 WiFi shield init done
 Connecting to SSID: HueNet1
@@ -1144,7 +1160,7 @@ The following are debug terminal output when running example [UdpNTPClient](exam
 
 ```
 Starting UdpNTPClient on MBED RASPBERRY_PI_PICO with ESP8266-AT & ESP8266_AT_WebServer Library
-ESP8266_AT_WebServer v1.6.0
+ESP8266_AT_WebServer v1.7.0
 [ESP_AT] Use ES8266-AT Command
 WiFi shield init done
 Connecting to WPA SSID: HueNet1
@@ -1172,7 +1188,7 @@ The following is debug terminal output when running example [AdvancedServer](exa
 
 ```
 Starting AdvancedServer on NRF52840_ITSYBITSY with ESP8266-AT & ESP8266_AT_WebServer Library
-ESP8266_AT_WebServer v1.6.0
+ESP8266_AT_WebServer v1.7.0
 [ESP_AT] Initializing ESP module
 [ESP_AT] Use ES8266-AT Command
 WiFi shield init done
@@ -1246,7 +1262,7 @@ The following is debug terminal output when running example [ATWebServer_BigData
 
 ```
 Start ATWebServer_BigData on NRF52840_ITSYBITSY with ESP8266-AT & ESP8266_AT_WebServer Library
-ESP8266_AT_WebServer v1.6.0
+ESP8266_AT_WebServer v1.7.0
 [ESP_AT] Initializing ESP module
 [ESP_AT] Use ES8266-AT Command
 WiFi shield init done
@@ -1285,6 +1301,30 @@ String Len = 23106
 [ESP_AT] ESP8266_AT_Client::write: Done, written =  578 , totalBytesSent = 23106
 [ESP_AT] handleClient: Client disconnected
 ```
+
+
+---
+
+#### 10. AdvancedServer on WIZNET_WIZFI360_EVB_PICO
+
+The following is debug terminal output when running example [AdvancedServer](examples/AdvancedServer) on `WIZNET_WIZFI360_EVB_PICO` board, using [arduino-pico](https://github.com/earlephilhower/arduino-pico) core
+
+
+```
+Starting AdvancedServer on WIZNET_WIZFI360_EVB_PICO with ESP32-AT & ESP8266_AT_WebServer Library
+ESP8266_AT_WebServer v1.7.0
+[ESP_AT] Using ESP32-AT Command
+WiFi shield init done
+Connecting to WPA SSID: HueNet
+HTTP server started @ 192.168.2.124, Port = 80
+.......... .......... .
+```
+
+
+<p align="center">
+    <img src="https://github.com/khoih-prog/ESP8266_AT_WebServer/raw/master/pics/AdvancedWebServer_WIZFI360.png">
+</p>
+
 
 
 ---
@@ -1418,6 +1458,7 @@ Submit issues to: [ESP8266_AT_WebServer issues](https://github.com/khoih-prog/ES
 21. Fix severe limitation to permit sending larger data than 2K buffer of ESP8266/ESP32 AT-command shields
 22. Add example [ATWebServer_BigData](https://github.com/khoih-prog/ESP8266_AT_WebServer/tree/master/examples/ATWebServer_BigData) to demo how to send larger data than 2K buffer
 23. Modify example [AdvancedWebServer](https://github.com/khoih-prog/ESP8266_AT_WebServer/tree/master/examples/AdvancedWebServer) to demo how to send larger data than 2K buffer
+24. Add support to WizNet `WizFi360`, such as `WIZNET_WIZFI360_EVB_PICO` using `arduino-pico` core
 
 
 ---
@@ -1427,7 +1468,7 @@ Submit issues to: [ESP8266_AT_WebServer issues](https://github.com/khoih-prog/ES
 
 1. Based on and modified [Ivan Grokhotkov's ESP8266WebServer](https://github.com/esp8266/Arduino/tree/master/libraries/ESP8266WebServer)
 2. Based on and modified from [bportaluri's WiFiEsp library](https://github.com/bportaluri/WiFiEsp)
-3. Thanks to good work of [Miguel Alexandre Wisintainer](https://github.com/tcpipchip) for initiating, inspriring, working with, developing, debugging and testing. Without that, support to nRF52, especially **U-Blox B302 running as nRF52840 and U-Blox B112 running as nRF52832**, has never been started and finished. Also see [U-BLOX NINA B302/ENC28J60 wth Alexa/SinricPro](https://u-blox-ethernet-ninaw.blogspot.com/).
+3. Thanks to good work of [Miguel Alexandre Wisintainer](https://github.com/tcpipchip) for initiating, inspriring, working with, developing, debugging and testing. Without that, support to nRF52, especially **U-Blox B302 running as nRF52840 and U-Blox B112 running as nRF52832**, has never been started and finished. Also see [U-BLOX NINA B302/ENC28J60 with Alexa/SinricPro](https://u-blox-ethernet-ninaw.blogspot.com/).
 4. Thanks to [reltkaine](https://github.com/reltkaine) to report the compile error issue with Sipeed Maixduino core, leading to v1.4.1 to introduce `Packages_Patches` for Sipeed Maixduino core
 
 
@@ -1445,6 +1486,7 @@ Submit issues to: [ESP8266_AT_WebServer issues](https://github.com/khoih-prog/ES
 ### Contributing
 
 If you want to contribute to this project:
+
 - Report bugs and errors
 - Ask for enhancements
 - Create issues and pull requests

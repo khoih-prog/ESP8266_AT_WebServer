@@ -55,8 +55,8 @@ String subTopic = MQTT_PREFIX_TOPIC + String("12345678") + MQTT_BLE_TOPIC;
 const char* MQTT_SERVER = "broker.emqx.io";        // Broker address
 
 const char*  ID         = "MQTTClient_SSL-Client";  // Name of our device, must be unique
-String      topic       = "STM32_Pub";              // Topic to subcribe to
-String      subTopic    = "STM32_Sub";              // Topic to subcribe to
+String      topic       = "MQTT_Pub";              // Topic to subcribe to
+String      subTopic    = "MQTT_Sub";              // Topic to subcribe to
 
 #endif
 
@@ -81,7 +81,7 @@ PubSubClient client(MQTT_SERVER, MQTT_PORT, mqtt_receive_callback, espClient);
 */
 void mqtt_receive_callback(char* topic, byte* payload, unsigned int length) 
 {
-  Serial.print("MQTT Message receive [");
+  Serial.print("MQTT Message received [");
   Serial.print(topic);
   Serial.print("] ");
   
@@ -203,7 +203,7 @@ void setup()
   Serial.println("***************************************");
 }
 
-#define MQTT_PUBLISH_INTERVAL_MS      5000L
+#define MQTT_PUBLISH_INTERVAL_MS      10000L
 
 String data         = "Hello from MQTT_ThingStream on " + String(BOARD_NAME) + " with " + String(SHIELD_TYPE);
 const char *pubData = data.c_str();
@@ -223,11 +223,8 @@ void loop()
   if (now - lastMsg > MQTT_PUBLISH_INTERVAL_MS)
   {
     lastMsg = now;
-
-    if (!client.publish(topic.c_str(), pubData))
-    {
-      Serial.println("Message failed to send.");
-    }
+    
+    client.publish(topic.c_str(), pubData);
 
     Serial.print("MQTT Message Send : ");
     Serial.print(topic);

@@ -11,7 +11,7 @@
   @file       Esp8266WebServer.h
   @author     Ivan Grokhotkov
 
-  Version: 1.6.0
+  Version: 1.7.0
 
   Version Modified By   Date      Comments
   ------- -----------  ---------- -----------
@@ -25,6 +25,7 @@
   1.5.3   K Hoang      12/01/2022 Fix authenticate issue caused by libb64
   1.5.4   K Hoang      26/04/2022 Use new arduino.tips site. Improve examples
   1.6.0   K Hoang      16/11/2022 Fix severe limitation to permit sending larger data than 2K buffer. Add CORS
+  1.7.0   K Hoang      16/01/2023 Add support to WizNet WizFi360 such as WIZNET_WIZFI360_EVB_PICO
  *****************************************************************************************************************************/
 
 #ifndef ESP8266_AT_Drv_h
@@ -58,7 +59,8 @@ extern bool useESP32_AT;
 #define WL_MAC_ADDR_LENGTH 6
 
 // Size of a MAC-address or BSSID
-#define WL_IPV4_LENGTH 4
+//#define WL_IPV4_LENGTH 4
+#define WL_IPV4_LENGTH 8
 
 // Maximum size of a SSID list
 #define WL_NETWORKS_LIST_MAXNUM 10
@@ -73,6 +75,9 @@ extern bool useESP32_AT;
 #define NA_STATE -1
 
 #define WL_FW_VER_LENGTH 6
+
+// For WizFi360
+//#define WL_FW_VER_LENGTH 8
 
 #define NO_SOCKET_AVAIL 255
 
@@ -158,6 +163,8 @@ enum wl_tcp_state
 
 ////////////////////////////////////////
 
+//using IPAddress = arduino::IPAddress;
+
 class ESP8266_AT_Drv
 {
   public:
@@ -215,7 +222,7 @@ class ESP8266_AT_Drv
        return: copy the ip address value in IPAddress object
     */
     static void getIpAddress(IPAddress& ip);
-
+    
     static void getIpAddressAP(IPAddress& ip);
 
     /*

@@ -142,7 +142,7 @@ void setup()
   WiFi.configAP(localIp);
 
   // start access point
-  int AP_channel = 1;
+  int AP_channel = 2;
   status = WiFi.beginAP(ssid, AP_channel, pass, ENC_TYPE_WPA2_PSK);
 
   Serial.print(F("Access point started @ channel "));

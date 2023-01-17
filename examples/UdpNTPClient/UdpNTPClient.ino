@@ -111,7 +111,6 @@ void setup()
     status = WiFi.begin(ssid, pass);
   }
 
-  // you're connected now, so print out the data
   Serial.print(F("You're connected to the network, IP = "));
   Serial.println(WiFi.localIP());
 
@@ -134,12 +133,14 @@ void loop()
   {
     Serial.print(F("UDP Packet received, size "));
     Serial.println(packetSize);
-    
+
+    #if 0
     Serial.print(F("From "));
     IPAddress remoteIp = Udp.remoteIP();    
     Serial.print(remoteIp);
     Serial.print(F(", port "));
     Serial.println(Udp.remotePort());
+    #endif
     
     // We've received a packet, read the data from it into the buffer
     Udp.read(packetBuffer, NTP_PACKET_SIZE);

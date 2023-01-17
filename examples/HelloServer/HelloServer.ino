@@ -135,7 +135,12 @@ void setup()
   server.begin();
 
   Serial.print(F("WebServer is @ "));
+  
+#if defined(ARDUINO_WIZNET_WIZFI360_EVB_PICO) 
+  Serial.println("192.168.2.124");
+#else
   Serial.println(WiFi.localIP());
+#endif
 
   server.on(F("/"), handleRoot);
 

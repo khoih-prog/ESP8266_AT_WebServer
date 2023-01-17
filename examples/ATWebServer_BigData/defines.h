@@ -20,10 +20,16 @@
 #define DEBUG_ESP8266_AT_WEBSERVER_PORT Serial
 
 // Debug Level from 0 to 4
-#define _ESP_AT_LOGLEVEL_       3
+#define _ESP_AT_LOGLEVEL_       1
 
-// Uncomment to use ESP32-AT commands
-//#define USE_ESP32_AT      true
+#define USING_WIZFI360              true
+
+#if (USING_WIZFI360) || defined(ARDUINO_WIZNET_WIZFI360_EVB_PICO)
+  #define USE_ESP32_AT      true
+#else
+  // Uncomment to use ESP32-AT commands
+  //#define USE_ESP32_AT      true
+#endif
 
 #if USE_ESP32_AT
 	#warning Using ESP32-AT WiFi and ESP8266_AT_WebServer Library
@@ -34,23 +40,34 @@
 #endif
 
 #if ( defined(ARDUINO_SAMD_ZERO) || defined(ARDUINO_SAMD_MKR1000) || defined(ARDUINO_SAMD_MKRWIFI1010) \
-   || defined(ARDUINO_SAMD_NANO_33_IOT) || defined(ARDUINO_SAMD_MKRFox1200) || defined(ARDUINO_SAMD_MKRWAN1300) || defined(ARDUINO_SAMD_MKRWAN1310) \
-   || defined(ARDUINO_SAMD_MKRGSM1400) || defined(ARDUINO_SAMD_MKRNB1500) || defined(ARDUINO_SAMD_MKRVIDOR4000) || defined(__SAMD21G18A__) \
-   || defined(ARDUINO_SAMD_CIRCUITPLAYGROUND_EXPRESS) || defined(__SAMD21E18A__) || defined(__SAMD51__) || defined(__SAMD51J20A__) || defined(__SAMD51J19A__) \
-   || defined(__SAMD51G19A__) || defined(__SAMD51P19A__) || defined(__SAMD21G18A__) )
+    || defined(ARDUINO_SAMD_NANO_33_IOT) || defined(ARDUINO_SAMD_MKRFox1200) || defined(ARDUINO_SAMD_MKRWAN1300) || defined(ARDUINO_SAMD_MKRWAN1310) \
+    || defined(ARDUINO_SAMD_MKRGSM1400) || defined(ARDUINO_SAMD_MKRNB1500) || defined(ARDUINO_SAMD_MKRVIDOR4000) || defined(__SAMD21G18A__) \
+    || defined(ARDUINO_SAMD_CIRCUITPLAYGROUND_EXPRESS) || defined(__SAMD21E18A__) || defined(__SAMD51__) || defined(__SAMD51J20A__) || defined(__SAMD51J19A__) \
+    || defined(__SAMD51G19A__) || defined(__SAMD51P19A__) || defined(__SAMD21G18A__) )
+
+  #define MULTIPLY_FACTOR       2
+      
   #if defined(ESP8266_AT_USE_SAMD)
   	#undef ESP8266_AT_USE_SAMD
   #endif
   #define ESP8266_AT_USE_SAMD      true
+
 #endif
 
-#if ( defined(NRF52840_FEATHER) || defined(NRF52832_FEATHER) || defined(NRF52_SERIES) || defined(ARDUINO_NRF52_ADAFRUIT) || \
-      defined(NRF52840_FEATHER_SENSE) || defined(NRF52840_ITSYBITSY) || defined(NRF52840_CIRCUITPLAY) || defined(NRF52840_CLUE) || \
-      defined(NRF52840_METRO) || defined(NRF52840_PCA10056) || defined(PARTICLE_XENON) || defined(NINA_B302_ublox) || defined(NINA_B112_ublox) )
+#if (defined(NRF52840_FEATHER) || defined(NRF52832_FEATHER) || defined(NRF52_SERIES) || defined(ARDUINO_NRF52_ADAFRUIT) || \
+     defined(NRF52840_FEATHER_SENSE) || defined(NRF52840_ITSYBITSY) || defined(NRF52840_CIRCUITPLAY) || \
+     defined(NRF52840_CLUE) || defined(NRF52840_METRO) || defined(NRF52840_PCA10056) || defined(PARTICLE_XENON) || \
+     defined(NRF52840_LED_GLASSES) || defined(MDBT50Q_RX) || defined(NINA_B302_ublox) || defined(NINA_B112_ublox) || \
+     defined(ARDUINO_Seeed_XIAO_nRF52840) || defined(ARDUINO_Seeed_XIAO_nRF52840_Sense) || \
+     defined(ARDUINO_SEEED_XIAO_NRF52840) || defined(ARDUINO_SEEED_XIAO_NRF52840_SENSE) )
+
+  #define MULTIPLY_FACTOR       4
+     
   #if defined(ESP8266_AT_USE_NRF528XX)
   	#undef ESP8266_AT_USE_NRF528XX
   #endif
   #define ESP8266_AT_USE_NRF528XX      true
+  
 #endif
 
 #if ( defined(ARDUINO_SAM_DUE) || defined(__SAM3X8E__) )
@@ -85,6 +102,8 @@
   
   #if defined(__IMXRT1062__)
   	// For Teensy 4.1/4.0
+    #define MULTIPLY_FACTOR       6
+    
   	#if defined(ARDUINO_TEENSY41)
   		#define BOARD_TYPE      "TEENSY 4.1"
   		// Use true for NativeEthernet Library, false if using other Ethernet libraries
@@ -338,34 +357,41 @@
 
   #warning RASPBERRY_PI_PICO board selected
   
+  #define MULTIPLY_FACTOR       6
+  
   #if defined(ARDUINO_ARCH_MBED)
   
-  #warning Using ARDUINO_ARCH_MBED
+    #warning Using ARDUINO_ARCH_MBED
+    
+    #if ( defined(ARDUINO_NANO_RP2040_CONNECT)    || defined(ARDUINO_RASPBERRY_PI_PICO) || \
+          defined(ARDUINO_GENERIC_RP2040) || defined(ARDUINO_ADAFRUIT_FEATHER_RP2040) )
+    // Only undef known BOARD_NAME to use better one
+    #undef BOARD_NAME
+    #endif
+    
+    #if defined(ARDUINO_RASPBERRY_PI_PICO)
+    	#define BOARD_NAME      "MBED RASPBERRY_PI_PICO"
+    #elif defined(ARDUINO_ADAFRUIT_FEATHER_RP2040)
+    	#define BOARD_NAME      "MBED ADAFRUIT_FEATHER_RP2040"
+    #elif defined(ARDUINO_GENERIC_RP2040)
+    	#define BOARD_NAME      "MBED GENERIC_RP2040"
+    #elif defined(ARDUINO_NANO_RP2040_CONNECT)
+    	#define BOARD_NAME      "MBED NANO_RP2040_CONNECT"
+    #else
+    	// Use default BOARD_NAME if exists
+    	#if !defined(BOARD_NAME)
+    		#define BOARD_NAME      "MBED Unknown RP2040"
+    	#endif
+    #endif
   
-  #if ( defined(ARDUINO_NANO_RP2040_CONNECT)    || defined(ARDUINO_RASPBERRY_PI_PICO) || \
-            defined(ARDUINO_GENERIC_RP2040) || defined(ARDUINO_ADAFRUIT_FEATHER_RP2040) )
-  // Only undef known BOARD_NAME to use better one
-  #undef BOARD_NAME
   #endif
-  
-  #if defined(ARDUINO_RASPBERRY_PI_PICO)
-  	#define BOARD_NAME      "MBED RASPBERRY_PI_PICO"
-  #elif defined(ARDUINO_ADAFRUIT_FEATHER_RP2040)
-  	#define BOARD_NAME      "MBED ADAFRUIT_FEATHER_RP2040"
-  #elif defined(ARDUINO_GENERIC_RP2040)
-  	#define BOARD_NAME      "MBED GENERIC_RP2040"
-  #elif defined(ARDUINO_NANO_RP2040_CONNECT)
-  	#define BOARD_NAME      "MBED NANO_RP2040_CONNECT"
+
+  #if defined(ARDUINO_WIZNET_WIZFI360_EVB_PICO)
+    #warning WIZNET_WIZFI360_EVB_PICO
+    #define EspSerial       Serial2
   #else
-  	// Use default BOARD_NAME if exists
-  	#if !defined(BOARD_NAME)
-  		#define BOARD_NAME      "MBED Unknown RP2040"
-  	#endif
+    #define EspSerial       Serial1
   #endif
-  
-  #endif
-  
-  #define EspSerial       Serial1
 
 #elif (ESP_AT_USE_AVR)
 
@@ -387,6 +413,17 @@
 #ifndef BOARD_NAME
 	#define BOARD_NAME    BOARD_TYPE
 #endif
+
+////////////////////////////////////////////
+
+#if !defined(MULTIPLY_FACTOR)
+  #define MULTIPLY_FACTOR       1
+#elif (MULTIPLY_FACTOR > 6)
+  #undef  MULTIPLY_FACTOR
+  #define MULTIPLY_FACTOR       6
+#endif
+
+////////////////////////////////////////////
 
 #include <ESP8266_AT_WebServer.h>
 

@@ -11,7 +11,7 @@
   @file       Esp8266WebServer.h
   @author     Ivan Grokhotkov
 
-  Version: 1.6.0
+  Version: 1.7.0
 
   Version Modified By   Date      Comments
   ------- -----------  ---------- -----------
@@ -25,6 +25,7 @@
   1.5.3   K Hoang      12/01/2022 Fix authenticate issue caused by libb64
   1.5.4   K Hoang      26/04/2022 Use new arduino.tips site. Improve examples
   1.6.0   K Hoang      16/11/2022 Fix severe limitation to permit sending larger data than 2K buffer. Add CORS
+  1.7.0   K Hoang      16/01/2023 Add support to WizNet WizFi360 such as WIZNET_WIZFI360_EVB_PICO
  *****************************************************************************************************************************/
 
 #ifndef ESP8266_AT_WebServer_h
@@ -32,13 +33,13 @@
 
 ////////////////////////////////////////
 
-#define ESP8266_AT_WEBSERVER_VERSION          "ESP8266_AT_WebServer v1.6.0"
+#define ESP8266_AT_WEBSERVER_VERSION          "ESP8266_AT_WebServer v1.7.0"
 
 #define ESP8266_AT_WEBSERVER_VERSION_MAJOR    1
-#define ESP8266_AT_WEBSERVER_VERSION_MINOR    6
+#define ESP8266_AT_WEBSERVER_VERSION_MINOR    7
 #define ESP8266_AT_WEBSERVER_VERSION_PATCH    0
 
-#define ESP8266_AT_WEBSERVER_VERSION_INT      1006000
+#define ESP8266_AT_WEBSERVER_VERSION_INT      1007000
 
 ////////////////////////////////////////
 
@@ -133,15 +134,16 @@
 #elif ( defined(ARDUINO_NANO_RP2040_CONNECT) || defined(ARDUINO_ARCH_RP2040) || defined(ARDUINO_RASPBERRY_PI_PICO) || \
       defined(ARDUINO_GENERIC_RP2040) || defined(ARDUINO_ADAFRUIT_FEATHER_RP2040) )
 
-#if(_ESP_AT_LOGLEVEL_> 3)
-  #warning RP2040 board selected
-#endif
+  #if(_ESP_AT_LOGLEVEL_> 3)
+    #warning RP2040 board selected
+  #endif
 
-#if defined(ESP8266_AT_USE_RP2040)
-  #undef ESP8266_AT_USE_RP2040
-#endif
-#define ESP8266_AT_USE_RP2040      true
-
+  #if defined(ESP8266_AT_USE_RP2040)
+    #undef ESP8266_AT_USE_RP2040
+  #endif
+  
+  #define ESP8266_AT_USE_RP2040      true
+  
 ////////////////////////////////////////
 
 #endif

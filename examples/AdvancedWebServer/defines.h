@@ -22,8 +22,14 @@
 // Debug Level from 0 to 4
 #define _ESP_AT_LOGLEVEL_       1
 
-// Uncomment to use ESP32-AT commands
-//#define USE_ESP32_AT      true
+#define USING_WIZFI360              true
+
+#if (USING_WIZFI360) || defined(ARDUINO_WIZNET_WIZFI360_EVB_PICO)
+  #define USE_ESP32_AT      true
+#else
+  // Uncomment to use ESP32-AT commands
+  //#define USE_ESP32_AT      true
+#endif
 
 #if USE_ESP32_AT
 	#warning Using ESP32-AT WiFi and ESP8266_AT_WebServer Library
@@ -355,32 +361,37 @@
   
   #if defined(ARDUINO_ARCH_MBED)
   
-  #warning Using ARDUINO_ARCH_MBED
+    #warning Using ARDUINO_ARCH_MBED
+    
+    #if ( defined(ARDUINO_NANO_RP2040_CONNECT)    || defined(ARDUINO_RASPBERRY_PI_PICO) || \
+          defined(ARDUINO_GENERIC_RP2040) || defined(ARDUINO_ADAFRUIT_FEATHER_RP2040) )
+    // Only undef known BOARD_NAME to use better one
+    #undef BOARD_NAME
+    #endif
+    
+    #if defined(ARDUINO_RASPBERRY_PI_PICO)
+    	#define BOARD_NAME      "MBED RASPBERRY_PI_PICO"
+    #elif defined(ARDUINO_ADAFRUIT_FEATHER_RP2040)
+    	#define BOARD_NAME      "MBED ADAFRUIT_FEATHER_RP2040"
+    #elif defined(ARDUINO_GENERIC_RP2040)
+    	#define BOARD_NAME      "MBED GENERIC_RP2040"
+    #elif defined(ARDUINO_NANO_RP2040_CONNECT)
+    	#define BOARD_NAME      "MBED NANO_RP2040_CONNECT"
+    #else
+    	// Use default BOARD_NAME if exists
+    	#if !defined(BOARD_NAME)
+    		#define BOARD_NAME      "MBED Unknown RP2040"
+    	#endif
+    #endif
   
-  #if ( defined(ARDUINO_NANO_RP2040_CONNECT)    || defined(ARDUINO_RASPBERRY_PI_PICO) || \
-            defined(ARDUINO_GENERIC_RP2040) || defined(ARDUINO_ADAFRUIT_FEATHER_RP2040) )
-  // Only undef known BOARD_NAME to use better one
-  #undef BOARD_NAME
   #endif
-  
-  #if defined(ARDUINO_RASPBERRY_PI_PICO)
-  	#define BOARD_NAME      "MBED RASPBERRY_PI_PICO"
-  #elif defined(ARDUINO_ADAFRUIT_FEATHER_RP2040)
-  	#define BOARD_NAME      "MBED ADAFRUIT_FEATHER_RP2040"
-  #elif defined(ARDUINO_GENERIC_RP2040)
-  	#define BOARD_NAME      "MBED GENERIC_RP2040"
-  #elif defined(ARDUINO_NANO_RP2040_CONNECT)
-  	#define BOARD_NAME      "MBED NANO_RP2040_CONNECT"
+
+  #if defined(ARDUINO_WIZNET_WIZFI360_EVB_PICO)
+    #warning WIZNET_WIZFI360_EVB_PICO
+    #define EspSerial       Serial2
   #else
-  	// Use default BOARD_NAME if exists
-  	#if !defined(BOARD_NAME)
-  		#define BOARD_NAME      "MBED Unknown RP2040"
-  	#endif
+    #define EspSerial       Serial1
   #endif
-  
-  #endif
-  
-  #define EspSerial       Serial1
 
 #elif (ESP_AT_USE_AVR)
 

@@ -65,6 +65,7 @@ int reqCount = 0;                // number of requests received
 #define WEBSERVER_PORT      80
 
 ESP8266_AT_WebServer server(WEBSERVER_PORT);
+//WiFiServer server(WEBSERVER_PORT);
 
 const int led = 13;
 
@@ -259,7 +260,8 @@ void setup()
 
 	server.onNotFound(handleNotFound);
 	server.begin();
-	Serial.print(F("HTTP server started @ "));
+
+  Serial.print(F("HTTP server started @ "));
 	Serial.print(WiFi.localIP());
 	Serial.print(F(", Port = "));
 	Serial.println(WEBSERVER_PORT);

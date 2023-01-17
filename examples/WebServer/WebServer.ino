@@ -44,8 +44,14 @@ void printWifiStatus()
 {
   // print the SSID of the network you're attached to:
   // you're connected now, so print out the data
-  Serial.print(F("You're connected to the network, IP = "));
-  Serial.println(WiFi.localIP());
+#if !defined(ARDUINO_WIZNET_WIZFI360_EVB_PICO)
+  // you're connected now, so print out the data
+  Serial.println("You're connected to the network");
+#else  
+  // TODO, WizFi360 can't use crashing localIP() 
+  //Serial.print(F("You're connected to the network, IP = "));
+  //Serial.println(WiFi.localIP());
+#endif
 
   // print the received signal strength:
   int32_t rssi = WiFi.RSSI();
