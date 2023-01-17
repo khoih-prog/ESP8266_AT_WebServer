@@ -89,6 +89,7 @@
   * [7. UdpNTPClient on MBED RASPBERRY_PI_PICO using ESP8266-AT shield](#7-UdpNTPClient-on-mbed-RASPBERRY_PI_PICO-using-esp8266-at-shield)
   * [8. AdvancedWebServer on NRF52840_ITSYBITSY](#8-AdvancedWebServer-on-nrf52840_itsybitsy)
   * [9. ATWebServer_BigData on NRF52840_ITSYBITSY](#9-ATWebServer_BigData-on-NRF52840_ITSYBITSY)
+  * [10. AdvancedServer on WIZNET_WIZFI360_EVB_PICO](#10-AdvancedWebServer-on-WIZNET_WIZFI360_EVB_PICO)
 * [Screen Shots](#screen-shots)
   * [1. SAMD51 Itsy-Bitsy M4](#1-samd51-itsy-bitsy-m4)
   * [2. STM32 Nucleo-144 NUCLEO_F767ZI](#2-stm32-nucleo-144-nucleo_f767zi)
@@ -182,7 +183,7 @@ The ESP8266_AT_Web_Server class found in `ESP8266_AT_Web_Server.h` header, is a 
 
  9. RP2040-based boards, such as **RASPBERRY_PI_PICO, ADAFRUIT_FEATHER_RP2040 and GENERIC_RP2040**, using [**Arduino-mbed RP2040** core](https://github.com/arduino/ArduinoCore-mbed) or [**Earle Philhower's arduino-pico** core](https://github.com/earlephilhower/arduino-pico).
  
-10. WIZNET_WIZFI360_EVB_PICO using [**Earle Philhower's arduino-pico** core](https://github.com/earlephilhower/arduino-pico)
+10. **WIZNET_WIZFI360_EVB_PICO** using [**Earle Philhower's arduino-pico** core](https://github.com/earlephilhower/arduino-pico)
 
 #### WIZNET_WIZFI360_EVB_PICO
 
@@ -194,10 +195,10 @@ The ESP8266_AT_Web_Server class found in `ESP8266_AT_Web_Server.h` header, is a 
 
 #### Currently Supported AT-command shields
 
- 1. ESP8266-AT-command shield
- 2. ESP32-AT-command shield
- 3. W600 and WIS600-01S AT-command shield
- 4. WizFi360 AT-command shield
+ 1. `ESP8266-AT-command` shield
+ 2. `ESP32-AT-command` shield
+ 3. `W600` and `WIS600-01S` AT-command shield
+ 4. `WizFi360` AT-command shield
  
 #### WIZFI360
  
