@@ -89,7 +89,7 @@
   * [7. UdpNTPClient on MBED RASPBERRY_PI_PICO using ESP8266-AT shield](#7-UdpNTPClient-on-mbed-RASPBERRY_PI_PICO-using-esp8266-at-shield)
   * [8. AdvancedWebServer on NRF52840_ITSYBITSY](#8-AdvancedWebServer-on-nrf52840_itsybitsy)
   * [9. ATWebServer_BigData on NRF52840_ITSYBITSY](#9-ATWebServer_BigData-on-NRF52840_ITSYBITSY)
-  * [10. AdvancedServer on WIZNET_WIZFI360_EVB_PICO](#10-AdvancedWebServer-on-WIZNET_WIZFI360_EVB_PICO)
+  * [10. AdvancedWebServer on WIZNET_WIZFI360_EVB_PICO](#10-AdvancedWebServer-on-WIZNET_WIZFI360_EVB_PICO)
 * [Screen Shots](#screen-shots)
   * [1. SAMD51 Itsy-Bitsy M4](#1-samd51-itsy-bitsy-m4)
   * [2. STM32 Nucleo-144 NUCLEO_F767ZI](#2-stm32-nucleo-144-nucleo_f767zi)
@@ -833,13 +833,13 @@ Please take a look at other examples, as well.
 #### 1. File [AdvancedWebServer.ino](examples/AdvancedWebServer/AdvancedWebServer.ino)
 
 
-https://github.com/khoih-prog/ESP8266_AT_WebServer/blob/87095386a7c55b26347a5902de65280de35a08c6/examples/AdvancedWebServer/AdvancedWebServer.ino#L60-L305
+https://github.com/khoih-prog/ESP8266_AT_WebServer/blob/1839e2f68d950c65bf397a882cd3a2914ec7c468/examples/AdvancedWebServer/AdvancedWebServer.ino#L60-L305
 
 ---
 
 #### 2. File [defines.h](examples/AdvancedWebServer/defines.h)
 
-https://github.com/khoih-prog/ESP8266_AT_WebServer/blob/87095386a7c55b26347a5902de65280de35a08c6/examples/AdvancedWebServer/defines.h#L15-L433
+https://github.com/khoih-prog/ESP8266_AT_WebServer/blob/1839e2f68d950c65bf397a882cd3a2914ec7c468/examples/AdvancedWebServer/defines.h#L15-L433
 
 ---
 
@@ -1306,13 +1306,13 @@ String Len = 23106
 
 ---
 
-#### 10. AdvancedServer on WIZNET_WIZFI360_EVB_PICO
+#### 10. AdvancedWebServer on WIZNET_WIZFI360_EVB_PICO
 
 The following is debug terminal output when running example [AdvancedServer](examples/AdvancedServer) on `WIZNET_WIZFI360_EVB_PICO` board, using [arduino-pico](https://github.com/earlephilhower/arduino-pico) core
 
 
 ```
-Starting AdvancedServer on WIZNET_WIZFI360_EVB_PICO with ESP32-AT & ESP8266_AT_WebServer Library
+Starting AdvancedWebServer on WIZNET_WIZFI360_EVB_PICO with ESP32-AT & ESP8266_AT_WebServer Library
 ESP8266_AT_WebServer v1.7.0
 [ESP_AT] Using ESP32-AT Command
 WiFi shield init done
