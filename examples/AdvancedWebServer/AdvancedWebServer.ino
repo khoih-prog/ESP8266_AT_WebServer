@@ -220,7 +220,7 @@ void setup()
 
 	while (!Serial && millis() < 5000);
 
-	Serial.print(F("\nStarting AdvancedServer on "));
+	Serial.print(F("\nStarting AdvancedWebServer on "));
 	Serial.print(BOARD_NAME);
 	Serial.print(F(" with "));
 	Serial.println(SHIELD_TYPE);
